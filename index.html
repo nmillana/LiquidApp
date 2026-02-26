@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cuentas Claras</title>
+<title>Remuneraciones · Casa Particular</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -53,6 +53,33 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(
 .log-item .lt{color:var(--muted);font-size:.69rem;white-space:nowrap}
 .log-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap}
 .lb-login{background:#dcfce7;color:#15803d} .lb-liq{background:#dbeafe;color:#1d4ed8} .lb-err{background:#fef2f2;color:#dc2626}
+/* ─── DOCUMENTOS ─── */
+.doc-preview{background:#fff;border:1px solid var(--border);border-radius:10px;padding:28px 32px;font-family:'Times New Roman',serif;font-size:11pt;line-height:1.7;color:#111;margin-top:10px}
+.doc-preview h2{text-align:center;font-size:14pt;text-decoration:underline;margin-bottom:6px}
+.doc-preview h3{text-align:center;font-size:12pt;margin-bottom:18px}
+.doc-preview .doc-clausula{margin-bottom:14px;text-align:justify}
+.doc-preview .doc-clausula strong{font-size:11.5pt}
+.doc-preview .doc-firmas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:50px}
+.doc-preview .doc-firma-box{text-align:center}
+.doc-preview .doc-firma-line{border-bottom:1px solid #333;margin-bottom:6px;height:48px}
+.doc-preview .doc-firma-label{font-size:9.5pt;color:#333}
+.doc-preview .doc-tabla{width:100%;border-collapse:collapse;margin:14px 0}
+.doc-preview .doc-tabla th{background:#f0f0f0;padding:6px 10px;border:1px solid #ccc;font-size:10.5pt;text-align:left}
+.doc-preview .doc-tabla td{padding:6px 10px;border:1px solid #ccc;font-size:10.5pt}
+.doc-preview .doc-tabla td:last-child{text-align:right}
+.doc-preview .doc-total-row td{font-weight:700;background:#f9f9f9}
+.doc-preview [contenteditable]{outline:none;border-bottom:1px dashed #aaa;cursor:text;min-width:40px;display:inline-block;padding:0 2px}
+.doc-preview [contenteditable]:focus{border-bottom:2px solid var(--accent);background:#f0fdf4}
+.doc-preview [contenteditable]:empty:before{content:attr(data-ph);color:#bbb;font-style:italic}
+.fin-concepto-row{display:flex;gap:8px;align-items:center;margin-bottom:7px}
+.fin-concepto-row input{flex:1;border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:.82rem;font-family:'Inter',sans-serif}
+.fin-concepto-row input:first-child{flex:2}
+.fin-concepto-row .btn-rm{background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;padding:2px 6px;line-height:1}
+@media(max-width:640px){
+  .doc-preview{padding:16px 12px;font-size:9.5pt}
+  .doc-preview .doc-firmas{grid-template-columns:1fr;gap:24px}
+}
+
 .app-header{background:linear-gradient(135deg,#064e3b,#065f46 60%,#047857);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(5,150,105,.25);position:sticky;top:0;z-index:100}
 .app-header h1{font-size:1.1rem;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
 .logo-pill{background:rgba(255,255,255,.18);border-radius:8px;padding:3px 9px;font-size:.95rem}
@@ -449,6 +476,7 @@ textarea{resize:vertical;min-height:64px}
   <button class="tab-btn active" onclick="showTab('liquidacion',this)">📄 Liquidación</button>
   <button class="tab-btn" onclick="showTab('dias',this)">📅 Días</button>
   <button class="tab-btn" onclick="showTab('vacaciones',this)">🌴 Vacaciones</button>
+  <button class="tab-btn" onclick="showTab('documentos',this)">📋 Documentos</button>
   <button class="tab-btn" onclick="showTab('indicadores',this)">📊 Indicadores</button>
   <button class="tab-btn" onclick="showTab('historial',this)">📁 Historial</button>
   <button class="tab-btn tab-admin-btn" id="tab-admin-btn-d" onclick="showTab('admin',this)" style="display:none">⚙️ Admin</button>
@@ -461,6 +489,7 @@ textarea{resize:vertical;min-height:64px}
     <button class="tab-mob-btn active" onclick="showTab('liquidacion',this,'mob')"><span class="icon">📄</span><span class="label">Liquidación</span></button>
     <button class="tab-mob-btn" onclick="showTab('dias',this,'mob')"><span class="icon">📅</span><span class="label">Días</span></button>
     <button class="tab-mob-btn" onclick="showTab('vacaciones',this,'mob')"><span class="icon">🌴</span><span class="label">Vacaciones</span></button>
+    <button class="tab-mob-btn" onclick="showTab('documentos',this,'mob')"><span class="icon">📋</span><span class="label">Docs</span></button>
     <button class="tab-mob-btn" onclick="showTab('indicadores',this,'mob')"><span class="icon">📊</span><span class="label">Indicadores</span></button>
     <button class="tab-mob-btn" onclick="showTab('historial',this,'mob')"><span class="icon">📁</span><span class="label">Historial</span></button>
     <button class="tab-mob-btn tab-admin-btn" id="tab-admin-btn-m" onclick="showTab('admin',this,'mob')" style="display:none"><span class="icon">⚙️</span><span class="label">Admin</span></button>
@@ -511,6 +540,71 @@ textarea{resize:vertical;min-height:64px}
         <div class="form-group"><label>Años Totales Trabajados (todos empleadores)</label><input type="number" id="a-anios-totales" value="0" min="0"></div>
       </div>
       <div class="form-group"><label>Notas / Acuerdos</label><textarea id="a-notas" placeholder="Ej: No trabaja festivos, incluye almuerzo…"></textarea></div>
+    </div>
+
+    <div style="background:var(--warm);border-radius:10px;padding:14px;margin-top:10px">
+      <div style="font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:9px;letter-spacing:.5px">🏠 Datos del Empleador (para contratos y finiquitos)</div>
+      <div class="form-row">
+        <div class="form-group full"><label>Nombre Completo Empleador *</label><input type="text" id="a-emp-nombre" placeholder="Nombre y Apellidos del empleador"></div>
+        <div class="form-group"><label>RUT Empleador</label><input type="text" id="a-emp-rut" placeholder="12.345.678-9" oninput="fmtRut(this)"></div>
+        <div class="form-group"><label>Teléfono Empleador</label><input type="tel" id="a-emp-telefono" placeholder="+56 9"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Domicilio Empleador (calle y número)</label><input type="text" id="a-emp-direccion" placeholder="Ej: Av. Las Condes 1234"></div>
+        <div class="form-group"><label>Comuna</label><input type="text" id="a-emp-comuna" placeholder="Las Condes"></div>
+        <div class="form-group"><label>Región</label><input type="text" id="a-emp-region" placeholder="Metropolitana"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Dirección donde se prestan servicios (si es diferente)</label><input type="text" id="a-serv-direccion" placeholder="Dejar vacío si es la misma"></div>
+        <div class="form-group"><label>Jornada (horas semanales)</label><input type="number" id="a-horas-sem" value="45" min="1" max="45"></div>
+        <div class="form-group"><label>Forma de pago</label>
+          <select id="a-forma-pago"><option value="efectivo">Dinero efectivo</option><option value="transferencia">Transferencia bancaria</option><option value="cheque">Cheque</option></select>
+        </div>
+      </div>
+      <div style="font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin:10px 0 8px;letter-spacing:.5px">Horario de trabajo</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;font-size:.75rem;border-collapse:collapse;min-width:480px">
+          <tr style="background:#e8f0e8">
+            <td style="padding:5px 8px;font-weight:600"></td>
+            <td style="padding:5px 8px;text-align:center;font-weight:600">Lunes</td>
+            <td style="padding:5px 8px;text-align:center;font-weight:600">Martes</td>
+            <td style="padding:5px 8px;text-align:center;font-weight:600">Miércoles</td>
+            <td style="padding:5px 8px;text-align:center;font-weight:600">Jueves</td>
+            <td style="padding:5px 8px;text-align:center;font-weight:600">Viernes</td>
+            <td style="padding:5px 8px;text-align:center;font-weight:600">Sábado</td>
+          </tr>
+          <tr>
+            <td style="padding:5px 8px;font-weight:600;color:var(--muted)">Entrada</td>
+            <td><input type="time" id="h-lun-e" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-mar-e" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-mie-e" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-jue-e" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-vie-e" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-sab-e" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 8px;font-weight:600;color:var(--muted)">Salida</td>
+            <td><input type="time" id="h-lun-s" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-mar-s" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-mie-s" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-jue-s" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-vie-s" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+            <td><input type="time" id="h-sab-s" style="width:100%;font-size:.72rem;padding:3px 4px"></td>
+          </tr>
+        </table>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="form-group"><label>Tareas principales</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:400"><input type="checkbox" id="t-aseo"> Aseo</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:400"><input type="checkbox" id="t-cocina"> Cocinar</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:400"><input type="checkbox" id="t-lavado"> Lavar y planchar</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:400"><input type="checkbox" id="t-jardin"> Jardinería</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:400"><input type="checkbox" id="t-ninos"> Cuidado de niños</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:400"><input type="checkbox" id="t-chofer"> Chofer</label>
+          </div>
+        </div>
+      </div>
     </div>
     <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
       <button class="btn btn-ghost" onclick="cancelarForm()">Cancelar</button>
@@ -668,6 +762,116 @@ textarea{resize:vertical;min-height:64px}
       <button class="btn btn-ghost btn-sm" onclick="limpiarFiltros()">✕</button>
     </div>
     <div id="lista-historial"><div class="empty"><span class="ic">📋</span>Cargando…</div></div>
+  </div>
+</div>
+
+<!-- ══ TAB: DOCUMENTOS ══ -->
+<div id="tab-documentos" class="tab-content">
+  <div class="callout warn" id="doc-warn">⚠️ <strong>Selecciona una asesora</strong> para generar sus documentos.</div>
+  <div id="doc-perfil-mini2"></div>
+
+  <!-- Selector de documento -->
+  <div class="card">
+    <div class="card-title">📋 Documentos Legales</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost" id="doc-btn-contrato" onclick="mostrarDoc('contrato')" style="flex:1;min-width:140px">📝 Contrato</button>
+      <button class="btn btn-ghost" id="doc-btn-aviso" onclick="mostrarDoc('aviso')" style="flex:1;min-width:140px">✉️ Carta de Aviso</button>
+      <button class="btn btn-ghost" id="doc-btn-finiquito" onclick="mostrarDoc('finiquito')" style="flex:1;min-width:140px">🤝 Finiquito</button>
+    </div>
+  </div>
+
+  <!-- ── CONTRATO ── -->
+  <div id="doc-contrato" style="display:none">
+    <div class="card">
+      <div class="card-title">📝 Contrato de Trabajo — Casa Particular Puertas Afuera</div>
+      <div class="callout blue" style="font-size:.77rem">Los campos se pre-llenan con los datos de la asesora. Puedes editar antes de imprimir.</div>
+      <div id="contrato-preview" class="doc-preview"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="imprimirDoc('contrato-preview')">🖨️ Imprimir</button>
+        <button class="btn btn-success" onclick="compartirDocWA('contrato-preview','Contrato')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARTA DE AVISO ── -->
+  <div id="doc-aviso" style="display:none">
+    <div class="card">
+      <div class="card-title">✉️ Carta de Aviso de Término</div>
+      <div class="callout blue" style="font-size:.77rem">Requerida cuando el empleador da aviso con 30 días de anticipación sin pagar indemnización inmediata.</div>
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-group"><label>Tipo de término</label>
+          <select id="aviso-tipo" onchange="generarAviso()">
+            <option value="despido">Despido (empleador)</option>
+            <option value="renuncia">Renuncia (trabajadora)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Fecha del aviso</label><input type="date" id="aviso-fecha" oninput="generarAviso()"></div>
+        <div class="form-group"><label>Fecha efectiva de término</label><input type="date" id="aviso-fecha-termino" oninput="generarAviso()"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px"><label>Causal (Art. 159 o 160 C.T.)</label>
+        <select id="aviso-causal" onchange="generarAviso()">
+          <option value="mutuo_acuerdo">Mutuo acuerdo de las partes (Art. 159 Nº1)</option>
+          <option value="renuncia">Renuncia voluntaria (Art. 159 Nº4)</option>
+          <option value="vencimiento">Vencimiento del plazo del contrato (Art. 159 Nº4)</option>
+          <option value="necesidades">Necesidades de la empresa (Art. 161)</option>
+          <option value="incumplimiento">Incumplimiento grave de obligaciones (Art. 160 Nº7)</option>
+          <option value="probidad">Falta de probidad (Art. 160 Nº1)</option>
+          <option value="inasistencia">Inasistencias injustificadas (Art. 160 Nº3)</option>
+        </select>
+      </div>
+      <div id="aviso-preview" class="doc-preview"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="imprimirDoc('aviso-preview')">🖨️ Imprimir</button>
+        <button class="btn btn-success" onclick="compartirDocWA('aviso-preview','Carta de Aviso')" style="background:#25D366">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FINIQUITO ── -->
+  <div id="doc-finiquito" style="display:none">
+    <div class="card">
+      <div class="card-title">🤝 Finiquito de Trabajo</div>
+      <div class="callout blue" style="font-size:.77rem">Se calcula automáticamente desde los registros de liquidaciones. Verifica y ajusta los montos si corresponde.</div>
+      <div class="form-row" style="margin-bottom:12px">
+        <div class="form-group"><label>Fecha del finiquito</label><input type="date" id="fin-fecha" oninput="generarFiniquito()"></div>
+        <div class="form-group"><label>Fecha de término</label><input type="date" id="fin-fecha-termino" oninput="generarFiniquito()"></div>
+        <div class="form-group"><label>Causal de término</label>
+          <select id="fin-causal" onchange="generarFiniquito()">
+            <option value="mutuo_acuerdo">Mutuo acuerdo (Art. 159 Nº1)</option>
+            <option value="renuncia">Renuncia voluntaria (Art. 159 Nº4)</option>
+            <option value="despido">Despido sin causa (Art. 161)</option>
+            <option value="vencimiento">Vencimiento plazo (Art. 159 Nº4)</option>
+            <option value="incumplimiento">Incumplimiento grave (Art. 160 Nº7)</option>
+            <option value="necesidades">Necesidades empresa (Art. 161)</option>
+          </select>
+        </div>
+      </div>
+      <div class="card" style="background:var(--warm);border:1px solid var(--border)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">💰 Conceptos a pagar</div>
+        <div id="fin-conceptos">
+          <!-- Se genera dinámicamente -->
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="agregarConceptoFin()" style="margin-top:8px">+ Agregar concepto</button>
+        <div style="margin-top:12px;padding-top:10px;border-top:2px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;font-size:.9rem">TOTAL FINIQUITO</span>
+          <span id="fin-total" style="font-weight:800;font-size:1.1rem;color:var(--accent)">$0</span>
+        </div>
+      </div>
+      <div id="finiquito-preview" class="doc-preview" style="margin-top:14px"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="imprimirDoc('finiquito-preview')">🖨️ Imprimir</button>
+        <button class="btn btn-success" onclick="compartirDocWA('finiquito-preview','Finiquito')" style="background:#25D366">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1187,6 +1391,18 @@ function editarAsesora(id){
   setv('a-nacimiento',a.nacimiento);setv('a-ingreso',a.fecha_ingreso);setv('a-contrato',a.tipo_contrato);
   setv('a-modalidad',a.modalidad);setv('a-sueldo',a.sueldo_base);setv('a-movilizacion',a.movilizacion);
   setv('a-colacion',a.colacion);setv('a-anios-totales',a.anios_totales);setv('a-notas',a.notas);
+  // Empleador
+  setv('a-emp-nombre',a.emp_nombre);setv('a-emp-rut',a.emp_rut);setv('a-emp-telefono',a.emp_telefono);
+  setv('a-emp-direccion',a.emp_direccion);setv('a-emp-comuna',a.emp_comuna);setv('a-emp-region',a.emp_region);
+  setv('a-serv-direccion',a.serv_direccion);setv('a-horas-sem',a.horas_sem||45);setv('a-forma-pago',a.forma_pago||'efectivo');
+  // Horario
+  if(a.horario){['lun','mar','mie','jue','vie','sab'].forEach(d=>{
+    setv('h-'+d+'-e',a.horario[d]?.e);setv('h-'+d+'-s',a.horario[d]?.s);
+  });}
+  // Tareas
+  if(a.tareas){['aseo','cocina','lavado','jardin','ninos','chofer'].forEach(t=>{
+    const el=document.getElementById('t-'+t);if(el)el.checked=!!a.tareas[t];
+  });}
   const afpSel=document.getElementById('a-afp');
   for(let i=0;i<afpSel.options.length;i++){if(afpSel.options[i].dataset.nombre===a.afp_nombre){afpSel.selectedIndex=i;break;}}
   if(a.fecha_ingreso)calcAnt();
@@ -1215,7 +1431,19 @@ async function guardarAsesora(){
     afp_tasa:+afpSel.value,
     anios_totales:+document.getElementById('a-anios-totales').value||0,
     notas:document.getElementById('a-notas').value,
-    user_id:_currentUser?.id||null  // ← vincula al usuario autenticado
+    emp_nombre:e('a-emp-nombre'),emp_rut:e('a-emp-rut'),emp_telefono:e('a-emp-telefono'),
+    emp_direccion:e('a-emp-direccion'),emp_comuna:e('a-emp-comuna'),emp_region:e('a-emp-region'),
+    serv_direccion:e('a-serv-direccion'),horas_sem:+e('a-horas-sem')||45,
+    forma_pago:e('a-forma-pago'),
+    horario:{
+      lun:{e:e('h-lun-e'),s:e('h-lun-s')},mar:{e:e('h-mar-e'),s:e('h-mar-s')},
+      mie:{e:e('h-mie-e'),s:e('h-mie-s')},jue:{e:e('h-jue-e'),s:e('h-jue-s')},
+      vie:{e:e('h-vie-e'),s:e('h-vie-s')},sab:{e:e('h-sab-e'),s:e('h-sab-s')}
+    },
+    tareas:{aseo:document.getElementById('t-aseo').checked,cocina:document.getElementById('t-cocina').checked,
+      lavado:document.getElementById('t-lavado').checked,jardin:document.getElementById('t-jardin').checked,
+      ninos:document.getElementById('t-ninos').checked,chofer:document.getElementById('t-chofer').checked},
+    user_id:_currentUser?.id||null
   };
   const editId=document.getElementById('a-id').value;if(editId)data.id=editId;
   try{
@@ -1878,7 +2106,7 @@ function esc(tipo){
 // ══════════════════════════════════════
 // TABS — sincroniza desktop Y móvil
 // ══════════════════════════════════════
-const TABS_ORDER=['asesoras','liquidacion','dias','vacaciones','indicadores','historial'];
+const TABS_ORDER=['asesoras','liquidacion','dias','vacaciones','documentos','indicadores','historial'];
 function showTab(tab,btn,tipo){
   document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
@@ -1898,6 +2126,454 @@ function showTab(tab,btn,tipo){
 setv('periodo',new Date().toISOString().slice(0,7));
 setv('d-periodo',new Date().toISOString().slice(0,7));
 calcular();calcDias();
+// ══════════════════════════════════════
+// DOCUMENTOS LEGALES
+// ══════════════════════════════════════
+
+function mostrarDoc(tipo){
+  ['contrato','aviso','finiquito'].forEach(t=>{
+    document.getElementById('doc-'+t).style.display='none';
+    document.getElementById('doc-btn-'+t)?.classList.remove('active');
+  });
+  document.getElementById('doc-'+tipo).style.display='block';
+  document.getElementById('doc-btn-'+tipo)?.classList.add('active');
+  if(!asesoraActiva){
+    document.getElementById('doc-warn').style.display='block';
+    return;
+  }
+  document.getElementById('doc-warn').style.display='none';
+  if(tipo==='contrato')generarContrato();
+  if(tipo==='aviso'){
+    document.getElementById('aviso-fecha').value=new Date().toISOString().slice(0,10);
+    const t=new Date();t.setDate(t.getDate()+30);
+    document.getElementById('aviso-fecha-termino').value=t.toISOString().slice(0,10);
+    generarAviso();
+  }
+  if(tipo==='finiquito'){
+    document.getElementById('fin-fecha').value=new Date().toISOString().slice(0,10);
+    document.getElementById('fin-fecha-termino').value=new Date().toISOString().slice(0,10);
+    generarFiniquito();
+  }
+}
+
+function e(id){return document.getElementById(id)?.value||'';}
+function fe(id){// field editable helper
+  const el=document.getElementById(id);return el?el.value:'';
+}
+
+function A(){return asesoraActiva||{};}
+function fechaLarga(str){
+  if(!str)return '___________';
+  const d=new Date(str+'T12:00');
+  const dias=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+}
+function soloFecha(str){
+  if(!str)return '__/__/____';
+  return new Date(str+'T12:00').toLocaleDateString('es-CL');
+}
+function ed(val,ph=''){// editable span
+  return `<span contenteditable="true" data-ph="${ph||val||'...'}">${val||''}</span>`;
+}
+function horario(){
+  const dias=['lun','mar','mie','jue','vie','sab'];
+  const nombres=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  return dias.map((d,i)=>{
+    const ent=e('h-'+d+'-e'),sal=e('h-'+d+'-s');
+    if(!ent&&!sal)return '';
+    return `${nombres[i]}: ${ent||'—'} a ${sal||'—'}`;
+  }).filter(Boolean).join(' | ')||'Por definir';
+}
+function tareas(){
+  const t=[];
+  if(e('t-aseo')||document.getElementById('t-aseo')?.checked)t.push('Aseo');
+  if(document.getElementById('t-cocina')?.checked)t.push('Cocinar');
+  if(document.getElementById('t-lavado')?.checked)t.push('Lavar y planchar ropa');
+  if(document.getElementById('t-jardin')?.checked)t.push('Jardinería');
+  if(document.getElementById('t-ninos')?.checked)t.push('Cuidado de niños');
+  if(document.getElementById('t-chofer')?.checked)t.push('Chofer');
+  return t.length?t.join(', '):'Aseo, Cocinar y otras tareas del hogar';
+}
+
+// ── CONTRATO ──────────────────────────
+function generarContrato(){
+  const a=A();
+  const emp={
+    nombre:e('a-emp-nombre')||'_______________',
+    rut:e('a-emp-rut')||'__________',
+    dir:e('a-emp-direccion')||'_______________',
+    comuna:e('a-emp-comuna')||'_______',
+    region:e('a-emp-region')||'_______',
+  };
+  const servDir=e('a-serv-direccion')||emp.dir+', '+emp.comuna;
+  const hoy=new Date();
+  const ciudad=e('a-emp-comuna')||'Santiago';
+  const formaPago=({'efectivo':'dinero efectivo','transferencia':'transferencia bancaria','cheque':'cheque'})[e('a-forma-pago')]||'dinero efectivo';
+
+  document.getElementById('contrato-preview').innerHTML=`
+  <h2>Contrato de Trabajo</h2>
+  <h3>Trabajadora de Casa Particular Puertas Afuera</h3>
+  <p style="text-align:center;margin-bottom:20px">(vigencia desde el ${soloFecha(a.fecha_ingreso)})</p>
+
+  <div class="doc-clausula">
+    En ${ed(ciudad,'ciudad')}, a ${ed(soloFecha(a.fecha_ingreso),'fecha inicio')} entre
+    ${ed(emp.nombre,'nombre empleador')}, RUT: ${ed(emp.rut,'RUT empleador')},
+    con domicilio en calle ${ed(emp.dir,'dirección')}, comuna de ${ed(emp.comuna,'comuna')},
+    región ${ed(emp.region,'región')}, en adelante <strong>"el empleador"</strong>, por una parte, y
+    ${ed(a.nombre,'nombre trabajadora')}, RUT: ${ed(a.rut,'RUT trabajadora')},
+    Fecha de Nacimiento ${ed(soloFecha(a.nacimiento),'fecha nacimiento')},
+    con domicilio en calle ${ed('','dirección trabajadora')}, comuna de ${ed('','comuna trabajadora')},
+    región ${ed('','región trabajadora')}, de nacionalidad ${ed('','nacionalidad')},
+    en adelante <strong>"el trabajador(a)"</strong>, se conviene un contrato de trabajo cuyas cláusulas son las siguientes:
+  </div>
+
+  <div class="doc-clausula"><strong>PRIMERO.- De la naturaleza de los servicios.</strong>
+    El trabajador(a) se obliga a desempeñar trabajos de asistencia propios o inherentes al hogar, de acuerdo a las instrucciones que al efecto sean impartidas por el empleador.
+    Para una adecuada descripción de las obligaciones que derivan del presente contrato, las partes acuerdan que el trabajador(a) desempeñará de forma principal las siguientes tareas:
+    <strong>${ed(tareas(),'lista de tareas')}</strong>.
+    Se deja expresa constancia que los servicios convenidos no incluyen la obligación de asistencia a personas que, por condiciones fisiológicas o de salud de carácter permanente, requieran atención o cuidados especiales.
+  </div>
+
+  <div class="doc-clausula"><strong>SEGUNDO.- El lugar de prestación de los servicios.</strong>
+    Las partes acuerdan que los servicios deberán ser prestados en el domicilio ubicado en
+    ${ed(servDir,'dirección servicios')}, comuna de ${ed(emp.comuna,'comuna')}, región ${ed(emp.region,'región')}.
+  </div>
+
+  <div class="doc-clausula"><strong>TERCERO.- Del monto, forma y período de pago de las remuneraciones.</strong>
+    El trabajador(a) tendrá derecho a percibir las siguientes prestaciones a título de remuneración:<br>
+    a) Sueldo base ascendente a ${ed(fmt(a.sueldo_base||539000),'monto sueldo')} mensuales.${a.movilizacion?`<br>b) Movilización: ${ed(fmt(a.movilizacion),'movilización')}.`:''}${a.colacion?`<br>c) Colación: ${ed(fmt(a.colacion),'colación')}.`:''}<br>
+    Las remuneraciones se pagarán por períodos mensuales vencidos, el último día hábil de cada mes, mediante ${ed(formaPago,'forma de pago')}. De las sumas anteriores se deducirán los impuestos que las graven, las cotizaciones de seguridad social y otras, en conformidad con el artículo 58 del Código del Trabajo.
+    Asimismo, el empleador se obliga a enterar mensualmente en la AFP que el/la trabajador/a determine, un 1,11% de la remuneración imponible durante todo el tiempo de duración del contrato (máx. 11 años), para financiar la indemnización a todo evento por término de contrato conforme al artículo 163 del Código del Trabajo. Igualmente, el empleador enterará un 3,0% de la remuneración imponible en la AFC correspondiente.
+  </div>
+
+  <div class="doc-clausula"><strong>CUARTO.- Cotizaciones de Seguridad Social.</strong>
+    De la remuneración bruta que tiene derecho a percibir el trabajador(a), el Empleador deberá practicar los descuentos legales para el pago de cotizaciones de seguridad social. Al efecto, el trabajador(a) declara encontrarse afiliado(a) a:<br>
+    a) AFP: ${ed(a.afp_nombre||'','AFP')}.<br>
+    b) Salud: ${ed('FONASA','institución salud')}.<br>
+    Será de cargo del Empleador declarar y pagar la cotización para el seguro de accidentes del trabajo y enfermedades profesionales de la Ley N° 16.744.
+  </div>
+
+  <div class="doc-clausula"><strong>QUINTO.- Jornada de Trabajo.</strong>
+    El Trabajador(a) estará sujeto a una jornada de trabajo de ${ed(e('a-horas-sem')||'45','horas')} horas semanales, distribuidas de la siguiente manera: ${ed(horario(),'horario')}.
+  </div>
+
+  <div class="doc-clausula"><strong>SEXTO.- Fecha de inicio y duración del contrato.</strong>
+    Las partes dejan constancia que el trabajador(a) comenzó a prestar servicios para el Empleador con fecha ${ed(soloFecha(a.fecha_ingreso),'fecha inicio')}.
+    Este contrato tendrá una duración de carácter ${ed(a.tipo_contrato==='indefinido'?'indefinida':'fija según lo pactado','duración')}.
+  </div>
+
+  <div class="doc-clausula"><strong>SÉPTIMO.-</strong>
+    El presente contrato de trabajo se firma por trabajador(a) y Empleador en dos ejemplares del mismo contenido y fecha, quedando en este acto un ejemplar en poder de cada contratante. El empleador deberá registrar este contrato en el sitio web de la Dirección del Trabajo (www.direcciondeltrabajo.cl).
+  </div>
+
+  <div class="doc-clausula"><strong>OCTAVO.-</strong>
+    Las partes manifiestan estar en conocimiento que se encuentra prohibido exigir al trabajador(a) el uso obligatorio de uniforme, delantal o cualquier otro distintivo o vestimenta identificadores en espacios o establecimientos públicos.
+  </div>
+
+  <div class="doc-firmas">
+    <div class="doc-firma-box">
+      <div class="doc-firma-line"></div>
+      <div class="doc-firma-label"><strong>EMPLEADOR</strong><br>${emp.nombre}<br>RUT: ${emp.rut}</div>
+    </div>
+    <div class="doc-firma-box">
+      <div class="doc-firma-line"></div>
+      <div class="doc-firma-label"><strong>TRABAJADOR(A)</strong><br>${a.nombre||'_______________'}<br>RUT: ${a.rut||'__________'}</div>
+    </div>
+  </div>`;
+}
+
+// ── CARTA DE AVISO ────────────────────
+function generarAviso(){
+  const a=A();
+  const emp={nombre:e('a-emp-nombre')||'_______________',rut:e('a-emp-rut')||'__________'};
+  const tipo=document.getElementById('aviso-tipo')?.value||'despido';
+  const causal=document.getElementById('aviso-causal')?.value||'';
+  const fechaAviso=e('aviso-fecha');
+  const fechaTerm=e('aviso-fecha-termino');
+  const causalesTexto={
+    mutuo_acuerdo:'Mutuo acuerdo de las partes, artículo 159 Nº1 del Código del Trabajo',
+    renuncia:'Renuncia voluntaria del trabajador(a), artículo 159 Nº4 del Código del Trabajo, dando aviso con 30 días de anticipación',
+    vencimiento:'Vencimiento del plazo estipulado en el contrato, artículo 159 Nº4 del Código del Trabajo',
+    necesidades:'Necesidades de la empresa, establecimiento o servicio, artículo 161 del Código del Trabajo',
+    incumplimiento:'Incumplimiento grave de las obligaciones que impone el contrato, artículo 160 Nº7 del Código del Trabajo',
+    probidad:'Falta de probidad del trabajador(a), artículo 160 Nº1 del Código del Trabajo',
+    inasistencia:'Inasistencias injustificadas, artículo 160 Nº3 del Código del Trabajo'
+  };
+
+  const esDespido=tipo==='despido';
+  document.getElementById('aviso-preview').innerHTML=`
+  <h2>${esDespido?'Carta de Aviso de Término de Contrato':'Carta de Renuncia'}</h2>
+
+  <div class="doc-clausula" style="text-align:right;font-style:italic">
+    ${ed(e('a-emp-comuna')||'Santiago','ciudad')}, ${ed(fechaLarga(fechaAviso),'fecha carta')}
+  </div>
+
+  <div class="doc-clausula">
+    ${esDespido
+      ?`Estimada ${ed(a.nombre||'trabajadora','nombre trabajadora')}:<br><br>
+        Por medio de la presente, y de conformidad a lo establecido en el artículo 161 del Código del Trabajo, le comunicamos la decisión de poner término a su contrato de trabajo a contar del día
+        ${ed(fechaLarga(fechaTerm),'fecha término')}, por la siguiente causal:<br><br>
+        <strong>${ed(causalesTexto[causal]||causalesTexto.mutuo_acuerdo,'causal')}</strong><br><br>
+        Le comunicamos además que sus cotizaciones previsionales se encuentran pagadas hasta el último día del mes anterior a la fecha del presente aviso.<br><br>
+        El finiquito correspondiente estará disponible para su firma ante ministro de fe dentro del plazo legal.`
+      :`Sr(a). ${ed(emp.nombre,'nombre empleador')}, RUT ${ed(emp.rut,'RUT empleador')}:<br><br>
+        Por medio de la presente carta, yo, ${ed(a.nombre||'trabajadora','nombre trabajadora')}, RUT ${ed(a.rut,'RUT trabajadora')}, comunico mi decisión de renunciar voluntariamente al cargo de Trabajadora de Casa Particular que he desempeñado a su servicio desde el ${ed(soloFecha(a.fecha_ingreso),'fecha inicio')}, dando así cumplimiento al aviso previo de 30 días establecido en el artículo 159 Nº4 del Código del Trabajo.<br><br>
+        La renuncia se hará efectiva el día ${ed(fechaLarga(fechaTerm),'fecha efectiva')}.`
+    }
+  </div>
+
+  <div class="doc-clausula">
+    Sin otro particular, saluda atentamente,
+  </div>
+
+  <div class="doc-firmas">
+    <div class="doc-firma-box">
+      <div class="doc-firma-line"></div>
+      <div class="doc-firma-label">
+        <strong>${esDespido?'EMPLEADOR':'TRABAJADOR(A)'}</strong><br>
+        ${esDespido?(emp.nombre+'<br>RUT: '+emp.rut):(a.nombre+'<br>RUT: '+(a.rut||''))}
+      </div>
+    </div>
+    <div class="doc-firma-box">
+      <div class="doc-firma-line"></div>
+      <div class="doc-firma-label">
+        <strong>${esDespido?'RECIBIDO POR':'EMPLEADOR'}</strong><br>
+        ${esDespido?(a.nombre+'<br>RUT: '+(a.rut||'')):(emp.nombre+'<br>RUT: '+emp.rut)}
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:20px;font-size:9pt;color:#666;border-top:1px solid #ddd;padding-top:10px">
+    * Esta carta debe ser ratificada ante Inspección del Trabajo, Notaría, Oficial del Registro Civil o Secretario Municipal.
+    ${esDespido?'* Enviar copia a la Inspección del Trabajo correspondiente.':''}
+  </div>`;
+}
+
+// ── FINIQUITO ─────────────────────────
+let _finConceptos=[];
+
+function generarFiniquito(){
+  const a=A();
+  const emp={nombre:e('a-emp-nombre')||'_______________',rut:e('a-emp-rut')||'__________'};
+  const fechaFin=e('fin-fecha');
+  const fechaTerm=e('fin-fecha-termino');
+  const causal=document.getElementById('fin-causal')?.value||'mutuo_acuerdo';
+  const causalesTexto={
+    mutuo_acuerdo:'Mutuo acuerdo de las partes, según lo dispuesto en el artículo Nº 159 del Código del Trabajo',
+    renuncia:'Renuncia voluntaria del trabajador(a), según lo dispuesto en el artículo Nº 159 del Código del Trabajo',
+    despido:'Necesidades de la empresa, según lo dispuesto en el artículo Nº 161 del Código del Trabajo',
+    vencimiento:'Vencimiento del plazo estipulado en el contrato, según lo dispuesto en el artículo Nº 159 del Código del Trabajo',
+    incumplimiento:'Incumplimiento grave de las obligaciones que impone el contrato, según lo dispuesto en el artículo Nº 160 del Código del Trabajo',
+    necesidades:'Necesidades de la empresa, establecimiento o servicio, según lo dispuesto en el artículo Nº 161 del Código del Trabajo'
+  };
+
+  // Calcular conceptos desde historial si están vacíos
+  if(_finConceptos.length===0) _calcularConceptosFiniquito();
+
+  renderFinConceptos();
+  const total=_finConceptos.reduce((s,c)=>s+(+c.monto||0),0);
+  document.getElementById('fin-total').textContent=fmt(total);
+
+  // Construir tabla de conceptos
+  const filasTabla=_finConceptos.map(c=>`
+    <tr>
+      <td>${c.concepto}</td>
+      <td>${fmt(+c.monto||0)}</td>
+    </tr>`).join('');
+  const totalEnPalabras=numeroEnLetras(total);
+
+  document.getElementById('finiquito-preview').innerHTML=`
+  <h2>Finiquito</h2>
+
+  <div class="doc-clausula">
+    En ${ed(e('a-emp-comuna')||'Santiago','ciudad')}, a ${ed(fechaLarga(fechaFin),'fecha finiquito')},
+    entre ${ed(emp.nombre,'nombre empleador')}, RUT: ${ed(emp.rut,'RUT empleador')},
+    con domicilio en calle ${ed(e('a-emp-direccion')||'_______________','dirección')}, comuna de
+    ${ed(e('a-emp-comuna')||'_______','comuna')}, región ${ed(e('a-emp-region')||'_______','región')},
+    en adelante <strong>"el empleador"</strong>, por una parte, y
+    ${ed(a.nombre||'_______________','nombre trabajadora')}, RUT: ${ed(a.rut||'__________','RUT trabajadora')},
+    con domicilio en calle ${ed('_______________','dirección trabajadora')},
+    de nacionalidad ${ed('chilena','nacionalidad')},
+    nacido(a) el ${ed(soloFecha(a.nacimiento),'fecha nacimiento')},
+    en adelante <strong>"el trabajador(a)"</strong>, se conviene el siguiente finiquito:
+  </div>
+
+  <div class="doc-clausula"><strong>PRIMERO.-</strong>
+    ${ed(a.nombre||'_______________','nombre trabajadora')} declara haber prestado servicios a
+    ${ed(emp.nombre,'nombre empleador')} en calidad de <em>Trabajadora de Casa Particular</em>
+    desde el ${ed(soloFecha(a.fecha_ingreso),'fecha inicio')} hasta el ${ed(soloFecha(fechaTerm),'fecha término')},
+    fecha esta última de terminación de sus servicios, por la causa que se indica a continuación:
+    <br><strong>${ed(causalesTexto[causal]||causalesTexto.mutuo_acuerdo,'causal')}</strong>.
+  </div>
+
+  <div class="doc-clausula"><strong>SEGUNDO.-</strong>
+    ${ed(a.nombre||'_______________','nombre trabajadora')} declara recibir en este acto, a su entera satisfacción de parte de
+    ${ed(emp.nombre,'nombre empleador')}, las sumas que a continuación se indican, por los siguientes conceptos:
+
+    <table class="doc-tabla">
+      <tr><th>Concepto</th><th style="text-align:right">Suma</th></tr>
+      ${filasTabla}
+      <tr class="doc-total-row"><td><strong>TOTAL</strong></td><td><strong>${fmt(total)}</strong></td></tr>
+    </table>
+
+    En total: <strong>${ed(totalEnPalabras,'monto en letras')}</strong> (${ed(fmt(total),'monto en números')}).
+  </div>
+
+  <div class="doc-clausula"><strong>TERCERO.-</strong>
+    ${ed(a.nombre||'_______________','nombre trabajadora')} deja constancia que durante todo el tiempo que prestó servicios a
+    ${ed(emp.nombre,'nombre empleador')}, recibió correcta y oportunamente el total de las remuneraciones convenidas de acuerdo con su contrato de trabajo, reajustes legales, feriados legales en conformidad a la ley, y que nada se le adeuda por los conceptos antes indicados ni por ningún otro, sea de origen legal o contractual derivado de la prestación de sus servicios; motivo por el cual, no teniendo reclamo ni cargo alguno que formular en contra del empleador, le otorga el más amplio y total finiquito, declaración que formula libre y espontáneamente, en perfecto y cabal conocimiento de todos y cada uno de sus derechos.<br>
+    Para constancia firman las partes el presente finiquito en dos ejemplares, quedando uno en poder del empleador y el otro en poder del trabajador.
+  </div>
+
+  <div class="doc-firmas">
+    <div class="doc-firma-box">
+      <div class="doc-firma-line"></div>
+      <div class="doc-firma-label"><strong>EMPLEADOR</strong><br>${emp.nombre}<br>RUT: ${emp.rut}</div>
+    </div>
+    <div class="doc-firma-box">
+      <div class="doc-firma-line"></div>
+      <div class="doc-firma-label"><strong>TRABAJADOR(A)</strong><br>${a.nombre||'_______________'}<br>RUT: ${a.rut||'__________'}</div>
+    </div>
+  </div>
+  <div style="margin-top:20px;font-size:9pt;color:#666;border-top:1px solid #ddd;padding-top:10px">
+    * Este finiquito debe ser ratificado ante Inspección del Trabajo, Notaría, Oficial del Registro Civil o Secretario Municipal para tener mérito ejecutivo (Ley Nº 20.684).
+  </div>`;
+}
+
+function _calcularConceptosFiniquito(){
+  const a=A();
+  _finConceptos=[];
+  // Obtener última liquidación del historial
+  const ultima=_histRows.find(h=>h.asesora_id===a.id||h.nombre===a.nombre);
+  const sueldo=ultima?.sueldo_base||a.sueldo_base||539000;
+
+  // Calcular vacaciones proporcionales pendientes
+  const hoy=new Date();
+  const ingreso=a.fecha_ingreso?new Date(a.fecha_ingreso+'T12:00'):null;
+  if(ingreso){
+    let mesesCompletos=0;
+    let d=new Date(ingreso);
+    while(true){const n=new Date(d);n.setMonth(n.getMonth()+1);if(n>hoy)break;d=n;mesesCompletos++;}
+    const diasPorAnio=15;
+    const diasPorMes=diasPorAnio/12;
+    const diasVac=Math.floor(diasPorMes*(mesesCompletos%12));
+    if(diasVac>0) _finConceptos.push({concepto:`Vacaciones proporcionales (${diasVac} días hábiles)`,monto:Math.round((sueldo/30)*diasVac)});
+  }
+
+  // Mes en curso proporcional si hay días trabajados
+  _finConceptos.push({concepto:'Remuneración proporcional mes en curso',monto:ultima?.liquido||sueldo});
+  // Indemnización si corresponde
+  _finConceptos.push({concepto:'Indemnización a todo evento (AFP — ver planillas)',monto:0});
+}
+
+function renderFinConceptos(){
+  const div=document.getElementById('fin-conceptos');
+  if(!div)return;
+  div.innerHTML=_finConceptos.map((c,i)=>`
+    <div class="fin-concepto-row">
+      <input type="text" value="${c.concepto}" placeholder="Concepto" oninput="_finConceptos[${i}].concepto=this.value;generarFiniquito()">
+      <input type="number" value="${c.monto}" placeholder="Monto $" style="max-width:140px" oninput="_finConceptos[${i}].monto=+this.value;actualizarTotalFin()">
+      <button class="btn-rm" onclick="_finConceptos.splice(${i},1);generarFiniquito()">✕</button>
+    </div>`).join('');
+}
+
+function actualizarTotalFin(){
+  const total=_finConceptos.reduce((s,c)=>s+(+c.monto||0),0);
+  const el=document.getElementById('fin-total');
+  if(el)el.textContent=fmt(total);
+  // Actualizar tabla en preview
+  const tablas=document.querySelectorAll('#finiquito-preview .doc-tabla tr:not(:first-child):not(.doc-total-row)');
+  _finConceptos.forEach((c,i)=>{if(tablas[i])tablas[i].cells[1].textContent=fmt(+c.monto||0);});
+  const totalRow=document.querySelector('#finiquito-preview .doc-total-row td:last-child');
+  if(totalRow)totalRow.innerHTML=`<strong>${fmt(total)}</strong>`;
+}
+
+function agregarConceptoFin(){
+  _finConceptos.push({concepto:'',monto:0});
+  generarFiniquito();
+}
+
+function numeroEnLetras(n){
+  if(!n||n===0)return 'CERO PESOS';
+  const millones=Math.floor(n/1000000);
+  const miles=Math.floor((n%1000000)/1000);
+  const resto=n%1000;
+  let res='';
+  if(millones>0)res+=millones+' millón'+(millones>1?'es':'')+' ';
+  if(miles>0)res+=miles+' mil ';
+  if(resto>0)res+=resto;
+  return (res.trim()+' pesos').toUpperCase();
+}
+
+// ── IMPRIMIR DOC ──────────────────────
+function imprimirDoc(previewId){
+  const el=document.getElementById(previewId);
+  if(!el)return;
+  const w=window.open('','_blank','width=800,height=900');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>
+      body{font-family:'Times New Roman',serif;font-size:11pt;line-height:1.7;color:#111;padding:2cm;max-width:21cm;margin:0 auto}
+      h2{text-align:center;font-size:14pt;text-decoration:underline}
+      h3{text-align:center;font-size:12pt}
+      .doc-clausula{margin-bottom:14px;text-align:justify}
+      .doc-firmas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:50px}
+      .doc-firma-box{text-align:center}
+      .doc-firma-line{border-bottom:1px solid #333;margin-bottom:6px;height:48px}
+      .doc-firma-label{font-size:9.5pt}
+      table{width:100%;border-collapse:collapse;margin:14px 0}
+      th{background:#f0f0f0;padding:6px 10px;border:1px solid #ccc;text-align:left}
+      td{padding:6px 10px;border:1px solid #ccc}
+      td:last-child{text-align:right}
+      [contenteditable]{border:none!important}
+      @media print{button{display:none}}
+    </style>
+  </head><body>${el.innerHTML}<script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
+}
+
+// ── COMPARTIR DOC WA ──────────────────
+async function compartirDocWA(previewId,titulo){
+  const el=document.getElementById(previewId);
+  if(!el){toast('Genera el documento primero','err');return;}
+  const btn=event.currentTarget;
+  const orig=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='⏳ Generando…';
+  try{
+    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#fff',logging:false});
+    const{jsPDF}=window.jspdf;
+    const imgData=canvas.toDataURL('image/jpeg',.92);
+    const pdfW=210,pdfH=(canvas.height*pdfW)/canvas.width;
+    const pdf=new jsPDF({unit:'mm',format:'a4'});
+    pdf.addImage(imgData,'JPEG',0,0,pdfW,Math.min(pdfH,297));
+    const a=A();
+    const fileName=`${titulo}_${(a.nombre||'').replace(/\s+/g,'_')}.pdf`;
+    const blob=pdf.output('blob');
+    if(navigator.share&&navigator.canShare){
+      const file=new File([blob],fileName,{type:'application/pdf'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({title:titulo,files:[file]});
+        toast('✅ PDF compartido');
+        btn.disabled=false;btn.innerHTML=orig;return;
+      }
+    }
+    pdf.save(fileName);
+    toast('📎 PDF descargado — adjúntalo en WhatsApp');
+  }catch(err){toast('Error: '+err.message,'err');}
+  btn.disabled=false;btn.innerHTML=orig;
+}
+
+// Actualizar tab documentos cuando cambia asesora
+const _origActualizarUIAsesora=actualizarUIAsesora;
+function actualizarUIAsesora(){
+  _origActualizarUIAsesora();
+  _finConceptos=[];// reset al cambiar asesora
+  const docVisible=document.getElementById('tab-documentos')?.classList.contains('active');
+  if(docVisible&&asesoraActiva){
+    const vis=['contrato','aviso','finiquito'].find(t=>document.getElementById('doc-'+t)?.style.display!=='none');
+    if(vis)mostrarDoc(vis);
+  }
+}
+
 init();
 </script>
 </body>
