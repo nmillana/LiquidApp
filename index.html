@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Remuneraciones · Casa Particular</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --cream:#F0F4F0; --warm:#E8F0E8; --dark:#0f172a; --muted:#64748b;
@@ -590,11 +592,12 @@ textarea{resize:vertical;min-height:64px}
     <div id="print-content"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="cerrarModal()">Cerrar</button>
+      <button class="btn btn-ghost" onclick="descargarPDF()" style="color:var(--accent);border-color:var(--accent)">⬇️ Descargar PDF</button>
       <button class="btn btn-success" onclick="compartirWhatsApp()" style="background:#25D366;box-shadow:0 2px 8px rgba(37,211,102,.35)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-        Compartir por WhatsApp
+        WhatsApp
       </button>
-      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / PDF</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
     </div>
   </div>
 </div>
@@ -1385,30 +1388,102 @@ function imprimirLiq(){
 }
 function cerrarModal(){document.getElementById('modal-print').style.display='none';}
 
-function compartirWhatsApp(){
+async function compartirWhatsApp(){
   const d=window._liqData;
   if(!d){toast('Genera la liquidación primero','err');return;}
-  const msg=`📋 *LIQUIDACIÓN DE SUELDO*
-🗓 Período: ${nomMes(d.periodo)}
-👤 Trabajadora: ${d.nombre}
-🪪 RUT: ${d.rut}
 
-💰 *Haberes*
-• Sueldo base: ${fmt(d.sueldo)}${d.movilizacion>0?`\n• Movilización: ${fmt(d.movilizacion)}`:''}${d.colacion>0?`\n• Colación: ${fmt(d.colacion)}`:''}${d.horasExtra>0?`\n• Horas extra: ${fmt(d.horasExtra)}`:''}${d.bono>0?`\n• Bono: ${fmt(d.bono)}`:''}
+  // Botón de estado
+  const btn=document.querySelector('[onclick="compartirWhatsApp()"]');
+  const txtOriginal=btn.innerHTML;
+  btn.disabled=true;
+  btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Generando PDF…`;
 
-📤 *Descuentos*
-• AFP ${d.afpNombre}: -${fmt(d.descAfp)}
-• FONASA 7%: -${fmt(d.descSalud)}${d.descAdicional>0?`\n• Desc. adicional: -${fmt(d.descAdicional)}`:''}
+  try{
+    // Capturar solo el documento de liquidación (sin botones ni costos empleador)
+    const nodo=document.getElementById('liq-doc');
+    if(!nodo)throw new Error('No se encontró el documento');
 
-✅ *LÍQUIDO A PAGAR: ${fmt(d.liquido)}*
+    // Ocultar temporalmente emp-costs para la captura
+    const empCosts=nodo.querySelector('.emp-costs');
+    if(empCosts)empCosts.style.display='none';
 
-_Yo, ${d.nombre}, RUT ${d.rut}, declaro haber recibido conforme el saldo indicado y no tengo cargo ni cobro posterior que hacer._`;
-  const url='https://wa.me/?text='+encodeURIComponent(msg);
-  window.open(url,'_blank');
+    const canvas=await html2canvas(nodo,{
+      scale:2,
+      useCORS:true,
+      backgroundColor:'#ffffff',
+      logging:false,
+      windowWidth:720
+    });
+
+    if(empCosts)empCosts.style.display='';
+
+    // Crear PDF con jsPDF
+    const{jsPDF}=window.jspdf;
+    const imgData=canvas.toDataURL('image/jpeg',0.92);
+    const pdfW=210; // A4 ancho mm
+    const pdfH=(canvas.height*pdfW)/canvas.width;
+    const pdf=new jsPDF({orientation:pdfH>297?'portrait':'portrait',unit:'mm',format:'a4'});
+
+    // Si la imagen es más alta que A4, ajustar
+    const maxH=297;
+    const finalH=Math.min(pdfH,maxH);
+    const marginX=0;
+    pdf.addImage(imgData,'JPEG',marginX,0,pdfW,pdfH>maxH?maxH:pdfH);
+
+    const fileName=`Liquidacion_${d.nombre.replace(/\s+/g,'_')}_${d.periodo}.pdf`;
+    const pdfBlob=pdf.output('blob');
+
+    // Intentar Web Share API (funciona en móvil — abre WhatsApp, Mail, etc.)
+    if(navigator.share&&navigator.canShare){
+      const file=new File([pdfBlob],fileName,{type:'application/pdf'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({
+          title:`Liquidación ${nomMes(d.periodo)} — ${d.nombre}`,
+          text:`Adjunto liquidación de sueldo ${nomMes(d.periodo)}`,
+          files:[file]
+        });
+        toast('✅ PDF compartido');
+        btn.disabled=false;btn.innerHTML=txtOriginal;
+        return;
+      }
+    }
+
+    // Fallback: descargar PDF + abrir WhatsApp con mensaje
+    pdf.save(fileName);
+    setTimeout(()=>{
+      const msg=`Hola, te envío la liquidación de sueldo de ${d.nombre} correspondiente a ${nomMes(d.periodo)}. Adjunto el archivo PDF.`;
+      window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+      toast('📎 PDF descargado. Adjúntalo en WhatsApp');
+    },600);
+
+  }catch(e){
+    toast('Error al generar PDF: '+e.message,'err');
+    console.error(e);
+  }
+
+  btn.disabled=false;btn.innerHTML=txtOriginal;
+}
+
+async function descargarPDF(){
+  const d=window._liqData;
+  if(!d){toast('Genera la liquidación primero','err');return;}
+  const nodo=document.getElementById('liq-doc');
+  if(!nodo){toast('No se encontró el documento','err');return;}
+  const empCosts=nodo.querySelector('.emp-costs');
+  if(empCosts)empCosts.style.display='none';
+  const canvas=await html2canvas(nodo,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:720});
+  if(empCosts)empCosts.style.display='';
+  const{jsPDF}=window.jspdf;
+  const imgData=canvas.toDataURL('image/jpeg',0.92);
+  const pdfW=210;
+  const pdfH=(canvas.height*pdfW)/canvas.width;
+  const pdf=new jsPDF({unit:'mm',format:'a4'});
+  pdf.addImage(imgData,'JPEG',0,0,pdfW,Math.min(pdfH,297));
+  pdf.save(`Liquidacion_${d.nombre.replace(/\s+/g,'_')}_${d.periodo}.pdf`);
+  toast('✅ PDF descargado');
 }
 
 // ══════════════════════════════════════
-// HISTORIAL
 // ══════════════════════════════════════
 async function cargarHistorial(){
   try{const rows=await db.get('liquidaciones','limit=100');_histRows=rows||[];localStorage.setItem('hist_liq',JSON.stringify(_histRows));}
