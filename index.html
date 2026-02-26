@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Remuneraciones · Casa Particular</title>
-  <link rel="icon" type="image/png" href="https://CH4RL13-SC.github.io/AsesoraHogar/Logo_Cuentas_Claras.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -420,12 +419,13 @@ textarea{resize:vertical;min-height:64px}
 <body>
 
 <!-- AUTH OVERLAY -->
-<div class="auth-logo">
-    <img src="https://CH4RL13-SC.github.io/AsesoraHogar/Logo_Cuentas_Claras.png" 
-         alt="Logo" style="width: 80px; margin-bottom: 10px; border-radius: 10px;">
-    <h2>Remuneraciones</h2>
-    <p>Casa Particular · Chile 2026</p>
-</div>
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <span class="ic">🏠</span>
+      <h2>Remuneraciones</h2>
+      <p>Casa Particular · Chile 2026</p>
+    </div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">Ingresar</button>
       <button class="auth-tab" onclick="switchAuthTab('register')">Registrarse</button>
@@ -447,17 +447,10 @@ textarea{resize:vertical;min-height:64px}
 </div>
 
 <div class="app-header">
-  <div style="display: flex; align-items: center; gap: 15px;">
-    <img src="https://CH4RL13-SC.github.io/AsesoraHogar/Logo_Cuentas_Claras.png" 
-     alt="Logo Cuentas Claras" 
-     style="height: 45px; width: auto; background: white; padding: 4px; border-radius: 8px;">
-    
-    <div>
-      <h1 style="display: inline; vertical-align: middle;">Remuneraciones Casa Particular</h1>
-      <small>Sistema de liquidaciones Asesora del Hogar· Chile 2026</small>
-    </div>
+  <div>
+    <h1><span class="logo-pill">🏠</span> Remuneraciones Casa Particular</h1>
+    <small>Sistema de liquidaciones · Chile 2026</small>
   </div>
-  
   <span class="db-pill db-loading" id="db-status">● Conectando…</span>
   <div class="user-bar">
     <span class="user-pill" id="user-pill">—</span>
