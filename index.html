@@ -221,10 +221,12 @@ textarea{resize:vertical;min-height:64px}
 
 /* ─── PRINT ─── */
 @media print{
-  .tabs-desktop,.tabs-mobile,.app-header,.worker-bar,.btn,.no-print,.modal-actions,.toast,.emp-costs{display:none!important}
-  .tab-content{display:block!important;padding:0}
-  .liq-wrap{border:none;box-shadow:none}
-  body,.liq-top,.liq-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body > *{display:none!important}
+  #modal-print{display:block!important;position:static!important;background:none!important;padding:0!important}
+  .modal-box{box-shadow:none!important;border-radius:0!important;max-width:100%!important}
+  .modal-actions{display:none!important}
+  .emp-costs,.no-print{display:none!important}
+  body,.liq-top,.liq-hero,.liq-summary{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 
 /* ─── RESPONSIVE ─── */
@@ -499,6 +501,10 @@ textarea{resize:vertical;min-height:64px}
     <div id="print-content"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="cerrarModal()">Cerrar</button>
+      <button class="btn btn-success" onclick="compartirWhatsApp()" style="background:#25D366;box-shadow:0 2px 8px rgba(37,211,102,.35)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Compartir por WhatsApp
+      </button>
       <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / PDF</button>
     </div>
   </div>
@@ -960,6 +966,28 @@ function imprimirLiq(){
   document.getElementById('modal-print').style.display='block';
 }
 function cerrarModal(){document.getElementById('modal-print').style.display='none';}
+
+function compartirWhatsApp(){
+  const d=window._liqData;
+  if(!d){toast('Genera la liquidación primero','err');return;}
+  const msg=`📋 *LIQUIDACIÓN DE SUELDO*
+🗓 Período: ${nomMes(d.periodo)}
+👤 Trabajadora: ${d.nombre}
+🪪 RUT: ${d.rut}
+
+💰 *Haberes*
+• Sueldo base: ${fmt(d.sueldo)}${d.movilizacion>0?`\n• Movilización: ${fmt(d.movilizacion)}`:''}${d.colacion>0?`\n• Colación: ${fmt(d.colacion)}`:''}${d.horasExtra>0?`\n• Horas extra: ${fmt(d.horasExtra)}`:''}${d.bono>0?`\n• Bono: ${fmt(d.bono)}`:''}
+
+📤 *Descuentos*
+• AFP ${d.afpNombre}: -${fmt(d.descAfp)}
+• FONASA 7%: -${fmt(d.descSalud)}${d.descAdicional>0?`\n• Desc. adicional: -${fmt(d.descAdicional)}`:''}
+
+✅ *LÍQUIDO A PAGAR: ${fmt(d.liquido)}*
+
+_Yo, ${d.nombre}, RUT ${d.rut}, declaro haber recibido conforme el saldo indicado y no tengo cargo ni cobro posterior que hacer._`;
+  const url='https://wa.me/?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+}
 
 // ══════════════════════════════════════
 // HISTORIAL
