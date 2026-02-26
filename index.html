@@ -65,8 +65,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(
 /* ─── WORKER BAR ─── */
 .worker-bar{background:var(--wood-light);border-bottom:1px solid var(--wood-mid);padding:9px 20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .worker-bar label{font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-.worker-bar select{border:1px solid var(--wood-mid);border-radius:8px;padding:6px 10px;font-family:'Inter',sans-serif;font-size:.85rem;background:#fff;color:var(--dark);flex:1;max-width:260px}
+.worker-bar select{border:1px solid var(--wood-mid);border-radius:8px;padding:6px 10px;font-family:'Inter',sans-serif;font-size:.85rem;background:#fff;color:var(--dark);flex:1;min-width:0;max-width:260px}
 .worker-bar select:focus{outline:none;border-color:var(--accent)}
+.worker-bar-btns{display:flex;gap:7px;flex-shrink:0}
 
 /* ─── TABS — DESKTOP ─── */
 .tabs-desktop{background:#fff;border-bottom:2px solid var(--border);display:flex;padding:0 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--nav-h);z-index:90}
@@ -267,17 +268,120 @@ textarea{resize:vertical;min-height:64px}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:640px){
+  /* ── Layout base ── */
   .tabs-desktop{display:none}
   .tabs-mobile{display:block}
-  .tab-content{padding:14px;padding-bottom:90px}
-  .form-row,.form-row.three,.form-row.four,.dias-grid,.resumen-dias,.vac-stats{grid-template-columns:1fr}
-  .liq-firmas{padding:16px}
-  .firma-grid{grid-template-columns:1fr}
-  .liq-top-grid{grid-template-columns:1fr 1fr}
-  .liq-hero{flex-direction:column;text-align:center}
-  .liq-hero-right{text-align:center;flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .tab-content{padding:12px;padding-bottom:90px}
+
+  /* ── Header ── */
+  .app-header{padding:10px 14px;gap:8px}
+  .app-header h1{font-size:.95rem}
+  .app-header h1 small{display:none}
+  .logo-pill{padding:2px 7px;font-size:.85rem}
+  .db-pill{font-size:.62rem;padding:2px 8px}
+  .user-bar{gap:5px}
+  .user-pill{max-width:130px;font-size:.65rem;padding:3px 8px}
+  .user-bar .btn{padding:4px 8px;font-size:.68rem}
+
+  /* ── Worker bar ── */
+  .worker-bar{padding:8px 12px;gap:7px}
+  .worker-bar label{display:none}
+  .worker-bar select{max-width:100%;min-width:0;flex:1}
+  .worker-bar-btns .btn{padding:6px 10px;font-size:.75rem}
+
+  /* ── Cards ── */
+  .card{padding:14px;border-radius:12px}
+  .card-title{font-size:.88rem}
+
+  /* ── Forms ── */
+  .form-row,.form-row.three,.form-row.four{grid-template-columns:1fr}
+  .form-group.full{grid-column:1}
+
+  /* ── Liquidación — header ── */
+  .liq-top{padding:14px 16px}
+  .liq-nombre{font-size:1rem}
+  .liq-top-grid{grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .liq-top-item .val{font-size:.83rem}
+  .liq-top-item .lbl{font-size:.6rem}
+
+  /* ── Liquidación — hero ── */
+  .liq-hero{flex-direction:column;padding:16px;gap:10px;text-align:center}
+  .liq-hero-left .monto{font-size:1.8rem}
+  .liq-hero-right{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:6px}
+  .liq-hero-chip{font-size:.72rem;padding:3px 10px}
+
+  /* ── Liquidación — secciones ── */
+  .liq-section{padding:12px 14px}
+  .liq-section-hdr h4{font-size:.78rem}
+  .liq-section-hdr .subtotal{font-size:.82rem}
+  .liq-item-name{font-size:.8rem}
+  .liq-item-note{font-size:.68rem}
+  .liq-item-amt{font-size:.82rem}
+
+  /* ── Liquidación — summary ── */
+  .liq-summary{padding:12px 14px}
+  .liq-sum-row{font-size:.8rem}
+  .liq-sum-row.final{font-size:1rem}
+  .liq-sum-row.final span:last-child{font-size:1.1rem}
+
+  /* ── Liquidación — firmas ── */
+  .liq-firmas{padding:14px 16px}
+  .firma-declaracion{font-size:.76rem}
+  .firma-grid{grid-template-columns:1fr;gap:16px}
+
+  /* ── Calculadora días ── */
+  .dias-grid{grid-template-columns:1fr}
+  .resumen-dias{grid-template-columns:repeat(3,1fr)}
+  .dias-big{font-size:2.4rem}
+  .esc-btns{gap:5px}
+
+  /* ── Vacaciones ── */
+  .vac-stats{grid-template-columns:repeat(3,1fr)}
+  .vac-stat .vv{font-size:1.2rem}
+
+  /* ── Historial ── */
   .hist-filters{flex-direction:column}
-  .toast{bottom:90px}
+  .hist-item{padding:10px 12px}
+  .hist-mes{font-size:.82rem}
+  .hist-net{font-size:.88rem}
+
+  /* ── Admin ── */
+  #tab-admin .admin-grid{grid-template-columns:1fr 1fr}
+
+  /* ── Modal ── */
+  .modal-overlay{padding:0}
+  .modal-box{border-radius:0;min-height:100dvh;display:flex;flex-direction:column}
+  #print-content{flex:1;overflow-y:auto}
+  .modal-actions{flex-wrap:wrap;gap:6px;padding:10px 12px}
+  .modal-actions .btn{flex:1;min-width:calc(50% - 6px);justify-content:center;font-size:.75rem;padding:9px 8px}
+
+  /* ── Toast ── */
+  .toast{bottom:90px;left:12px;right:12px;max-width:100%}
+
+  /* ── Auth ── */
+  .auth-box{padding:24px 20px;border-radius:16px}
+
+  /* ── Perfil mini ── */
+  .perfil-mini{padding:10px 12px;gap:10px}
+  .perfil-mini h3{font-size:.88rem}
+  .perfil-mini p{font-size:.7rem}
+
+  /* ── Asesor cards ── */
+  .asesor-card{flex-wrap:wrap;gap:8px}
+  .asesor-actions{flex-wrap:wrap}
+
+  /* ── Inputs touch-friendly ── */
+  input,select,textarea{padding:11px 12px;font-size:16px!important} /* 16px evita zoom en iOS */
+  .btn{min-height:42px}
+  .btn-sm{min-height:36px}
+
+  /* ── Section header wrap ── */
+  .liq-section-hdr{flex-wrap:wrap;gap:6px}
+  .liq-section-hdr .subtotal{margin-left:auto}
+
+  /* ── Emp costs ── */
+  .emp-costs{padding:12px}
+  .cost-row{font-size:.75rem}
 }
 @media(min-width:641px){
   .tabs-desktop{display:flex}
@@ -333,8 +437,10 @@ textarea{resize:vertical;min-height:64px}
   <select id="selector-asesora" onchange="cambiarAsesora(this.value)">
     <option value="">— Selecciona —</option>
   </select>
-  <button class="btn btn-ghost btn-sm" onclick="showTab('asesoras')">👥 Gestionar</button>
-  <button class="btn btn-primary btn-sm" onclick="nuevaAsesora()">+ Nueva</button>
+  <div class="worker-bar-btns">
+    <button class="btn btn-ghost btn-sm" onclick="showTab('asesoras')">👥 Gestionar</button>
+    <button class="btn btn-primary btn-sm" onclick="nuevaAsesora()">+ Nueva</button>
+  </div>
 </div>
 
 <!-- TABS ESCRITORIO -->
