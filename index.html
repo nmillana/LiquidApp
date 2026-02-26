@@ -3,272 +3,315 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liquidación Asesora del Hogar</title>
+<title>Remuneraciones · Casa Particular</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream:#F0F4F0;
-    --warm:#E8F0E8;
-    --dark:#0f172a;
-    --muted:#64748b;
-    --accent:#059669;
-    --accent-hover:#047857;
-    --amber:#F59E0B;
-    --amber-hover:#D97706;
-    --border:#D1E4D1;
-    --card:#FFFFFF;
-    --success:#059669;
-    --danger:#ef4444;
-    --info:#0ea5e9;
-    --wood-light:#F5EFE6;
-    --wood-mid:#E8DCCF;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
+:root {
+  --cream:#F0F4F0; --warm:#E8F0E8; --dark:#0f172a; --muted:#64748b;
+  --accent:#059669; --accent-hover:#047857; --amber:#F59E0B; --amber-hover:#D97706;
+  --border:#D1E4D1; --card:#FFFFFF; --success:#059669; --danger:#ef4444; --info:#0ea5e9;
+  --wood-light:#F5EFE6; --wood-mid:#E8DCCF;
+  --nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
 
-  /* HEADER */
-  .app-header{background:linear-gradient(135deg,#064e3b 0%,#065f46 60%,#047857 100%);color:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(5,150,105,0.25)}
-  .app-header h1{font-size:1.25rem;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px}
-  .app-header h1 .logo-icon{background:rgba(255,255,255,0.15);border-radius:8px;padding:4px 8px;font-size:1rem}
-  .app-header small{font-size:0.67rem;opacity:0.6;display:block;margin-top:2px;font-weight:400}
-  .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .db-status{font-size:0.7rem;padding:4px 12px;border-radius:20px;font-weight:700;white-space:nowrap;letter-spacing:0.3px}
-  .db-ok{background:rgba(255,255,255,0.15);color:#a7f3d0;border:1px solid rgba(167,243,208,0.3)}
-  .db-err{background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.3)}
-  .db-loading{background:rgba(255,255,255,0.1);color:#fde68a;border:1px solid rgba(253,230,138,0.3)}
+/* ─── HEADER ─── */
+.app-header{background:linear-gradient(135deg,#064e3b,#065f46 60%,#047857);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(5,150,105,.25);position:sticky;top:0;z-index:100}
+.app-header h1{font-size:1.1rem;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.logo-pill{background:rgba(255,255,255,.18);border-radius:8px;padding:3px 9px;font-size:.95rem}
+.app-header small{font-size:.64rem;opacity:.55;display:block;margin-top:1px}
+.db-pill{font-size:.68rem;padding:3px 10px;border-radius:20px;font-weight:700;white-space:nowrap}
+.db-ok{background:rgba(255,255,255,.15);color:#a7f3d0;border:1px solid rgba(167,243,208,.3)}
+.db-err{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.db-loading{background:rgba(255,255,255,.1);color:#fde68a;border:1px solid rgba(253,230,138,.3)}
 
-  /* WORKER SELECTOR */
-  .worker-bar{background:var(--wood-light);border-bottom:1px solid var(--wood-mid);padding:10px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .worker-bar label{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
-  .worker-bar select{border:1px solid var(--wood-mid);border-radius:8px;padding:7px 11px;font-family:'Inter',sans-serif;font-size:0.86rem;background:#fff;color:var(--dark);max-width:280px}
-  .worker-bar select:focus{outline:none;border-color:var(--accent)}
+/* ─── WORKER BAR ─── */
+.worker-bar{background:var(--wood-light);border-bottom:1px solid var(--wood-mid);padding:9px 20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.worker-bar label{font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.worker-bar select{border:1px solid var(--wood-mid);border-radius:8px;padding:6px 10px;font-family:'Inter',sans-serif;font-size:.85rem;background:#fff;color:var(--dark);flex:1;max-width:260px}
+.worker-bar select:focus{outline:none;border-color:var(--accent)}
 
-  /* TABS */
-  .tabs{background:#fff;border-bottom:2px solid var(--border);display:flex;padding:0 20px;overflow-x:auto;gap:2px}
-  .tab-btn{padding:12px 16px;border:none;background:none;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all 0.2s;border-radius:6px 6px 0 0}
-  .tab-btn:hover{color:var(--accent);background:var(--warm)}
-  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;background:var(--warm)}
+/* ─── TABS — DESKTOP ─── */
+.tabs-desktop{background:#fff;border-bottom:2px solid var(--border);display:flex;padding:0 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--nav-h);z-index:90}
+.tabs-desktop::-webkit-scrollbar{display:none}
+.tab-btn{padding:12px 15px;border:none;background:none;font-family:'Inter',sans-serif;font-size:.79rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;border-radius:6px 6px 0 0}
+.tab-btn:hover{color:var(--accent);background:var(--warm)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;background:var(--warm)}
 
-  /* CONTENT */
-  .tab-content{display:none;padding:22px 28px;max-width:980px;margin:0 auto}
-  .tab-content.active{display:block}
+/* ─── TABS — MÓVIL: barra inferior ─── */
+.tabs-mobile{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--border);z-index:200;box-shadow:0 -2px 16px rgba(0,0,0,.1)}
+.tabs-mobile-inner{display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs-mobile-inner::-webkit-scrollbar{display:none}
+.tab-mob-btn{flex:1;min-width:64px;padding:6px 4px 8px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:'Inter',sans-serif;color:var(--muted);transition:all .2s;position:relative}
+.tab-mob-btn .icon{font-size:1.25rem;line-height:1}
+.tab-mob-btn .label{font-size:.58rem;font-weight:600;white-space:nowrap;letter-spacing:.2px}
+.tab-mob-btn.active{color:var(--accent)}
+.tab-mob-btn.active::after{content:'';position:absolute;top:0;left:10%;right:10%;height:2.5px;background:var(--accent);border-radius:0 0 3px 3px}
 
-  /* CARDS */
-  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(5,150,105,0.06)}
-  .card-title{font-size:0.95rem;font-weight:700;margin-bottom:14px;color:var(--dark);border-bottom:2px solid var(--warm);padding-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:8px;letter-spacing:-0.1px}
+/* ─── CONTENT ─── */
+.tab-content{display:none;padding:20px;max-width:980px;margin:0 auto;padding-bottom:80px}
+.tab-content.active{display:block}
 
-  /* FORMS */
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-  .form-row.three{grid-template-columns:1fr 1fr 1fr}
-  .form-row.four{grid-template-columns:1fr 1fr 1fr 1fr}
-  .form-group{display:flex;flex-direction:column;gap:5px}
-  .form-group.full{grid-column:1/-1}
-  label{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
-  input,select,textarea{border:1.5px solid var(--border);border-radius:9px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:0.86rem;background:#fff;color:var(--dark);transition:all 0.2s;width:100%}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(5,150,105,0.1)}
-  input[readonly]{background:var(--warm);color:var(--muted);border-color:var(--border)}
-  textarea{resize:vertical;min-height:66px}
+/* ─── CARDS ─── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(5,150,105,.06)}
+.card-title{font-size:.93rem;font-weight:700;margin-bottom:14px;color:var(--dark);border-bottom:2px solid var(--warm);padding-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 
-  /* BUTTONS */
-  .btn{padding:9px 17px;border:none;border-radius:9px;font-family:'Inter',sans-serif;font-weight:600;font-size:0.82rem;cursor:pointer;transition:all 0.18s;display:inline-flex;align-items:center;gap:6px;letter-spacing:-0.1px}
-  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(5,150,105,0.3)} .btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(5,150,105,0.35)}
-  .btn-secondary{background:var(--dark);color:#fff} .btn-secondary:hover{background:#1e293b}
-  .btn-outline{background:transparent;color:var(--accent);border:2px solid var(--accent)} .btn-outline:hover{background:var(--accent);color:#fff}
-  .btn-success{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(5,150,105,0.25)} .btn-success:hover{background:var(--accent-hover)}
-  .btn-amber{background:var(--amber);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,0.3)} .btn-amber:hover{background:var(--amber-hover)}
-  .btn-ghost{background:var(--warm);color:var(--dark);border:1.5px solid var(--border)} .btn-ghost:hover{background:var(--border)}
-  .btn-sm{padding:6px 12px;font-size:0.76rem}
-  .btn-danger-sm{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;padding:4px 9px;font-size:0.72rem;cursor:pointer;font-weight:600}
+/* ─── FORMS ─── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.form-row.three{grid-template-columns:1fr 1fr 1fr}
+.form-row.four{grid-template-columns:1fr 1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.71rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{border:1.5px solid var(--border);border-radius:9px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:.86rem;background:#fff;color:var(--dark);transition:all .2s;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(5,150,105,.1)}
+input[readonly]{background:var(--warm);color:var(--muted);border-color:var(--border)}
+textarea{resize:vertical;min-height:64px}
 
-  /* ASESORAS LIST */
-  .asesor-card{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;background:#fff}
-  .asesor-card:hover{border-color:var(--accent);background:#f0fdf4;box-shadow:0 2px 10px rgba(5,150,105,0.1)}
-  .asesor-card.selected{border-color:var(--accent);border-width:2px;background:#f0fdf4}
-  .asesor-avatar{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#047857);color:#fff;font-size:1.15rem;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;box-shadow:0 2px 8px rgba(5,150,105,0.3)}
-  .asesor-avatar.color2{background:linear-gradient(135deg,#0ea5e9,#0284c7)} .asesor-avatar.color3{background:linear-gradient(135deg,#8b5cf6,#7c3aed)} .asesor-avatar.color4{background:linear-gradient(135deg,#f59e0b,#d97706)}
-  .asesor-info{flex:1}
-  .asesor-info strong{font-size:0.91rem;font-weight:700}
-  .asesor-info p{font-size:0.75rem;color:var(--muted);margin-top:2px}
-  .asesor-actions{display:flex;gap:6px;align-items:center}
-  .badge{display:inline-block;background:var(--accent);color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;letter-spacing:0.3px}
-  .badge-sel{background:var(--amber)}
+/* ─── BUTTONS ─── */
+.btn{padding:9px 16px;border:none;border-radius:9px;font-family:'Inter',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(5,150,105,.3)} .btn-primary:hover{background:var(--accent-hover)}
+.btn-outline{background:transparent;color:var(--accent);border:2px solid var(--accent)} .btn-outline:hover{background:var(--accent);color:#fff}
+.btn-success{background:var(--accent);color:#fff} .btn-success:hover{background:var(--accent-hover)}
+.btn-amber{background:var(--amber);color:#fff} .btn-amber:hover{background:var(--amber-hover)}
+.btn-ghost{background:var(--warm);color:var(--dark);border:1.5px solid var(--border)} .btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:6px 12px;font-size:.75rem}
+.btn-danger-sm{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;padding:4px 9px;font-size:.72rem;cursor:pointer;font-weight:600}
 
-  /* PERFIL MINI */
-  .perfil-mini{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #bbf7d0;border-radius:12px;padding:13px 16px;margin-bottom:14px}
-  .perfil-mini h3{font-size:0.97rem;font-weight:700;color:var(--dark)}
-  .perfil-mini p{font-size:0.75rem;color:var(--muted);margin-top:3px}
+/* ─── ASESORAS ─── */
+.asesor-card{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:9px;transition:all .2s;background:#fff}
+.asesor-card:hover{border-color:var(--accent);background:#f0fdf4}
+.asesor-card.selected{border-color:var(--accent);border-width:2px;background:#f0fdf4}
+.av{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#047857);color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.av.c2{background:linear-gradient(135deg,#0ea5e9,#0284c7)} .av.c3{background:linear-gradient(135deg,#8b5cf6,#7c3aed)} .av.c4{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.badge{display:inline-block;background:var(--accent);color:#fff;font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:5px;vertical-align:middle}
+.badge-amber{background:var(--amber)}
 
-  /* LIQUIDACION */
-  .liq-preview{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(5,150,105,0.08)}
-  .liq-header{background:linear-gradient(135deg,#064e3b 0%,#065f46 60%,#047857 100%);color:#fff;padding:22px 26px;text-align:center}
-  .liq-header h2{font-size:1.1rem;font-weight:800;letter-spacing:2px;text-transform:uppercase}
-  .liq-header p{font-size:0.74rem;opacity:0.6;margin-top:5px;font-weight:400}
-  .liq-body{padding:20px 26px}
-  .liq-worker{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--warm)}
-  .liq-worker-info h3{font-size:0.95rem;font-weight:700;color:var(--dark)}
-  .liq-worker-info p{font-size:0.75rem;color:var(--muted);margin-top:3px}
-  .liq-section{margin-bottom:12px}
-  .liq-section-title{font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:6px}
-  .liq-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--warm);font-size:0.84rem}
-  .liq-row:last-child{border-bottom:none}
-  .pos{font-weight:600;color:#059669} .neg{font-weight:600;color:#dc2626}
-  .liq-totals{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1.5px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-top:12px}
-  .liq-total-row{display:flex;justify-content:space-between;padding:5px 0;font-weight:600;font-size:0.86rem}
-  .liq-total-row.final{font-size:1.08rem;color:var(--accent);border-top:2px solid #bbf7d0;padding-top:11px;margin-top:6px;font-weight:800}
-  .liq-footer{padding:18px 26px;border-top:1px solid var(--warm);display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:0.76rem;color:var(--muted);text-align:center}
-  .firma-line{border-top:1.5px solid var(--dark);margin-top:38px;padding-top:7px;font-size:0.7rem}
-  /* Costo empleador — solo pantalla, nunca en impresión */
-  .employer-costs{background:var(--wood-light);border:1.5px solid var(--wood-mid);border-radius:10px;padding:14px;margin-top:12px}
-  .employer-costs h4{font-size:0.71rem;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:9px;font-weight:700}
-  .cost-row{display:flex;justify-content:space-between;padding:4px 0;font-size:0.81rem;border-bottom:1px solid var(--wood-mid)}
-  .cost-row:last-child{border-bottom:none;font-weight:700}
+/* ─── PERFIL MINI ─── */
+.perfil-mini{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #bbf7d0;border-radius:12px;padding:12px 16px;margin-bottom:14px}
+.perfil-mini h3{font-size:.94rem;font-weight:700}
+.perfil-mini p{font-size:.74rem;color:var(--muted);margin-top:2px}
 
-  /* DÍAS TRABAJADOS */
-  .dias-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .dias-result{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;border-radius:14px;padding:20px;text-align:center;margin-bottom:14px;box-shadow:0 4px 16px rgba(5,150,105,0.25)}
-  .dias-big{font-size:3.2rem;font-weight:800;color:#a7f3d0;line-height:1;letter-spacing:-2px}
-  .dias-lbl{font-size:0.75rem;opacity:0.7;margin-top:5px;font-weight:500}
-  .resumen-dias{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-  .resumen-item{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;border-radius:10px;padding:10px;text-align:center}
-  .resumen-item .rv{font-size:1.45rem;font-weight:800;color:var(--accent)}
-  .resumen-item .rl{font-size:0.68rem;color:var(--muted);margin-top:2px;font-weight:500}
-  .ausencia-item{display:flex;align-items:center;gap:8px;background:var(--warm);border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:6px}
-  .ausencia-item .ai{flex:1}
-  .ausencia-item .ai strong{font-size:0.84rem;font-weight:600}
-  .ausencia-item .ai span{font-size:0.71rem;color:var(--muted);display:block;margin-top:2px}
-  .ausencia-item .ad{font-weight:700;color:#dc2626;font-size:0.93rem;min-width:34px;text-align:right}
-  .tipo-badge{display:inline-block;font-size:0.63rem;font-weight:700;padding:1px 7px;border-radius:9px;margin-left:4px}
-  .tipo-injustificada{background:#fef2f2;color:#dc2626} .tipo-justificada{background:#f0fdf4;color:#16a34a}
-  .tipo-licencia{background:#eff6ff;color:#1d4ed8} .tipo-vacaciones{background:#fffbeb;color:#d97706}
-  .tipo-feriado{background:#faf5ff;color:#7c3aed} .tipo-permiso{background:#fff1f2;color:#be185d}
-  .escenario-btns{display:flex;flex-direction:column;gap:7px}
+/* ══════════════════════════════════════
+   LIQUIDACIÓN — DISEÑO CLARO Y EXPLICATIVO
+   ══════════════════════════════════════ */
+.liq-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 4px 20px rgba(5,150,105,.1)}
 
-  /* HISTORIAL */
-  .hist-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
-  .hist-filters select,.hist-filters input{max-width:200px;padding:8px 10px;font-size:0.82rem}
-  .history-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all 0.18s;background:#fff}
-  .history-item:hover{border-color:var(--accent);background:#f0fdf4;box-shadow:0 2px 8px rgba(5,150,105,0.1)}
-  .history-month{font-weight:700;font-size:0.88rem}
-  .history-net{color:var(--accent);font-weight:800;font-size:0.95rem}
+/* Encabezado con datos del trabajador */
+.liq-top{background:linear-gradient(135deg,#064e3b,#065f46 55%,#047857);color:#fff;padding:20px 24px}
+.liq-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.liq-top-item{}
+.liq-top-item .lbl{font-size:.65rem;font-weight:600;opacity:.6;text-transform:uppercase;letter-spacing:.8px}
+.liq-top-item .val{font-size:.92rem;font-weight:700;margin-top:2px}
+.liq-title{font-size:.9rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;opacity:.85;font-size:.75rem}
+.liq-nombre{font-size:1.15rem;font-weight:800;margin-top:4px}
 
-  /* INDICADORES */
-  .ind-table{width:100%;border-collapse:collapse;font-size:0.82rem}
-  .ind-table th{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;padding:9px 11px;text-align:left;font-weight:700;letter-spacing:0.2px}
-  .ind-table td{padding:8px 11px;border-bottom:1px solid var(--warm)}
-  .ind-table tr:hover td{background:#f0fdf4}
-  .hl{font-weight:700;color:var(--accent)}
+/* Bloque líquido — el más importante, arriba y grande */
+.liq-hero{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-bottom:2px solid #a7f3d0;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.liq-hero-left .lbl{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.liq-hero-left .monto{font-size:2.2rem;font-weight:800;color:var(--accent);letter-spacing:-1px;line-height:1.1}
+.liq-hero-left .sub{font-size:.78rem;color:var(--muted);margin-top:4px}
+.liq-hero-right{display:flex;flex-direction:column;gap:6px;text-align:right}
+.liq-hero-chip{background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);border-radius:20px;padding:4px 12px;font-size:.75rem;font-weight:600;color:var(--accent)}
 
-  /* VACACIONES */
-  .vac-box{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1.5px solid #bbf7d0;border-radius:12px;padding:16px;margin-top:12px}
+/* Secciones internas */
+.liq-body{padding:0}
+.liq-section{padding:16px 24px;border-bottom:1px solid var(--warm)}
+.liq-section:last-child{border-bottom:none}
+.liq-section-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.liq-section-hdr .ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.liq-section-hdr .ico.green{background:#dcfce7} .liq-section-hdr .ico.red{background:#fee2e2} .liq-section-hdr .ico.blue{background:#dbeafe}
+.liq-section-hdr h4{font-size:.82rem;font-weight:700;color:var(--dark)}
+.liq-section-hdr .subtotal{margin-left:auto;font-weight:700;font-size:.88rem}
+.liq-section-hdr .subtotal.pos{color:var(--accent)} .liq-section-hdr .subtotal.neg{color:var(--danger)}
 
-  /* CALLOUT */
-  .callout{border-radius:0 10px 10px 0;padding:11px 14px;font-size:0.81rem;margin-bottom:14px;line-height:1.5;font-weight:500}
-  .callout.info{background:#f0fdf4;border-left:4px solid var(--accent)}
-  .callout.warn{background:#fffbeb;border-left:4px solid var(--amber)}
-  .callout.blue{background:#eff6ff;border-left:4px solid var(--info)}
+.liq-item{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--warm);gap:8px}
+.liq-item:last-child{border-bottom:none}
+.liq-item-info{flex:1}
+.liq-item-name{font-size:.84rem;font-weight:500;color:var(--dark)}
+.liq-item-note{font-size:.72rem;color:var(--muted);margin-top:1px}
+.liq-item-amt{font-weight:700;font-size:.88rem;white-space:nowrap}
+.liq-item-amt.pos{color:var(--accent)} .liq-item-amt.neg{color:var(--danger)}
 
-  /* MODAL */
-  .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.75);z-index:999;overflow:auto;padding:20px;backdrop-filter:blur(2px)}
-  .modal-box{max-width:720px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-  .modal-actions{padding:14px 18px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border);background:var(--warm)}
+/* Resumen total */
+.liq-summary{background:var(--wood-light);border-top:2px solid var(--wood-mid);padding:16px 24px}
+.liq-sum-row{display:flex;justify-content:space-between;padding:5px 0;font-size:.85rem;font-weight:500;color:var(--muted)}
+.liq-sum-row.final{font-size:1.1rem;font-weight:800;color:var(--accent);border-top:2px solid var(--wood-mid);padding-top:12px;margin-top:6px}
+.liq-sum-row.final span:last-child{font-size:1.25rem}
 
-  /* TOAST */
-  .toast{position:fixed;bottom:20px;right:20px;background:var(--dark);color:#fff;padding:12px 18px;border-radius:10px;font-size:0.84rem;z-index:9999;transform:translateY(70px);opacity:0;transition:all 0.3s;pointer-events:none;max-width:280px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
-  .toast.show{transform:translateY(0);opacity:1}
-  .tok{border-left:4px solid #34d399} .terr{border-left:4px solid #f87171}
+/* Firmas */
+.liq-firmas{padding:18px 24px;border-top:1px solid var(--warm);display:grid;grid-template-columns:1fr 1fr;gap:24px;text-align:center}
+.firma-blk .line{border-top:1.5px solid #334155;margin-top:40px;padding-top:7px;font-size:.71rem;color:var(--muted)}
+.firma-blk .sublabel{font-size:.65rem;color:var(--muted);margin-top:3px}
 
-  /* EMPTY STATE */
-  .empty-state{text-align:center;padding:36px;color:var(--muted);font-size:0.87rem}
-  .empty-state .icon{font-size:2.5rem;display:block;margin-bottom:10px}
+/* Costo empleador (pantalla, no print) */
+.emp-costs{background:var(--wood-light);border:1.5px solid var(--wood-mid);border-radius:12px;padding:14px;margin-top:0}
+.emp-costs h4{font-size:.7rem;color:#92400e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;font-weight:700}
+.cost-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.8rem;border-bottom:1px solid var(--wood-mid)}
+.cost-row:last-child{border-bottom:none;font-weight:700;margin-top:4px}
 
-  /* PRINT — solo liquidación limpia */
-  @media print {
-    .tabs,.app-header,.worker-bar,.btn,.no-print,.modal-actions,.toast,.employer-costs{display:none!important}
-    .tab-content{display:block!important;padding:0}
-    .liq-preview{border:none;box-shadow:none}
-    .liq-body,.liq-header,.liq-footer{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    body{background:#fff}
-  }
+/* ─── DÍAS TRABAJADOS ─── */
+.dias-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dias-result{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;border-radius:14px;padding:18px;text-align:center;margin-bottom:12px}
+.dias-big{font-size:3rem;font-weight:800;color:#a7f3d0;line-height:1;letter-spacing:-2px}
+.dias-lbl{font-size:.74rem;opacity:.7;margin-top:4px}
+.resumen-dias{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.r-item{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;border-radius:9px;padding:9px;text-align:center}
+.r-item .rv{font-size:1.4rem;font-weight:800;color:var(--accent)} .r-item .rl{font-size:.67rem;color:var(--muted);margin-top:1px}
+.aus-item{display:flex;align-items:center;gap:8px;background:var(--warm);border:1px solid var(--border);border-radius:9px;padding:8px 11px;margin-bottom:6px}
+.aus-item .ai{flex:1} .aus-item .ai strong{font-size:.83rem} .aus-item .ai span{font-size:.7rem;color:var(--muted);display:block}
+.aus-item .ad{font-weight:700;color:#dc2626;font-size:.9rem;min-width:32px;text-align:right}
+.tipo-b{display:inline-block;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
+.tb-i{background:#fef2f2;color:#dc2626} .tb-j{background:#f0fdf4;color:#16a34a}
+.tb-l{background:#eff6ff;color:#1d4ed8} .tb-v{background:#fffbeb;color:#d97706}
+.tb-f{background:#faf5ff;color:#7c3aed} .tb-p{background:#fff1f2;color:#be185d}
+.esc-btns{display:flex;flex-direction:column;gap:6px}
 
-  @media (max-width:640px){
-    .tab-content{padding:14px}
-    .form-row,.form-row.three,.form-row.four,.dias-grid,.resumen-dias{grid-template-columns:1fr}
-    .liq-footer{grid-template-columns:1fr}
-    .worker-bar{flex-direction:column;align-items:flex-start}
-  }
+/* ─── VACACIONES ─── */
+.vac-progress{margin-top:14px}
+.vac-bar-wrap{background:var(--warm);border-radius:20px;height:12px;overflow:hidden;margin:8px 0 4px}
+.vac-bar{background:linear-gradient(90deg,var(--accent),#34d399);height:100%;border-radius:20px;transition:width .6s ease}
+.vac-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.vac-stat{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.vac-stat .vv{font-size:1.5rem;font-weight:800;color:var(--accent)} .vac-stat .vl{font-size:.7rem;color:var(--muted);margin-top:2px}
+.vac-acum{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a;border-radius:12px;padding:14px;margin-top:12px}
+.vac-acum h4{font-size:.78rem;font-weight:700;color:#92400e;margin-bottom:8px}
+.vac-acum-row{display:flex;justify-content:space-between;font-size:.82rem;padding:4px 0;border-bottom:1px solid #fde68a}
+.vac-acum-row:last-child{border-bottom:none;font-weight:700}
+
+/* ─── HISTORIAL ─── */
+.hist-filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.hist-filters select,.hist-filters input{flex:1;min-width:120px;padding:8px 10px;font-size:.82rem}
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:7px;cursor:pointer;transition:all .18s;background:#fff}
+.hist-item:hover{border-color:var(--accent);background:#f0fdf4}
+.hist-mes{font-weight:700;font-size:.87rem}
+.hist-net{color:var(--accent);font-weight:800;font-size:.94rem}
+
+/* ─── INDICADORES ─── */
+.ind-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.ind-table th{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;padding:9px 11px;text-align:left;font-weight:700}
+.ind-table td{padding:8px 11px;border-bottom:1px solid var(--warm)}
+.ind-table tr:hover td{background:#f0fdf4}
+.hl{font-weight:700;color:var(--accent)}
+
+/* ─── CALLOUTS ─── */
+.callout{border-radius:0 10px 10px 0;padding:10px 13px;font-size:.8rem;margin-bottom:12px;line-height:1.5;font-weight:500}
+.callout.info{background:#f0fdf4;border-left:4px solid var(--accent)}
+.callout.warn{background:#fffbeb;border-left:4px solid var(--amber)}
+.callout.blue{background:#eff6ff;border-left:4px solid var(--info)}
+
+/* ─── MODAL ─── */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.75);z-index:999;overflow:auto;padding:16px;backdrop-filter:blur(2px)}
+.modal-box{max-width:720px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-actions{padding:12px 16px;display:flex;gap:9px;justify-content:flex-end;border-top:1px solid var(--border);background:var(--warm)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:80px;right:16px;background:var(--dark);color:#fff;padding:11px 16px;border-radius:10px;font-size:.83rem;z-index:9999;transform:translateY(70px);opacity:0;transition:all .3s;pointer-events:none;max-width:260px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{transform:translateY(0);opacity:1}
+.tok{border-left:4px solid #34d399} .terr{border-left:4px solid #f87171}
+
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:.87rem}
+.empty .ic{font-size:2.2rem;display:block;margin-bottom:8px}
+
+/* ─── PRINT ─── */
+@media print{
+  .tabs-desktop,.tabs-mobile,.app-header,.worker-bar,.btn,.no-print,.modal-actions,.toast,.emp-costs{display:none!important}
+  .tab-content{display:block!important;padding:0}
+  .liq-wrap{border:none;box-shadow:none}
+  body,.liq-top,.liq-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:640px){
+  .tabs-desktop{display:none}
+  .tabs-mobile{display:block}
+  .tab-content{padding:14px;padding-bottom:90px}
+  .form-row,.form-row.three,.form-row.four,.dias-grid,.resumen-dias,.vac-stats{grid-template-columns:1fr}
+  .liq-firmas{grid-template-columns:1fr}
+  .liq-top-grid{grid-template-columns:1fr 1fr}
+  .liq-hero{flex-direction:column;text-align:center}
+  .liq-hero-right{text-align:center;flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .hist-filters{flex-direction:column}
+  .toast{bottom:90px}
+}
+@media(min-width:641px){
+  .tabs-desktop{display:flex}
+  .tabs-mobile{display:none}
+}
 </style>
 </head>
 <body>
 
 <div class="app-header">
   <div>
-    <h1><span class="logo-icon">🏠</span> Liquidación Asesora del Hogar</h1>
-    <small>Sistema de remuneraciones · Chile 2026</small>
+    <h1><span class="logo-pill">🏠</span> Remuneraciones Casa Particular</h1>
+    <small>Sistema de liquidaciones · Chile 2026</small>
   </div>
-  <div class="header-right">
-    <span class="db-status db-loading" id="db-status">● Conectando…</span>
-  </div>
+  <span class="db-pill db-loading" id="db-status">● Conectando…</span>
 </div>
 
-<!-- SELECTOR GLOBAL DE ASESORA -->
-<div class="worker-bar" id="worker-bar">
-  <label>Asesora activa:</label>
+<!-- SELECTOR ASESORA -->
+<div class="worker-bar">
+  <label>Asesora:</label>
   <select id="selector-asesora" onchange="cambiarAsesora(this.value)">
-    <option value="">— Selecciona una asesora —</option>
+    <option value="">— Selecciona —</option>
   </select>
-  <button class="btn btn-ghost btn-sm" onclick="showTab('asesoras',null)">👥 Gestionar</button>
-  <button class="btn btn-primary btn-sm" onclick="nuevaAsesora()">+ Nueva Asesora</button>
+  <button class="btn btn-ghost btn-sm" onclick="showTab('asesoras')">👥 Gestionar</button>
+  <button class="btn btn-primary btn-sm" onclick="nuevaAsesora()">+ Nueva</button>
 </div>
 
-<div class="tabs">
+<!-- TABS ESCRITORIO -->
+<div class="tabs-desktop">
   <button class="tab-btn" onclick="showTab('asesoras',this)">👥 Asesoras</button>
   <button class="tab-btn active" onclick="showTab('liquidacion',this)">📄 Liquidación</button>
-  <button class="tab-btn" onclick="showTab('dias',this)">📅 Días Trabajados</button>
+  <button class="tab-btn" onclick="showTab('dias',this)">📅 Días</button>
   <button class="tab-btn" onclick="showTab('vacaciones',this)">🌴 Vacaciones</button>
   <button class="tab-btn" onclick="showTab('indicadores',this)">📊 Indicadores</button>
   <button class="tab-btn" onclick="showTab('historial',this)">📁 Historial</button>
 </div>
 
-<!-- ====== TAB: GESTIÓN ASESORAS ====== -->
+<!-- TABS MÓVIL (barra inferior) -->
+<div class="tabs-mobile">
+  <div class="tabs-mobile-inner">
+    <button class="tab-mob-btn" onclick="showTab('asesoras',this,'mob')"><span class="icon">👥</span><span class="label">Asesoras</span></button>
+    <button class="tab-mob-btn active" onclick="showTab('liquidacion',this,'mob')"><span class="icon">📄</span><span class="label">Liquidación</span></button>
+    <button class="tab-mob-btn" onclick="showTab('dias',this,'mob')"><span class="icon">📅</span><span class="label">Días</span></button>
+    <button class="tab-mob-btn" onclick="showTab('vacaciones',this,'mob')"><span class="icon">🌴</span><span class="label">Vacaciones</span></button>
+    <button class="tab-mob-btn" onclick="showTab('indicadores',this,'mob')"><span class="icon">📊</span><span class="label">Indicadores</span></button>
+    <button class="tab-mob-btn" onclick="showTab('historial',this,'mob')"><span class="icon">📁</span><span class="label">Historial</span></button>
+  </div>
+</div>
+
+<!-- ══ TAB: ASESORAS ══ -->
 <div id="tab-asesoras" class="tab-content">
   <div class="card">
-    <div class="card-title">
-      <span>👥 Asesoras Registradas</span>
-      <button class="btn btn-primary btn-sm" onclick="nuevaAsesora()">+ Agregar Nueva</button>
-    </div>
-    <div id="lista-asesoras"><div class="empty-state"><span class="icon">👤</span>No hay asesoras registradas aún.</div></div>
+    <div class="card-title"><span>👥 Asesoras Registradas</span><button class="btn btn-primary btn-sm" onclick="nuevaAsesora()">+ Nueva Asesora</button></div>
+    <div id="lista-asesoras"><div class="empty"><span class="ic">👤</span>No hay asesoras aún.</div></div>
   </div>
-
-  <!-- FORMULARIO AGREGAR/EDITAR -->
   <div class="card" id="form-asesora-card" style="display:none">
-    <div class="card-title" id="form-asesora-titulo">➕ Nueva Asesora</div>
+    <div class="card-title" id="form-titulo">➕ Nueva Asesora</div>
     <input type="hidden" id="a-id">
-
-    <div class="card" style="background:var(--warm);border:none;padding:14px;margin-bottom:0">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Información Personal</div>
-      <div class="form-row">
-        <div class="form-group full"><label>Nombre Completo *</label><input type="text" id="a-nombre" placeholder="Nombre y Apellidos"></div>
+    <div style="background:var(--warm);border-radius:10px;padding:14px;margin-bottom:0">
+      <div style="font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:9px;letter-spacing:.5px">Datos Personales</div>
+      <div class="form-row"><div class="form-group full"><label>Nombre Completo *</label><input type="text" id="a-nombre" placeholder="Nombre y Apellidos"></div>
         <div class="form-group"><label>RUT *</label><input type="text" id="a-rut" placeholder="12.345.678-9" oninput="fmtRut(this)"></div>
         <div class="form-group"><label>Teléfono</label><input type="tel" id="a-telefono" placeholder="+56 9 1234 5678"></div>
-        <div class="form-group"><label>Email</label><input type="email" id="a-email" placeholder="correo@email.com"></div>
-        <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="a-nacimiento"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="a-email"></div>
+        <div class="form-group"><label>Fecha Nacimiento</label><input type="date" id="a-nacimiento"></div>
       </div>
-
-      <div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin:14px 0 10px">Contrato y Remuneración</div>
+      <div style="font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin:12px 0 9px;letter-spacing:.5px">Contrato y Remuneración</div>
       <div class="form-row">
         <div class="form-group"><label>Fecha de Ingreso *</label><input type="date" id="a-ingreso" oninput="calcAnt()"></div>
         <div class="form-group"><label>Antigüedad</label><input type="text" id="a-antiguedad" readonly></div>
-        <div class="form-group"><label>Tipo Contrato</label>
-          <select id="a-contrato"><option value="indefinido">Plazo Indefinido</option><option value="fijo">Plazo Fijo</option></select>
-        </div>
-        <div class="form-group"><label>Modalidad</label>
-          <select id="a-modalidad"><option value="puertas_afuera">Puertas Afuera</option><option value="puertas_adentro">Puertas Adentro</option><option value="por_horas">Por Horas / Días</option></select>
-        </div>
+        <div class="form-group"><label>Tipo Contrato</label><select id="a-contrato"><option value="indefinido">Plazo Indefinido</option><option value="fijo">Plazo Fijo</option></select></div>
+        <div class="form-group"><label>Modalidad</label><select id="a-modalidad"><option value="puertas_afuera">Puertas Afuera</option><option value="puertas_adentro">Puertas Adentro</option><option value="por_horas">Por Horas</option></select></div>
       </div>
       <div class="form-row three">
-        <div class="form-group"><label>Sueldo Base * (mín. $539.000)</label><input type="number" id="a-sueldo" value="539000" min="539000"></div>
-        <div class="form-group"><label>Movilización</label><input type="number" id="a-movilizacion" value="78000" min="0"></div>
-        <div class="form-group"><label>Colación</label><input type="number" id="a-colacion" value="78000" min="0"></div>
+        <div class="form-group"><label>Sueldo Base * (mín.$539.000)</label><input type="number" id="a-sueldo" value="539000" min="539000"></div>
+        <div class="form-group"><label>Movilización (mensual)</label><input type="number" id="a-movilizacion" value="78000" min="0"></div>
+        <div class="form-group"><label>Colación (mensual)</label><input type="number" id="a-colacion" value="78000" min="0"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>AFP</label>
@@ -284,25 +327,22 @@
         </div>
         <div class="form-group"><label>Años Totales Trabajados (todos empleadores)</label><input type="number" id="a-anios-totales" value="0" min="0"></div>
       </div>
-      <div class="form-group" style="margin-top:4px"><label>Notas / Acuerdos</label><textarea id="a-notas" placeholder="Ej: No trabaja festivos, incluye almuerzo…"></textarea></div>
+      <div class="form-group"><label>Notas / Acuerdos</label><textarea id="a-notas" placeholder="Ej: No trabaja festivos, incluye almuerzo…"></textarea></div>
     </div>
-
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap">
-      <button class="btn btn-ghost" onclick="cancelarFormAsesora()">Cancelar</button>
+    <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="cancelarForm()">Cancelar</button>
       <button class="btn btn-success" onclick="guardarAsesora()">💾 Guardar Asesora</button>
     </div>
   </div>
 </div>
 
-<!-- ====== TAB: LIQUIDACIÓN ====== -->
+<!-- ══ TAB: LIQUIDACIÓN ══ -->
 <div id="tab-liquidacion" class="tab-content active">
-  <div class="callout warn" id="liq-warn-sin-asesora">
-    ⚠️ <strong>Selecciona una asesora</strong> en la barra superior para generar su liquidación.
-  </div>
-  <div id="liq-perfil-mini" style="display:none"></div>
+  <div class="callout warn" id="liq-warn" style="display:none">⚠️ <strong>Selecciona una asesora</strong> para generar su liquidación.</div>
+  <div id="liq-perfil-mini"></div>
 
   <div class="card">
-    <div class="card-title">📅 Parámetros del Mes</div>
+    <div class="card-title">⚙️ Parámetros del Mes</div>
     <div class="form-row four">
       <div class="form-group"><label>Período</label><input type="month" id="periodo" oninput="calcular()"></div>
       <div class="form-group"><label>Días Trabajados</label><input type="number" id="dias" value="30" min="1" max="31" oninput="calcular()"></div>
@@ -317,150 +357,95 @@
           <option value="10.58" data-nombre="Modelo">AFP Modelo</option>
         </select>
       </div>
-      <div class="form-group"><label>Tipo Contrato</label>
-        <select id="contrato" onchange="calcular()"><option value="indefinido">Plazo Indefinido</option><option value="fijo">Plazo Fijo</option></select>
-      </div>
+      <div class="form-group"><label>Extras / Bonos</label><input type="number" id="bono" value="0" oninput="calcular()" placeholder="0"></div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">💰 Haberes del Mes</div>
-    <div class="form-row three">
-      <div class="form-group"><label>Sueldo Base</label><input type="number" id="sueldo" value="539000" oninput="calcular()"></div>
-      <div class="form-group"><label>Movilización</label><input type="number" id="movilizacion" value="78000" oninput="calcular()"></div>
-      <div class="form-group"><label>Colación</label><input type="number" id="colacion" value="78000" oninput="calcular()"></div>
-    </div>
-    <div class="form-row three">
+    <div class="form-row">
       <div class="form-group"><label>Horas Extra</label><input type="number" id="horasExtra" value="0" oninput="calcular()"></div>
-      <div class="form-group"><label>Bono / Gratificación</label><input type="number" id="bono" value="0" oninput="calcular()"></div>
       <div class="form-group"><label>Descuento Adicional (anticipo, etc.)</label><input type="number" id="descAdicional" value="0" oninput="calcular()"></div>
     </div>
   </div>
 
   <div id="resultado-liquidacion"></div>
 
-  <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap" class="no-print">
-    <button class="btn btn-outline" onclick="imprimirLiq()">🖨️ PDF / Imprimir</button>
-    <button class="btn btn-success" onclick="guardarLiquidacion()">💾 Guardar en Supabase</button>
+  <div style="display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap" class="no-print">
+    <button class="btn btn-outline" onclick="imprimirLiq()">🖨️ Imprimir / PDF</button>
   </div>
 </div>
 
-<!-- ====== TAB: DÍAS TRABAJADOS ====== -->
+<!-- ══ TAB: DÍAS TRABAJADOS ══ -->
 <div id="tab-dias" class="tab-content">
-  <div class="callout blue">📅 Calcula los días a pagar según distintos escenarios: ingreso parcial, ausencias, licencias, feriados trabajados, etc.</div>
+  <div class="callout blue">📅 Calcula los días a pagar según el escenario del mes.</div>
   <div class="dias-grid">
     <div>
       <div class="card">
-        <div class="card-title">📆 Período y Jornada</div>
+        <div class="card-title">📆 Período</div>
         <div class="form-row">
           <div class="form-group"><label>Mes / Año</label><input type="month" id="d-periodo" oninput="calcDias()"></div>
-          <div class="form-group"><label>Base de Cálculo</label>
-            <select id="d-jornada" onchange="calcDias()"><option value="30">30 días (estándar)</option><option value="real">Días reales del mes</option></select>
-          </div>
+          <div class="form-group"><label>Base</label><select id="d-jornada" onchange="calcDias()"><option value="30">30 días</option><option value="real">Días reales</option></select></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>¿Ingresó este mes?</label>
-            <select id="d-ingreso-parcial" onchange="toggleIngrParcial();calcDias()">
-              <option value="no">No (mes completo)</option>
-              <option value="si">Sí (ingreso a mitad de mes)</option>
-            </select>
-          </div>
-          <div class="form-group" id="d-ingreso-fecha-grp" style="display:none">
-            <label>Fecha de Ingreso al Trabajo</label><input type="date" id="d-ingreso-fecha" oninput="calcDias()">
-          </div>
+          <div class="form-group"><label>¿Ingresó este mes?</label><select id="d-ingreso-parcial" onchange="toggleIngrParcial();calcDias()"><option value="no">No (mes completo)</option><option value="si">Sí</option></select></div>
+          <div class="form-group" id="d-fecha-grp" style="display:none"><label>Fecha ingreso</label><input type="date" id="d-ingreso-fecha" oninput="calcDias()"></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">➕ Registrar Incidencia</div>
+        <div class="card-title">➕ Incidencia</div>
         <div class="form-row">
-          <div class="form-group"><label>Tipo</label>
-            <select id="d-tipo">
-              <option value="injustificada">Inasistencia Injustificada</option>
-              <option value="justificada">Inasistencia Justificada</option>
-              <option value="licencia">Licencia Médica</option>
-              <option value="vacaciones">Vacaciones</option>
-              <option value="feriado">Feriado Trabajado (+días)</option>
-              <option value="permiso">Permiso Sin Goce</option>
-            </select>
-          </div>
+          <div class="form-group"><label>Tipo</label><select id="d-tipo"><option value="injustificada">Injustificada</option><option value="justificada">Justificada</option><option value="licencia">Licencia Médica</option><option value="vacaciones">Vacaciones</option><option value="feriado">Feriado trabajado (+)</option><option value="permiso">Permiso s/Goce</option></select></div>
           <div class="form-group"><label>Descripción</label><input type="text" id="d-desc" placeholder="Ej: Licencia código B"></div>
           <div class="form-group"><label>Desde</label><input type="date" id="d-desde"></div>
           <div class="form-group"><label>Hasta</label><input type="date" id="d-hasta"></div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="addAusencia()">➕ Agregar</button>
+        <button class="btn btn-primary btn-sm" onclick="addAus()">➕ Agregar</button>
       </div>
-      <div class="card" id="card-ausencias" style="display:none">
-        <div class="card-title">📋 Incidencias del Mes</div>
-        <div id="lista-ausencias"></div>
-      </div>
+      <div class="card" id="card-aus" style="display:none"><div class="card-title">📋 Incidencias</div><div id="lista-aus"></div></div>
     </div>
     <div>
       <div class="card">
         <div class="card-title">📊 Resultado</div>
-        <div class="dias-result">
-          <div class="dias-big" id="d-resultado">30</div>
-          <div class="dias-lbl">días a pagar</div>
-        </div>
+        <div class="dias-result"><div class="dias-big" id="d-resultado">30</div><div class="dias-lbl">días a pagar</div></div>
         <div class="resumen-dias">
-          <div class="resumen-item"><div class="rv" id="d-base">30</div><div class="rl">Días base</div></div>
-          <div class="resumen-item"><div class="rv" id="d-ausentes">0</div><div class="rl">Ausentes</div></div>
-          <div class="resumen-item"><div class="rv" id="d-extra">0</div><div class="rl">Extra (+)</div></div>
+          <div class="r-item"><div class="rv" id="d-base">30</div><div class="rl">Base</div></div>
+          <div class="r-item"><div class="rv" id="d-ausen">0</div><div class="rl">Ausentes</div></div>
+          <div class="r-item"><div class="rv" id="d-extra">0</div><div class="rl">Extra (+)</div></div>
         </div>
         <button class="btn btn-success" style="margin-top:12px;width:100%;justify-content:center" onclick="usarDias()">✅ Usar en Liquidación</button>
       </div>
-      <div class="card">
-        <div class="card-title">📝 Detalle</div>
-        <div id="d-detalle" style="font-size:0.82rem;line-height:1.85;color:var(--muted)">—</div>
-      </div>
-      <div class="card">
-        <div class="card-title">⚡ Escenarios Rápidos</div>
-        <div class="escenario-btns">
-          <button class="btn btn-outline btn-sm" onclick="escenario('completo')">📅 Mes completo (30 días)</button>
-          <button class="btn btn-outline btn-sm" onclick="escenario('ingreso15')">📅 Ingresó el día 15</button>
-          <button class="btn btn-outline btn-sm" onclick="escenario('ingreso20')">📅 Ingresó el día 20</button>
-          <button class="btn btn-outline btn-sm" onclick="escenario('aus1')">📅 Mes completo − 1 día injustificado</button>
-          <button class="btn btn-outline btn-sm" onclick="escenario('licencia5')">📅 Licencia médica 5 días</button>
-          <button class="btn btn-outline btn-sm" onclick="escenario('licencia7')">📅 Licencia médica 7 días</button>
-          <button class="btn btn-outline btn-sm" onclick="escenario('vacaciones5')">📅 5 días de vacaciones</button>
+      <div class="card"><div class="card-title">📝 Detalle</div><div id="d-detalle" style="font-size:.82rem;line-height:1.8;color:var(--muted)">—</div></div>
+      <div class="card"><div class="card-title">⚡ Escenarios Rápidos</div>
+        <div class="esc-btns">
+          <button class="btn btn-outline btn-sm" onclick="esc('completo')">📅 Mes completo (30 días)</button>
+          <button class="btn btn-outline btn-sm" onclick="esc('ing15')">📅 Ingresó el día 15</button>
+          <button class="btn btn-outline btn-sm" onclick="esc('ing20')">📅 Ingresó el día 20</button>
+          <button class="btn btn-outline btn-sm" onclick="esc('aus1')">📅 Mes completo − 1 día injustificado</button>
+          <button class="btn btn-outline btn-sm" onclick="esc('lic5')">📅 Licencia médica 5 días</button>
+          <button class="btn btn-outline btn-sm" onclick="esc('lic7')">📅 Licencia médica 7 días</button>
+          <button class="btn btn-outline btn-sm" onclick="esc('vac5')">📅 5 días de vacaciones</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ====== TAB: VACACIONES ====== -->
+<!-- ══ TAB: VACACIONES ══ -->
 <div id="tab-vacaciones" class="tab-content">
-  <div class="callout info">
-    <strong>Vacaciones:</strong> 15 días hábiles con remuneración íntegra al completar 1 año. Sábados, domingos y festivos no cuentan.
-  </div>
-  <div class="card">
-    <div class="card-title">🌴 Cálculo de Vacaciones</div>
-    <div class="form-row">
-      <div class="form-group"><label>Fecha de Ingreso</label><input type="date" id="v-ingreso" oninput="calcVac()"></div>
-      <div class="form-group"><label>Fecha Inicio Vacaciones</label><input type="date" id="v-inicio" oninput="calcVac()"></div>
-      <div class="form-group"><label>Sueldo Base</label><input type="number" id="v-sueldo" value="539000" oninput="calcVac()"></div>
-      <div class="form-group"><label>Años Totales (feriado progresivo)</label><input type="number" id="v-anios" value="0" min="0" oninput="calcVac()"></div>
-    </div>
-    <div id="v-resultado" class="vac-box" style="display:none"></div>
-  </div>
-  <div class="card">
+  <div class="callout info">🌴 Las vacaciones se calculan automáticamente desde la fecha de ingreso de la asesora activa.</div>
+  <div id="vac-contenido"><div class="empty"><span class="ic">👤</span>Selecciona una asesora para ver sus vacaciones.</div></div>
+  <div class="card" style="margin-top:14px">
     <div class="card-title">📚 Normativa</div>
-    <div style="font-size:0.83rem;line-height:1.78;color:var(--muted)">
-      <p><strong style="color:var(--dark)">Feriado Legal:</strong> 15 días hábiles/año. Sábados, domingos y festivos no cuentan.</p><br>
-      <p><strong style="color:var(--dark)">Feriado Progresivo:</strong> Con más de 10 años (cualquier empleador), 1 día adicional por cada 3 nuevos años.</p><br>
-      <p><strong style="color:var(--dark)">Fraccionamiento:</strong> Solo el exceso sobre 10 días hábiles, de mutuo acuerdo.</p><br>
-      <p><strong style="color:var(--dark)">Compensación en dinero:</strong> Solo al terminar la relación laboral (finiquito).</p>
+    <div style="font-size:.83rem;line-height:1.78;color:var(--muted)">
+      <p><strong style="color:var(--dark)">Feriado Legal:</strong> 15 días hábiles al año. Sábados, domingos y festivos no cuentan.</p><br>
+      <p><strong style="color:var(--dark)">Feriado Progresivo:</strong> Con más de 10 años (cualquier empleador), 1 día adicional cada 3 nuevos años.</p><br>
+      <p><strong style="color:var(--dark)">Compensación:</strong> Solo al término de la relación laboral (finiquito).</p>
     </div>
   </div>
 </div>
 
-<!-- ====== TAB: INDICADORES ====== -->
+<!-- ══ TAB: INDICADORES ══ -->
 <div id="tab-indicadores" class="tab-content">
-  <div class="callout warn">Indicadores Previsionales <strong>Febrero 2026</strong> — cotizaciones a pagar en Marzo 2026.</div>
-  <div class="card">
-    <div class="card-title">📌 Valores de Referencia</div>
-    <table class="ind-table">
-      <tr><th>Concepto</th><th>Valor</th></tr>
+  <div class="callout warn">Indicadores Previsionales <strong>Febrero 2026</strong> — cotizaciones a pagar Marzo 2026.</div>
+  <div class="card"><div class="card-title">📌 Valores de Referencia</div>
+    <table class="ind-table"><tr><th>Concepto</th><th>Valor</th></tr>
       <tr><td>UF al 28/02/2026</td><td class="hl">$39.790,63</td></tr>
       <tr><td>UTM Febrero 2026</td><td class="hl">$69.611</td></tr>
       <tr><td>Renta Mínima Imponible Casa Particular</td><td class="hl">$539.000</td></tr>
@@ -468,10 +453,8 @@
       <tr><td>Tope Imponible Cesantía (135,2 UF)</td><td>$5.379.693</td></tr>
     </table>
   </div>
-  <div class="card">
-    <div class="card-title">🏦 Tasas AFP — Dependiente</div>
-    <table class="ind-table">
-      <tr><th>AFP</th><th>Trabajador</th><th>Empleador (+)</th><th>Total</th></tr>
+  <div class="card"><div class="card-title">🏦 Tasas AFP — Dependiente</div>
+    <table class="ind-table"><tr><th>AFP</th><th>Trabajador</th><th>Empleador (+)</th><th>Total</th></tr>
       <tr><td><strong>Uno</strong></td><td>10,46%</td><td>0,1%</td><td>10,56%</td></tr>
       <tr><td><strong>Capital</strong></td><td>11,44%</td><td>0,1%</td><td>11,54%</td></tr>
       <tr><td><strong>Cuprum</strong></td><td>11,44%</td><td>0,1%</td><td>11,54%</td></tr>
@@ -481,31 +464,27 @@
       <tr><td><strong>Modelo</strong></td><td>10,58%</td><td>0,1%</td><td>10,68%</td></tr>
     </table>
   </div>
-  <div class="card">
-    <div class="card-title">🛡️ Costos del Empleador</div>
-    <table class="ind-table">
-      <tr><th>Concepto</th><th>Tasa</th></tr>
-      <tr><td>SIS (Seguro Invalidez y Sobrevivencia)</td><td>1,54%</td></tr>
+  <div class="card"><div class="card-title">🛡️ Costos del Empleador</div>
+    <table class="ind-table"><tr><th>Concepto</th><th>Tasa</th></tr>
+      <tr><td>SIS (Invalidez y Sobrevivencia)</td><td>1,54%</td></tr>
       <tr><td>Seguro Social (Expectativa de Vida)</td><td>0,9%</td></tr>
       <tr><td>Accidente del Trabajo</td><td>0,93%</td></tr>
       <tr><td>Aporte Adicional AFP</td><td>0,1%</td></tr>
-      <tr><td>Seguro de Cesantía (Casa Particular — solo empleador)</td><td>3,0%</td></tr>
+      <tr><td>Seguro Cesantía (Casa Particular — solo empleador)</td><td>3,0%</td></tr>
     </table>
   </div>
 </div>
 
-<!-- ====== TAB: HISTORIAL ====== -->
+<!-- ══ TAB: HISTORIAL ══ -->
 <div id="tab-historial" class="tab-content">
   <div class="card">
     <div class="card-title">📁 Historial de Liquidaciones</div>
     <div class="hist-filters no-print">
-      <select id="f-asesora" onchange="filtrarHistorial()">
-        <option value="">👥 Todas las asesoras</option>
-      </select>
-      <input type="month" id="f-periodo" onchange="filtrarHistorial()" placeholder="Período">
-      <button class="btn btn-ghost btn-sm" onclick="limpiarFiltros()">✕ Limpiar</button>
+      <select id="f-asesora" onchange="filtrarHist()"><option value="">👥 Todas las asesoras</option></select>
+      <input type="month" id="f-periodo" onchange="filtrarHist()">
+      <button class="btn btn-ghost btn-sm" onclick="limpiarFiltros()">✕</button>
     </div>
-    <div id="lista-historial"><div class="empty-state"><span class="icon">📋</span>Cargando historial…</div></div>
+    <div id="lista-historial"><div class="empty"><span class="ic">📋</span>Cargando…</div></div>
   </div>
 </div>
 
@@ -514,7 +493,7 @@
   <div class="modal-box">
     <div id="print-content"></div>
     <div class="modal-actions">
-      <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cerrar</button>
       <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / PDF</button>
     </div>
   </div>
@@ -523,255 +502,179 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
+// ══════════════════════════════════════
 // SUPABASE
-// ============================================================
-const SURL = 'https://sertvddcfboldonhcrqk.supabase.co';
-const SKEY = 'sb_publishable_EdFcEFH73CRMnPutElWfgg_SPRC1K1b';
-const H = () => ({ apikey:SKEY, Authorization:`Bearer ${SKEY}`, 'Content-Type':'application/json' });
-
-const db = {
-  async get(t, q='') {
-    const r = await fetch(`${SURL}/rest/v1/${t}?${q}&order=created_at.desc`, { headers:H() });
-    if (!r.ok) throw new Error(await r.text());
-    return r.json();
-  },
-  async upsert(t, data) {
-    const r = await fetch(`${SURL}/rest/v1/${t}`, {
-      method:'POST', headers:{...H(), Prefer:'resolution=merge-duplicates,return=representation'},
-      body:JSON.stringify(data)
-    });
-    if (!r.ok) throw new Error(await r.text());
-    return r.json();
-  },
-  async del(t, id) {
-    const r = await fetch(`${SURL}/rest/v1/${t}?id=eq.${id}`, { method:'DELETE', headers:H() });
-    if (!r.ok) throw new Error(await r.text());
-  }
+// ══════════════════════════════════════
+const SURL='https://sertvddcfboldonhcrqk.supabase.co';
+const SKEY='sb_publishable_EdFcEFH73CRMnPutElWfgg_SPRC1K1b';
+const H=()=>({apikey:SKEY,Authorization:`Bearer ${SKEY}`,'Content-Type':'application/json'});
+const db={
+  async get(t,q=''){const r=await fetch(`${SURL}/rest/v1/${t}?${q}&order=created_at.desc`,{headers:H()});if(!r.ok)throw new Error(await r.text());return r.json()},
+  async upsert(t,data){const r=await fetch(`${SURL}/rest/v1/${t}`,{method:'POST',headers:{...H(),Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(data)});if(!r.ok)throw new Error(await r.text());return r.json()},
+  async del(t,id){const r=await fetch(`${SURL}/rest/v1/${t}?id=eq.${id}`,{method:'DELETE',headers:H()});if(!r.ok)throw new Error(await r.text())}
 };
 
-// ============================================================
+// ══════════════════════════════════════
 // UTILS
-// ============================================================
-const fmt = n => Math.round(n).toLocaleString('es-CL',{style:'currency',currency:'CLP',minimumFractionDigits:0});
-const pct = (n,p) => Math.round(n*p/100);
-const setv = (id,v) => { const e=document.getElementById(id); if(e&&v!=null) e.value=v; };
-const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const nomMes = yyyymm => { if(!yyyymm) return ''; const[y,m]=yyyymm.split('-'); return MESES[+m-1]+' '+y; };
-const COLORES = ['','color2','color3','color4',''];
-function toast(msg, tipo='ok') {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.className = `toast show t${tipo}`;
-  setTimeout(()=>el.className='toast', 3200);
-}
-function fmtRut(inp) {
-  let v = inp.value.replace(/[^0-9kK]/g,'');
-  if(v.length>1) v = v.slice(0,-1).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'-'+v.slice(-1);
-  inp.value = v;
-}
+// ══════════════════════════════════════
+const fmt=n=>Math.round(n).toLocaleString('es-CL',{style:'currency',currency:'CLP',minimumFractionDigits:0});
+const pct=(n,p)=>Math.round(n*p/100);
+const setv=(id,v)=>{const e=document.getElementById(id);if(e&&v!=null)e.value=v};
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const nomMes=yyyymm=>{if(!yyyymm)return'';const[y,m]=yyyymm.split('-');return MESES[+m-1]+' '+y};
+function toast(msg,tipo='ok'){const el=document.getElementById('toast');el.textContent=msg;el.className=`toast show t${tipo}`;setTimeout(()=>el.className='toast',3200)}
+function fmtRut(inp){let v=inp.value.replace(/[^0-9kK]/g,'');if(v.length>1)v=v.slice(0,-1).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'-'+v.slice(-1);inp.value=v}
+const COLORS=['','c2','c3','c4'];
 
-// ============================================================
+// ══════════════════════════════════════
 // ESTADO
-// ============================================================
-let asesoras = [];       // todas las asesoras
-let asesoraActiva = null; // asesora seleccionada
-let ausencias = [];      // para calculadora días
-let _histRows = [];      // historial completo
+// ══════════════════════════════════════
+let asesoras=[],asesoraActiva=null,ausencias=[],_histRows=[];
 
-// ============================================================
+// ══════════════════════════════════════
 // INIT
-// ============================================================
-async function init() {
-  const st = document.getElementById('db-status');
-  setv('periodo', new Date().toISOString().slice(0,7));
-  setv('d-periodo', new Date().toISOString().slice(0,7));
-  setv('v-inicio', new Date().toISOString().slice(0,10));
-  calcular(); calcDias();
-  try {
+// ══════════════════════════════════════
+async function init(){
+  const st=document.getElementById('db-status');
+  setv('periodo',new Date().toISOString().slice(0,7));
+  setv('d-periodo',new Date().toISOString().slice(0,7));
+  calcular();calcDias();
+  try{
     await db.get('asesoras','limit=1');
-    st.textContent = '● Supabase conectado'; st.className = 'db-status db-ok';
-    await cargarAsesoras();
-    await cargarHistorial();
-  } catch(e) {
-    st.textContent = '● Modo local'; st.className = 'db-status db-err';
-    cargarAsesorasLocal();
+    st.textContent='● Supabase conectado';st.className='db-pill db-ok';
+    await cargarAsesoras();await cargarHistorial();
+  }catch(e){
+    st.textContent='● Modo local';st.className='db-pill db-err';
+    asesoras=JSON.parse(localStorage.getItem('asesoras_cache')||'[]');
+    renderListaAsesoras();actualizarSelector();
+    const lid=localStorage.getItem('asesora_activa_id');
+    if(lid){const a=asesoras.find(x=>x.id==lid);if(a)setAsesoraActiva(a);}
     cargarHistLocal();
   }
 }
 
-// ============================================================
-// GESTIÓN ASESORAS
-// ============================================================
-async function cargarAsesoras() {
-  try {
-    const rows = await db.get('asesoras','limit=100');
-    asesoras = rows || [];
-  } catch(e) { cargarAsesorasLocal(); return; }
-  localStorage.setItem('asesoras_cache', JSON.stringify(asesoras));
-  renderListaAsesoras();
-  actualizarSelectorAsesora();
-  // Auto-seleccionar la última activa
-  const ultimaId = localStorage.getItem('asesora_activa_id');
-  if (ultimaId) {
-    const a = asesoras.find(x => x.id == ultimaId);
-    if (a) setAsesoraActiva(a);
-  } else if (asesoras.length === 1) {
-    setAsesoraActiva(asesoras[0]);
-  }
+// ══════════════════════════════════════
+// ASESORAS
+// ══════════════════════════════════════
+async function cargarAsesoras(){
+  const rows=await db.get('asesoras','limit=100');
+  asesoras=rows||[];
+  localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
+  renderListaAsesoras();actualizarSelector();
+  const lid=localStorage.getItem('asesora_activa_id');
+  const a=lid?asesoras.find(x=>x.id==lid):asesoras.length===1?asesoras[0]:null;
+  if(a)setAsesoraActiva(a);
 }
 
-function cargarAsesorasLocal() {
-  asesoras = JSON.parse(localStorage.getItem('asesoras_cache')||'[]');
-  renderListaAsesoras();
-  actualizarSelectorAsesora();
-  const ultimaId = localStorage.getItem('asesora_activa_id');
-  if (ultimaId) {
-    const a = asesoras.find(x => x.id == ultimaId);
-    if (a) setAsesoraActiva(a);
-  }
-}
-
-function renderListaAsesoras() {
-  const el = document.getElementById('lista-asesoras');
-  if (!asesoras.length) { el.innerHTML = '<div class="empty-state"><span class="icon">👤</span>No hay asesoras registradas. Agrega la primera.</div>'; return; }
-  el.innerHTML = asesoras.map((a,i) => `
-    <div class="asesor-card ${asesoraActiva?.id === a.id ? 'selected' : ''}" id="card-asesor-${a.id}">
-      <div class="asesor-avatar ${COLORES[i%4]}">${a.nombre[0].toUpperCase()}</div>
-      <div class="asesor-info">
-        <strong>${a.nombre} ${asesoraActiva?.id === a.id ? '<span class="badge badge-sel">ACTIVA</span>' : ''}</strong>
-        <p>RUT: ${a.rut||'—'} · AFP ${a.afp_nombre||'—'} · Sueldo: ${fmt(a.sueldo_base||539000)}</p>
-        <p>Ingreso: ${a.fecha_ingreso ? new Date(a.fecha_ingreso+'T12:00').toLocaleDateString('es-CL') : '—'} · ${a.tipo_contrato||'indefinido'}</p>
+function renderListaAsesoras(){
+  const el=document.getElementById('lista-asesoras');
+  if(!asesoras.length){el.innerHTML='<div class="empty"><span class="ic">👤</span>No hay asesoras registradas. Agrega la primera.</div>';return;}
+  el.innerHTML=asesoras.map((a,i)=>`
+    <div class="asesor-card ${asesoraActiva?.id===a.id?'selected':''}" id="ac-${a.id}">
+      <div class="av ${COLORS[i%4]}">${a.nombre[0].toUpperCase()}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:.91rem">${a.nombre}${asesoraActiva?.id===a.id?'<span class="badge badge-amber">Activa</span>':''}</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-top:2px">RUT: ${a.rut||'—'} · AFP ${a.afp_nombre||'—'} · ${fmt(a.sueldo_base||539000)}/mes</div>
+        <div style="font-size:.72rem;color:var(--muted)">Ingreso: ${a.fecha_ingreso?new Date(a.fecha_ingreso+'T12:00').toLocaleDateString('es-CL'):'—'}</div>
       </div>
-      <div class="asesor-actions">
-        <button class="btn btn-primary btn-sm" onclick="seleccionarYLiquidar('${a.id}')">📄 Liquidar</button>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-primary btn-sm" onclick="selYLiquidar('${a.id}')">📄 Liquidar</button>
         <button class="btn btn-ghost btn-sm" onclick="editarAsesora('${a.id}')">✏️</button>
         <button class="btn-danger-sm" onclick="eliminarAsesora('${a.id}')">✕</button>
       </div>
     </div>`).join('');
 }
 
-function actualizarSelectorAsesora() {
-  const sel = document.getElementById('selector-asesora');
-  const valActual = sel.value;
-  sel.innerHTML = '<option value="">— Selecciona una asesora —</option>';
-  asesoras.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a.id; opt.textContent = a.nombre;
-    sel.appendChild(opt);
-  });
-  if (asesoraActiva) sel.value = asesoraActiva.id;
-  // Actualizar filtro historial
-  const fSel = document.getElementById('f-asesora');
-  fSel.innerHTML = '<option value="">👥 Todas las asesoras</option>';
-  asesoras.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a.nombre; opt.textContent = a.nombre;
-    fSel.appendChild(opt);
-  });
+function actualizarSelector(){
+  const sel=document.getElementById('selector-asesora');
+  sel.innerHTML='<option value="">— Selecciona —</option>';
+  asesoras.forEach(a=>{const o=document.createElement('option');o.value=a.id;o.textContent=a.nombre;sel.appendChild(o)});
+  if(asesoraActiva)sel.value=asesoraActiva.id;
+  const fSel=document.getElementById('f-asesora');
+  fSel.innerHTML='<option value="">👥 Todas</option>';
+  asesoras.forEach(a=>{const o=document.createElement('option');o.value=a.nombre;o.textContent=a.nombre;fSel.appendChild(o)});
 }
 
-function cambiarAsesora(id) {
-  if (!id) { asesoraActiva = null; actualizarUIAsesora(); return; }
-  const a = asesoras.find(x => x.id == id);
-  if (a) setAsesoraActiva(a);
+function cambiarAsesora(id){
+  if(!id){asesoraActiva=null;actualizarUIAsesora();return;}
+  const a=asesoras.find(x=>x.id==id);if(a)setAsesoraActiva(a);
 }
 
-function setAsesoraActiva(a) {
-  asesoraActiva = a;
-  localStorage.setItem('asesora_activa_id', a.id);
-  document.getElementById('selector-asesora').value = a.id;
+function setAsesoraActiva(a){
+  asesoraActiva=a;
+  localStorage.setItem('asesora_activa_id',a.id);
+  document.getElementById('selector-asesora').value=a.id;
   actualizarUIAsesora();
   renderListaAsesoras();
 }
 
-function actualizarUIAsesora() {
-  const warnEl = document.getElementById('liq-warn-sin-asesora');
-  const miniEl = document.getElementById('liq-perfil-mini');
-  if (!asesoraActiva) {
-    warnEl.style.display = 'block'; miniEl.style.display = 'none'; return;
-  }
-  warnEl.style.display = 'none';
-  miniEl.style.display = 'flex';
-  const ing = asesoraActiva.fecha_ingreso ? new Date(asesoraActiva.fecha_ingreso+'T12:00').toLocaleDateString('es-CL') : '—';
-  miniEl.innerHTML = `<div class="perfil-mini">
-    <div class="asesor-avatar" style="width:48px;height:48px;font-size:1.4rem;border-radius:12px">${asesoraActiva.nombre[0].toUpperCase()}</div>
-    <div>
-      <h3>${asesoraActiva.nombre} <span class="badge">Activa</span></h3>
-      <p>RUT: ${asesoraActiva.rut||'—'} · AFP ${asesoraActiva.afp_nombre||'—'} · Ingreso: ${ing}</p>
-    </div>
+function actualizarUIAsesora(){
+  const warn=document.getElementById('liq-warn');
+  const mini=document.getElementById('liq-perfil-mini');
+  if(!asesoraActiva){warn.style.display='block';mini.innerHTML='';return;}
+  warn.style.display='none';
+  const ing=asesoraActiva.fecha_ingreso?new Date(asesoraActiva.fecha_ingreso+'T12:00').toLocaleDateString('es-CL'):'—';
+  mini.innerHTML=`<div class="perfil-mini">
+    <div class="av" style="width:46px;height:46px;font-size:1.3rem;border-radius:12px">${asesoraActiva.nombre[0].toUpperCase()}</div>
+    <div><h3>${asesoraActiva.nombre} <span class="badge">Activa</span></h3>
+    <p>RUT: ${asesoraActiva.rut||'—'} · AFP ${asesoraActiva.afp_nombre||'—'} · Ingreso: ${ing}</p></div>
   </div>`;
-  sincLiquidacion();
+  sincLiq();
+  calcVacaciones();
 }
 
-function sincLiquidacion() {
-  if (!asesoraActiva) return;
-  const a = asesoraActiva;
-  setv('sueldo', a.sueldo_base||539000);
-  setv('movilizacion', a.movilizacion||0);
-  setv('colacion', a.colacion||0);
-  setv('contrato', a.tipo_contrato||'indefinido');
-  const afpSel = document.getElementById('afp');
-  for(let i=0;i<afpSel.options.length;i++){
-    if(afpSel.options[i].dataset.nombre===a.afp_nombre){afpSel.selectedIndex=i;break;}
-  }
-  // Vacaciones auto-fill
-  if(a.fecha_ingreso) setv('v-ingreso', a.fecha_ingreso);
-  setv('v-sueldo', a.sueldo_base||539000);
-  setv('v-anios', a.anios_totales||0);
+function sincLiq(){
+  if(!asesoraActiva)return;
+  const a=asesoraActiva;
+  setv('sueldo_base_hidden',a.sueldo_base||539000); // guardamos base
+  setv('movilizacion_base_hidden',a.movilizacion||0);
+  setv('colacion_base_hidden',a.colacion||0);
+  setv('contrato',a.tipo_contrato||'indefinido');
+  const afpSel=document.getElementById('afp');
+  for(let i=0;i<afpSel.options.length;i++){if(afpSel.options[i].dataset.nombre===a.afp_nombre){afpSel.selectedIndex=i;break;}}
   calcular();
 }
 
-function seleccionarYLiquidar(id) {
-  const a = asesoras.find(x => x.id == id);
-  if (!a) return;
-  setAsesoraActiva(a);
-  showTab('liquidacion', document.querySelectorAll('.tab-btn')[1]);
-}
+function selYLiquidar(id){const a=asesoras.find(x=>x.id==id);if(!a)return;setAsesoraActiva(a);showTab('liquidacion');}
 
-// ===== FORMULARIO ASESORA =====
-function nuevaAsesora() {
-  document.getElementById('a-id').value = '';
-  document.getElementById('form-asesora-titulo').textContent = '➕ Nueva Asesora';
+// FORM
+function nuevaAsesora(){
+  document.getElementById('a-id').value='';
+  document.getElementById('form-titulo').textContent='➕ Nueva Asesora';
   ['a-nombre','a-rut','a-telefono','a-email','a-antiguedad','a-notas'].forEach(id=>setv(id,''));
   ['a-nacimiento','a-ingreso'].forEach(id=>setv(id,''));
-  setv('a-sueldo',539000); setv('a-movilizacion',78000); setv('a-colacion',78000);
-  setv('a-contrato','indefinido'); setv('a-modalidad','puertas_afuera');
-  setv('a-anios-totales',0);
-  document.getElementById('form-asesora-card').style.display = 'block';
-  showTab('asesoras', document.querySelectorAll('.tab-btn')[0]);
-  document.getElementById('form-asesora-card').scrollIntoView({behavior:'smooth'});
+  setv('a-sueldo',539000);setv('a-movilizacion',78000);setv('a-colacion',78000);
+  setv('a-contrato','indefinido');setv('a-modalidad','puertas_afuera');setv('a-anios-totales',0);
+  document.getElementById('form-asesora-card').style.display='block';
+  showTab('asesoras');
+  setTimeout(()=>document.getElementById('form-asesora-card').scrollIntoView({behavior:'smooth'}),100);
 }
 
-function editarAsesora(id) {
-  const a = asesoras.find(x=>x.id==id); if(!a) return;
-  setv('a-id', a.id);
-  document.getElementById('form-asesora-titulo').textContent = '✏️ Editar Asesora';
-  setv('a-nombre',a.nombre); setv('a-rut',a.rut); setv('a-telefono',a.telefono);
-  setv('a-email',a.email); setv('a-nacimiento',a.nacimiento);
-  setv('a-ingreso',a.fecha_ingreso); setv('a-contrato',a.tipo_contrato);
-  setv('a-modalidad',a.modalidad); setv('a-sueldo',a.sueldo_base);
-  setv('a-movilizacion',a.movilizacion); setv('a-colacion',a.colacion);
-  setv('a-anios-totales',a.anios_totales); setv('a-notas',a.notas);
-  const afpSel = document.getElementById('a-afp');
-  for(let i=0;i<afpSel.options.length;i++){
-    if(afpSel.options[i].dataset.nombre===a.afp_nombre){afpSel.selectedIndex=i;break;}
-  }
-  if(a.fecha_ingreso) calcAnt();
-  document.getElementById('form-asesora-card').style.display = 'block';
-  document.getElementById('form-asesora-card').scrollIntoView({behavior:'smooth'});
+function editarAsesora(id){
+  const a=asesoras.find(x=>x.id==id);if(!a)return;
+  setv('a-id',a.id);document.getElementById('form-titulo').textContent='✏️ Editar Asesora';
+  setv('a-nombre',a.nombre);setv('a-rut',a.rut);setv('a-telefono',a.telefono);setv('a-email',a.email);
+  setv('a-nacimiento',a.nacimiento);setv('a-ingreso',a.fecha_ingreso);setv('a-contrato',a.tipo_contrato);
+  setv('a-modalidad',a.modalidad);setv('a-sueldo',a.sueldo_base);setv('a-movilizacion',a.movilizacion);
+  setv('a-colacion',a.colacion);setv('a-anios-totales',a.anios_totales);setv('a-notas',a.notas);
+  const afpSel=document.getElementById('a-afp');
+  for(let i=0;i<afpSel.options.length;i++){if(afpSel.options[i].dataset.nombre===a.afp_nombre){afpSel.selectedIndex=i;break;}}
+  if(a.fecha_ingreso)calcAnt();
+  document.getElementById('form-asesora-card').style.display='block';
+  showTab('asesoras');
+  setTimeout(()=>document.getElementById('form-asesora-card').scrollIntoView({behavior:'smooth'}),100);
 }
 
-function cancelarFormAsesora() { document.getElementById('form-asesora-card').style.display = 'none'; }
+function cancelarForm(){document.getElementById('form-asesora-card').style.display='none';}
 
-async function guardarAsesora() {
-  const nombre = document.getElementById('a-nombre').value.trim();
-  if (!nombre) { toast('⚠️ Ingresa el nombre','err'); return; }
-  const afpSel = document.getElementById('a-afp');
-  const data = {
-    nombre, rut:document.getElementById('a-rut').value,
+async function guardarAsesora(){
+  const nombre=document.getElementById('a-nombre').value.trim();
+  if(!nombre){toast('⚠️ Ingresa el nombre','err');return;}
+  const afpSel=document.getElementById('a-afp');
+  const data={
+    nombre,rut:document.getElementById('a-rut').value,
     nacimiento:document.getElementById('a-nacimiento').value||null,
-    telefono:document.getElementById('a-telefono').value,
-    email:document.getElementById('a-email').value,
+    telefono:document.getElementById('a-telefono').value,email:document.getElementById('a-email').value,
     fecha_ingreso:document.getElementById('a-ingreso').value||null,
     tipo_contrato:document.getElementById('a-contrato').value,
     modalidad:document.getElementById('a-modalidad').value,
@@ -783,398 +686,520 @@ async function guardarAsesora() {
     anios_totales:+document.getElementById('a-anios-totales').value||0,
     notas:document.getElementById('a-notas').value
   };
-  const editId = document.getElementById('a-id').value;
-  if (editId) data.id = editId;
-  try {
-    const res = await db.upsert('asesoras', data);
-    const saved = Array.isArray(res)?res[0]:res;
-    const idx = asesoras.findIndex(x=>x.id==saved.id);
-    if(idx>=0) asesoras[idx]=saved; else asesoras.unshift(saved);
-    if(asesoraActiva?.id==saved.id) asesoraActiva=saved;
+  const editId=document.getElementById('a-id').value;if(editId)data.id=editId;
+  try{
+    const res=await db.upsert('asesoras',data);
+    const saved=Array.isArray(res)?res[0]:res;
+    const idx=asesoras.findIndex(x=>x.id==saved.id);
+    if(idx>=0)asesoras[idx]=saved;else asesoras.unshift(saved);
+    if(asesoraActiva?.id==saved.id)asesoraActiva=saved;
     localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
     toast('✅ Asesora guardada en Supabase');
-  } catch(e) {
-    if(!editId) data.id = 'local_'+Date.now();
-    const idx = asesoras.findIndex(x=>x.id==data.id);
-    if(idx>=0) asesoras[idx]=data; else asesoras.unshift(data);
+  }catch(e){
+    if(!editId)data.id='local_'+Date.now();
+    const idx=asesoras.findIndex(x=>x.id==data.id);
+    if(idx>=0)asesoras[idx]=data;else asesoras.unshift(data);
     localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
     toast('💾 Guardado localmente');
   }
-  renderListaAsesoras();
-  actualizarSelectorAsesora();
-  cancelarFormAsesora();
+  renderListaAsesoras();actualizarSelector();cancelarForm();
 }
 
-async function eliminarAsesora(id) {
-  const a = asesoras.find(x=>x.id==id);
-  if(!confirm(`¿Eliminar a ${a?.nombre}? También se eliminarán sus liquidaciones.`)) return;
-  try { await db.del('asesoras',id); } catch(e) {}
-  asesoras = asesoras.filter(x=>x.id!=id);
+async function eliminarAsesora(id){
+  const a=asesoras.find(x=>x.id==id);
+  if(!confirm(`¿Eliminar a ${a?.nombre}?`))return;
+  try{await db.del('asesoras',id);}catch(e){}
+  asesoras=asesoras.filter(x=>x.id!=id);
   localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
-  if(asesoraActiva?.id==id) { asesoraActiva=null; actualizarUIAsesora(); }
-  renderListaAsesoras(); actualizarSelectorAsesora();
-  toast('🗑️ Asesora eliminada');
+  if(asesoraActiva?.id==id){asesoraActiva=null;actualizarUIAsesora();}
+  renderListaAsesoras();actualizarSelector();toast('🗑️ Asesora eliminada');
 }
 
-function calcAnt() {
-  const fi = document.getElementById('a-ingreso').value;
-  if(!fi) return;
-  const tot = Math.floor((new Date()-new Date(fi+'T12:00'))/(1000*60*60*24*365.25)*12);
-  const y=Math.floor(tot/12), m=tot%12;
-  setv('a-antiguedad', y>0?`${y} año${y>1?'s':''} ${m>0?`y ${m} mes${m>1?'es':''}`:''}` : `${tot} mes${tot!==1?'es':''}`);
+function calcAnt(){
+  const fi=document.getElementById('a-ingreso').value;if(!fi)return;
+  const tot=Math.floor((new Date()-new Date(fi+'T12:00'))/(1000*60*60*24*365.25)*12);
+  const y=Math.floor(tot/12),m=tot%12;
+  setv('a-antiguedad',y>0?`${y} año${y>1?'s':''} ${m>0?`y ${m} mes${m>1?'es':''}`:''}` : `${tot} mes${tot!==1?'es':''}`);
 }
 
-// ============================================================
-// CALCULADORA DÍAS
-// ============================================================
-function toggleIngrParcial() {
-  document.getElementById('d-ingreso-fecha-grp').style.display =
-    document.getElementById('d-ingreso-parcial').value==='si'?'block':'none';
-}
-
-function calcDias() {
-  const periodo=document.getElementById('d-periodo').value; if(!periodo) return;
-  const jornada=document.getElementById('d-jornada').value;
-  const ingParcial=document.getElementById('d-ingreso-parcial').value;
-  const ingFecha=document.getElementById('d-ingreso-fecha').value;
-  const[y,m]=periodo.split('-').map(Number);
-  const diasMes=jornada==='30'?30:new Date(y,m,0).getDate();
-  let base=diasMes, detalles=[];
-  if(ingParcial==='si'&&ingFecha){
-    const fi=new Date(ingFecha+'T12:00');
-    if(fi.getFullYear()===y&&fi.getMonth()+1===m){
-      base=diasMes-fi.getDate()+1;
-      detalles.push(`• Ingresó el día ${fi.getDate()}: ${base} días desde el ingreso`);
-    }
-  } else { detalles.push(`• Mes ${jornada==='30'?'estándar (30)':'real'}: ${base} días base`); }
-  let aus=0, ext=0;
-  ausencias.forEach(a=>{
-    const ini=new Date(a.desde+'T12:00'),fin=new Date(a.hasta+'T12:00');
-    const d=Math.round((fin-ini)/86400000)+1;
-    if(a.tipo==='feriado'){ext+=d; detalles.push(`• Feriado trabajado "${a.desc}": +${d} día${d>1?'s':''}`)}
-    else{aus+=d; detalles.push(`• ${a.desc} (${lTipo(a.tipo)}): −${d} día${d>1?'s':''}`)}
-  });
-  const res=Math.max(0,base-aus+ext);
-  document.getElementById('d-resultado').textContent=res;
-  document.getElementById('d-base').textContent=base;
-  document.getElementById('d-ausentes').textContent=aus;
-  document.getElementById('d-extra').textContent=ext;
-  document.getElementById('d-detalle').innerHTML=detalles.length
-    ?detalles.join('<br>')+'<br><br><strong style="color:var(--dark)">→ Total a pagar: '+res+' días</strong>':'—';
-}
-
-function addAusencia() {
-  const tipo=document.getElementById('d-tipo').value;
-  const desc=document.getElementById('d-desc').value||lTipo(tipo);
-  const desde=document.getElementById('d-desde').value;
-  const hasta=document.getElementById('d-hasta').value||desde;
-  if(!desde){toast('Selecciona la fecha de inicio','err');return;}
-  ausencias.push({tipo,desc,desde,hasta,id:Date.now()});
-  renderAus(); calcDias();
-  document.getElementById('d-desc').value='';
-}
-
-function delAus(id){ausencias=ausencias.filter(a=>a.id!==id);renderAus();calcDias();}
-
-function renderAus(){
-  const el=document.getElementById('lista-ausencias');
-  const card=document.getElementById('card-ausencias');
-  if(!ausencias.length){card.style.display='none';return;}
-  card.style.display='block';
-  el.innerHTML=ausencias.map(a=>{
-    const ini=new Date(a.desde+'T12:00'),fin=new Date(a.hasta+'T12:00');
-    const d=Math.round((fin-ini)/86400000)+1;
-    return`<div class="ausencia-item">
-      <div class="ai"><strong>${a.desc}</strong><span class="tipo-badge tipo-${a.tipo}">${lTipo(a.tipo)}</span>
-      <span>${ini.toLocaleDateString('es-CL')} → ${fin.toLocaleDateString('es-CL')}</span></div>
-      <div class="ad">${a.tipo==='feriado'?'+':'−'}${d}d</div>
-      <button onclick="delAus(${a.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:0 4px">✕</button>
-    </div>`;
-  }).join('');
-}
-
-const lTipo=t=>({injustificada:'Injustificada',justificada:'Justificada',licencia:'Licencia Médica',vacaciones:'Vacaciones',feriado:'Feriado (+)',permiso:'Permiso s/Goce'})[t]||t;
-
-function usarDias(){
-  const d=document.getElementById('d-resultado').textContent;
-  const p=document.getElementById('d-periodo').value;
-  setv('dias',d); if(p) setv('periodo',p);
-  calcular(); showTab('liquidacion',document.querySelectorAll('.tab-btn')[1]);
-  toast(`✅ ${d} días aplicados a la liquidación`);
-}
-
-function escenario(tipo){
-  const p=document.getElementById('d-periodo').value||new Date().toISOString().slice(0,7);
-  setv('d-periodo',p); ausencias=[];
-  document.getElementById('d-ingreso-parcial').value='no';
-  document.getElementById('d-ingreso-fecha-grp').style.display='none';
-  const[y,m]=p.split('-');
-  if(tipo==='ingreso15'){document.getElementById('d-ingreso-parcial').value='si';document.getElementById('d-ingreso-fecha-grp').style.display='block';setv('d-ingreso-fecha',`${y}-${m}-15`);}
-  else if(tipo==='ingreso20'){document.getElementById('d-ingreso-parcial').value='si';document.getElementById('d-ingreso-fecha-grp').style.display='block';setv('d-ingreso-fecha',`${y}-${m}-20`);}
-  else if(tipo==='aus1'){ausencias.push({tipo:'injustificada',desc:'Inasistencia injustificada',desde:`${y}-${m}-10`,hasta:`${y}-${m}-10`,id:Date.now()});}
-  else if(tipo==='licencia5'){ausencias.push({tipo:'licencia',desc:'Licencia médica',desde:`${y}-${m}-05`,hasta:`${y}-${m}-09`,id:Date.now()});}
-  else if(tipo==='licencia7'){ausencias.push({tipo:'licencia',desc:'Licencia médica',desde:`${y}-${m}-05`,hasta:`${y}-${m}-11`,id:Date.now()});}
-  else if(tipo==='vacaciones5'){ausencias.push({tipo:'vacaciones',desc:'Vacaciones',desde:`${y}-${m}-10`,hasta:`${y}-${m}-14`,id:Date.now()});}
-  renderAus(); calcDias();
-}
-
-// ============================================================
-// CALCULAR LIQUIDACIÓN
-// ============================================================
-function calcular() {
-  const nombre=asesoraActiva?.nombre||'NOMBRE COMPLETO';
+// ══════════════════════════════════════
+// CALCULAR LIQUIDACIÓN — PROPORCIONAL + CLARO
+// ══════════════════════════════════════
+function calcular(){
+  const nombre=asesoraActiva?.nombre||'NOMBRE TRABAJADORA';
   const rut=asesoraActiva?.rut||'—';
   const periodo=document.getElementById('periodo').value;
   const dias=+document.getElementById('dias').value||30;
   const afpSel=document.getElementById('afp');
   const afpTasa=+afpSel.value;
   const afpNombre=afpSel.options[afpSel.selectedIndex].dataset.nombre;
-  const sueldoBase=+document.getElementById('sueldo').value||539000;
-  const movilizacion=+document.getElementById('movilizacion').value||0;
-  const colacion=+document.getElementById('colacion').value||0;
+
+  // Valores base desde asesora activa
+  const sueldoBase=asesoraActiva?.sueldo_base||539000;
+  const movilBase=asesoraActiva?.movilizacion||0;
+  const colacBase=asesoraActiva?.colacion||0;
+
+  // Proporcional a días trabajados
+  const factor=dias/30;
+  const sueldo=Math.round(sueldoBase*factor);
+  const movilizacion=Math.round(movilBase*factor);
+  const colacion=Math.round(colacBase*factor);
   const horasExtra=+document.getElementById('horasExtra').value||0;
   const bono=+document.getElementById('bono').value||0;
   const descAdicional=+document.getElementById('descAdicional').value||0;
-  const sueldo=dias<30?Math.round(sueldoBase*dias/30):sueldoBase;
+
   const totalHaberes=sueldo+movilizacion+colacion+horasExtra+bono;
+
+  // Renta imponible = solo conceptos imponibles (sueldo + horas extra + bono)
   const rentaImponible=Math.max(sueldo+horasExtra+bono,539000);
+
   const descAfp=pct(rentaImponible,afpTasa);
   const descSalud=pct(rentaImponible,7);
   const totalDescuentos=descAfp+descSalud+descAdicional;
   const liquido=totalHaberes-totalDescuentos;
+
+  // Costos empleador
   const costoSIS=pct(rentaImponible,1.54);
   const costoSS=pct(rentaImponible,0.9);
   const costoAcc=pct(rentaImponible,0.93);
   const costoAfpAd=pct(rentaImponible,0.1);
   const costoCes=pct(rentaImponible,3.0);
   const totalEmp=totalHaberes+costoSIS+costoSS+costoAcc+costoAfpAd+costoCes;
-  const d={nombre,rut,periodo,dias,afpNombre,afpTasa,sueldoBase,sueldo,movilizacion,colacion,horasExtra,bono,descAdicional,totalHaberes,rentaImponible,descAfp,descSalud,totalDescuentos,liquido,costoSIS,costoSS,costoAcc,costoAfpAd,costoCes,totalEmp};
-  renderLiq(d); return d;
+
+  const d={nombre,rut,periodo,dias,afpNombre,afpTasa,
+    sueldoBase,sueldo,movilizacion,colacion,movilBase,colacBase,
+    horasExtra,bono,descAdicional,
+    totalHaberes,rentaImponible,descAfp,descSalud,totalDescuentos,liquido,
+    costoSIS,costoSS,costoAcc,costoAfpAd,costoCes,totalEmp,factor};
+
+  renderLiq(d);
+  autoGuardar(d);
+  return d;
 }
 
-// El HTML de la liquidación "limpia" (sin employer costs) para imprimir
-function htmlLiqLimpia(d) {
-  return `<div class="liq-preview">
-    <div class="liq-header">
-      <h2>LIQUIDACIÓN DE SUELDO</h2>
-      <p>Trabajadora de Casa Particular · ${nomMes(d.periodo)}</p>
-    </div>
-    <div class="liq-body">
-      <div class="liq-worker">
-        <div class="liq-worker-info">
-          <h3>${d.nombre}</h3>
-          <p>RUT: ${d.rut}</p>
-          <p>AFP ${d.afpNombre} · FONASA · Casa Particular</p>
-        </div>
-        <div class="liq-worker-info" style="text-align:right">
-          <p>Período: <strong>${nomMes(d.periodo)}</strong></p>
-          <p>Días trabajados: <strong>${d.dias}</strong></p>
-          <p>Renta Imponible: <strong>${fmt(d.rentaImponible)}</strong></p>
-        </div>
-      </div>
-      <div class="liq-section">
-        <div class="liq-section-title">✅ Haberes</div>
-        <div class="liq-row"><span>Sueldo Base${d.dias<30?` (${d.dias}/30 días)`:''}</span><span class="pos">${fmt(d.sueldo)}</span></div>
-        ${d.movilizacion>0?`<div class="liq-row"><span>Movilización (no imponible)</span><span class="pos">${fmt(d.movilizacion)}</span></div>`:''}
-        ${d.colacion>0?`<div class="liq-row"><span>Colación (no imponible)</span><span class="pos">${fmt(d.colacion)}</span></div>`:''}
-        ${d.horasExtra>0?`<div class="liq-row"><span>Horas Extra</span><span class="pos">${fmt(d.horasExtra)}</span></div>`:''}
-        ${d.bono>0?`<div class="liq-row"><span>Bono / Gratificación</span><span class="pos">${fmt(d.bono)}</span></div>`:''}
-      </div>
-      <div class="liq-section">
-        <div class="liq-section-title">❌ Descuentos Legales</div>
-        <div class="liq-row"><span>AFP ${d.afpNombre} (${d.afpTasa}%)</span><span class="neg">−${fmt(d.descAfp)}</span></div>
-        <div class="liq-row"><span>FONASA (7%)</span><span class="neg">−${fmt(d.descSalud)}</span></div>
-        ${d.descAdicional>0?`<div class="liq-row"><span>Descuento Adicional</span><span class="neg">−${fmt(d.descAdicional)}</span></div>`:''}
-      </div>
-      <div class="liq-totals">
-        <div class="liq-total-row"><span>Total Haberes</span><span>${fmt(d.totalHaberes)}</span></div>
-        <div class="liq-total-row"><span>Total Descuentos</span><span>−${fmt(d.totalDescuentos)}</span></div>
-        <div class="liq-total-row final"><span>💰 LÍQUIDO A PAGAR</span><span>${fmt(d.liquido)}</span></div>
-      </div>
-    </div>
-    <div class="liq-footer">
-      <div><div class="firma-line">${d.nombre}<br>TRABAJADOR(A) · RUT ${d.rut}</div></div>
-      <div><div class="firma-line">EMPLEADOR(A)<br>&nbsp;</div></div>
-    </div>
-  </div>`;
-}
+// ── RENDER LIQUIDACIÓN CLARA ──────────
+function renderLiq(d){
+  const propTexto=d.dias<30?` (${d.dias}/30 días, ${Math.round(d.factor*100)}%)`:' (mes completo)';
+  document.getElementById('resultado-liquidacion').innerHTML=`
+    <div class="liq-wrap" id="liq-doc">
 
-function renderLiq(d) {
-  document.getElementById('resultado-liquidacion').innerHTML =
-    htmlLiqLimpia(d) +
-    `<div class="employer-costs no-print">
-      <h4>📋 Costo Total Empleador (informativo — no aparece al imprimir)</h4>
-      <div class="cost-row"><span>SIS (1,54%)</span><span>${fmt(d.costoSIS)}</span></div>
-      <div class="cost-row"><span>Seg. Social Expectativa Vida (0,9%)</span><span>${fmt(d.costoSS)}</span></div>
+      <!-- Encabezado trabajador -->
+      <div class="liq-top">
+        <div class="liq-title">Liquidación de Sueldo · Trabajadora de Casa Particular</div>
+        <div class="liq-nombre">${d.nombre}</div>
+        <div class="liq-top-grid">
+          <div class="liq-top-item"><div class="lbl">RUT</div><div class="val">${d.rut}</div></div>
+          <div class="liq-top-item"><div class="lbl">Período</div><div class="val">${nomMes(d.periodo)}</div></div>
+          <div class="liq-top-item"><div class="lbl">Días trabajados</div><div class="val">${d.dias} de 30</div></div>
+          <div class="liq-top-item"><div class="lbl">AFP / Salud</div><div class="val">${d.afpNombre} · FONASA</div></div>
+        </div>
+      </div>
+
+      <!-- HERO: Lo primero que ve es cuánto recibe -->
+      <div class="liq-hero">
+        <div class="liq-hero-left">
+          <div class="lbl">💰 Recibirás este mes</div>
+          <div class="monto">${fmt(d.liquido)}</div>
+          <div class="sub">Después de descuentos de ley (AFP + Salud)</div>
+        </div>
+        <div class="liq-hero-right">
+          <div class="liq-hero-chip">Total haberes: ${fmt(d.totalHaberes)}</div>
+          <div class="liq-hero-chip" style="background:rgba(239,68,68,.08);color:#dc2626;border-color:rgba(239,68,68,.2)">Descuentos: −${fmt(d.totalDescuentos)}</div>
+        </div>
+      </div>
+
+      <div class="liq-body">
+
+        <!-- SECCIÓN 1: Haberes -->
+        <div class="liq-section">
+          <div class="liq-section-hdr">
+            <div class="ico green">📥</div>
+            <h4>Lo que ganas este mes</h4>
+            <span class="subtotal pos">${fmt(d.totalHaberes)}</span>
+          </div>
+          <div class="liq-item">
+            <div class="liq-item-info">
+              <div class="liq-item-name">Sueldo Base</div>
+              <div class="liq-item-note">Base mensual ${fmt(d.sueldoBase)}${d.dias<30?` × ${d.dias}/30 días`:' · mes completo'}</div>
+            </div>
+            <span class="liq-item-amt pos">${fmt(d.sueldo)}</span>
+          </div>
+          ${d.movilizacion>0?`<div class="liq-item">
+            <div class="liq-item-info">
+              <div class="liq-item-name">Movilización</div>
+              <div class="liq-item-note">No imponible · ${fmt(d.movilBase)}/mes${d.dias<30?` × ${d.dias}/30`:''}</div>
+            </div>
+            <span class="liq-item-amt pos">${fmt(d.movilizacion)}</span>
+          </div>`:''}
+          ${d.colacion>0?`<div class="liq-item">
+            <div class="liq-item-info">
+              <div class="liq-item-name">Colación</div>
+              <div class="liq-item-note">No imponible · ${fmt(d.colacBase)}/mes${d.dias<30?` × ${d.dias}/30`:''}</div>
+            </div>
+            <span class="liq-item-amt pos">${fmt(d.colacion)}</span>
+          </div>`:''}
+          ${d.horasExtra>0?`<div class="liq-item">
+            <div class="liq-item-info"><div class="liq-item-name">Horas Extra</div><div class="liq-item-note">Imponible</div></div>
+            <span class="liq-item-amt pos">${fmt(d.horasExtra)}</span>
+          </div>`:''}
+          ${d.bono>0?`<div class="liq-item">
+            <div class="liq-item-info"><div class="liq-item-name">Bono / Gratificación</div><div class="liq-item-note">Imponible</div></div>
+            <span class="liq-item-amt pos">${fmt(d.bono)}</span>
+          </div>`:''}
+        </div>
+
+        <!-- SECCIÓN 2: Descuentos explicados -->
+        <div class="liq-section">
+          <div class="liq-section-hdr">
+            <div class="ico red">📤</div>
+            <h4>Descuentos legales obligatorios</h4>
+            <span class="subtotal neg">−${fmt(d.totalDescuentos)}</span>
+          </div>
+          <div class="liq-item">
+            <div class="liq-item-info">
+              <div class="liq-item-name">AFP ${d.afpNombre} (${d.afpTasa}%)</div>
+              <div class="liq-item-note">Ahorro previsional para tu jubilación · Base imponible: ${fmt(d.rentaImponible)}</div>
+            </div>
+            <span class="liq-item-amt neg">−${fmt(d.descAfp)}</span>
+          </div>
+          <div class="liq-item">
+            <div class="liq-item-info">
+              <div class="liq-item-name">FONASA Salud (7%)</div>
+              <div class="liq-item-note">Cotización para salud pública · Base imponible: ${fmt(d.rentaImponible)}</div>
+            </div>
+            <span class="liq-item-amt neg">−${fmt(d.descSalud)}</span>
+          </div>
+          ${d.descAdicional>0?`<div class="liq-item">
+            <div class="liq-item-info"><div class="liq-item-name">Descuento Adicional</div><div class="liq-item-note">Anticipo u otro descuento acordado</div></div>
+            <span class="liq-item-amt neg">−${fmt(d.descAdicional)}</span>
+          </div>`:''}
+        </div>
+
+      </div><!-- fin liq-body -->
+
+      <!-- Resumen final -->
+      <div class="liq-summary">
+        <div class="liq-sum-row"><span>Total de haberes</span><span>${fmt(d.totalHaberes)}</span></div>
+        <div class="liq-sum-row"><span>Total descuentos legales</span><span>−${fmt(d.totalDescuentos)}</span></div>
+        <div class="liq-sum-row final"><span>💰 LÍQUIDO A PAGAR</span><span>${fmt(d.liquido)}</span></div>
+      </div>
+
+      <!-- Firmas -->
+      <div class="liq-firmas">
+        <div class="firma-blk"><div class="line">${d.nombre}</div><div class="sublabel">TRABAJADORA · RUT ${d.rut}</div></div>
+        <div class="firma-blk"><div class="line">Empleador(a)</div><div class="sublabel">&nbsp;</div></div>
+      </div>
+    </div>
+
+    <!-- Costo empleador — solo pantalla -->
+    <div class="emp-costs no-print" style="margin-top:12px">
+      <h4>📋 Costo total para el empleador (informativo — no aparece en la liquidación impresa)</h4>
+      <div class="cost-row"><span>SIS — Seguro Invalidez y Sobrevivencia (1,54%)</span><span>${fmt(d.costoSIS)}</span></div>
+      <div class="cost-row"><span>Seguro Social Expectativa de Vida (0,9%)</span><span>${fmt(d.costoSS)}</span></div>
       <div class="cost-row"><span>Accidente del Trabajo (0,93%)</span><span>${fmt(d.costoAcc)}</span></div>
       <div class="cost-row"><span>Aporte Adicional AFP (0,1%)</span><span>${fmt(d.costoAfpAd)}</span></div>
-      <div class="cost-row"><span>Seg. Cesantía Casa Particular (3%)</span><span>${fmt(d.costoCes)}</span></div>
-      <div class="cost-row"><span>Total Costo Empleador</span><span>${fmt(d.totalEmp)}</span></div>
+      <div class="cost-row"><span>Seguro Cesantía Casa Particular (3%)</span><span>${fmt(d.costoCes)}</span></div>
+      <div class="cost-row"><span>Total costo empleador este mes</span><span>${fmt(d.totalEmp)}</span></div>
     </div>`;
-  window._ultimaLiq = d;
+  window._liqData=d;
 }
 
-// ============================================================
-// GUARDAR LIQUIDACIÓN
-// ============================================================
-async function guardarLiquidacion() {
-  const d = calcular();
-  if (!asesoraActiva) { toast('⚠️ Selecciona una asesora primero','err'); return; }
-  const entrada = {
+// ══════════════════════════════════════
+// AUTO-GUARDAR AL CALCULAR
+// ══════════════════════════════════════
+let _autoGuardTimer=null;
+function autoGuardar(d){
+  if(!asesoraActiva||!d.periodo)return;
+  clearTimeout(_autoGuardTimer);
+  _autoGuardTimer=setTimeout(()=>_guardarLiq(d),1500); // 1.5s de debounce
+}
+
+async function _guardarLiq(d){
+  const entrada={
     asesora_id:asesoraActiva.id||null,
-    nombre:d.nombre, rut:d.rut, periodo:d.periodo, dias:d.dias,
-    afp_nombre:d.afpNombre, afp_tasa:d.afpTasa,
-    sueldo_base:d.sueldoBase, movilizacion:d.movilizacion, colacion:d.colacion,
-    horas_extra:d.horasExtra, bono:d.bono,
-    total_haberes:d.totalHaberes, renta_imponible:d.rentaImponible,
-    desc_afp:d.descAfp, desc_salud:d.descSalud,
-    total_descuentos:d.totalDescuentos, liquido:d.liquido,
-    costo_sis:d.costoSIS, costo_seg_social:d.costoSS,
-    costo_accidente:d.costoAcc, costo_afp_adicional:d.costoAfpAd,
-    costo_cesantia:d.costoCes, total_costo_empleador:d.totalEmp
+    nombre:d.nombre,rut:d.rut,periodo:d.periodo,dias:d.dias,
+    afp_nombre:d.afpNombre,afp_tasa:d.afpTasa,
+    sueldo_base:d.sueldoBase,movilizacion:d.movilizacion,colacion:d.colacion,
+    horas_extra:d.horasExtra,bono:d.bono,
+    total_haberes:d.totalHaberes,renta_imponible:d.rentaImponible,
+    desc_afp:d.descAfp,desc_salud:d.descSalud,
+    total_descuentos:d.totalDescuentos,liquido:d.liquido,
+    costo_sis:d.costoSIS,costo_seg_social:d.costoSS,
+    costo_accidente:d.costoAcc,costo_afp_adicional:d.costoAfpAd,
+    costo_cesantia:d.costoCes,total_costo_empleador:d.totalEmp
   };
-  try {
+  try{
     await db.upsert('liquidaciones',entrada);
-    toast('✅ Liquidación guardada en Supabase');
     await cargarHistorial();
-  } catch(e) {
+  }catch(e){
     const loc=JSON.parse(localStorage.getItem('hist_liq')||'[]');
-    loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});
+    const idx=loc.findIndex(x=>x.nombre===d.nombre&&x.periodo===d.periodo);
+    if(idx>=0)loc[idx]={...entrada,id:loc[idx].id,created_at:loc[idx].created_at};
+    else loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});
     localStorage.setItem('hist_liq',JSON.stringify(loc));
-    toast('💾 Guardado localmente'); cargarHistLocal();
+    cargarHistLocal();
   }
 }
 
-// ============================================================
+// ══════════════════════════════════════
+// IMPRIMIR
+// ══════════════════════════════════════
+function imprimirLiq(){
+  if(!window._liqData){toast('Primero genera una liquidación','err');return;}
+  // Clonar sin la sección employer costs
+  const wrap=document.getElementById('liq-doc');
+  document.getElementById('print-content').innerHTML=wrap.outerHTML;
+  document.getElementById('modal-print').style.display='block';
+}
+function cerrarModal(){document.getElementById('modal-print').style.display='none';}
+
+// ══════════════════════════════════════
 // HISTORIAL
-// ============================================================
-async function cargarHistorial() {
-  try {
-    const rows=await db.get('liquidaciones','limit=100');
-    _histRows=rows||[];
-    localStorage.setItem('hist_liq',JSON.stringify(_histRows));
-  } catch(e) { cargarHistLocal(); return; }
+// ══════════════════════════════════════
+async function cargarHistorial(){
+  try{const rows=await db.get('liquidaciones','limit=100');_histRows=rows||[];localStorage.setItem('hist_liq',JSON.stringify(_histRows));}
+  catch(e){cargarHistLocal();return;}
   renderHistorial(_histRows);
 }
+function cargarHistLocal(){_histRows=JSON.parse(localStorage.getItem('hist_liq')||'[]');renderHistorial(_histRows);}
 
-function cargarHistLocal() {
-  _histRows=JSON.parse(localStorage.getItem('hist_liq')||'[]');
-  renderHistorial(_histRows);
+function filtrarHist(){
+  const fn=document.getElementById('f-asesora').value.toLowerCase();
+  const fp=document.getElementById('f-periodo').value;
+  renderHistorial(_histRows.filter(h=>(!fn||h.nombre?.toLowerCase().includes(fn))&&(!fp||h.periodo===fp)),true);
 }
+function limpiarFiltros(){setv('f-asesora','');setv('f-periodo','');renderHistorial(_histRows);}
 
-function filtrarHistorial() {
-  const fNombre=document.getElementById('f-asesora').value.toLowerCase();
-  const fPeriodo=document.getElementById('f-periodo').value;
-  const filtrado=_histRows.filter(h=>{
-    const matchN=!fNombre||h.nombre?.toLowerCase().includes(fNombre);
-    const matchP=!fPeriodo||h.periodo===fPeriodo;
-    return matchN&&matchP;
-  });
-  renderHistorial(filtrado,true);
-}
-
-function limpiarFiltros(){
-  setv('f-asesora',''); setv('f-periodo','');
-  renderHistorial(_histRows);
-}
-
-function renderHistorial(rows, filtrado=false) {
+function renderHistorial(rows,fil=false){
   const el=document.getElementById('lista-historial');
-  if(!rows?.length){
-    el.innerHTML=`<div class="empty-state"><span class="icon">📋</span>${filtrado?'Sin resultados para ese filtro.':'No hay liquidaciones guardadas aún.'}</div>`;
-    return;
-  }
+  if(!rows?.length){el.innerHTML=`<div class="empty"><span class="ic">📋</span>${fil?'Sin resultados.':'No hay liquidaciones aún.'}</div>`;return;}
   el.innerHTML=rows.map((h,i)=>`
-    <div class="history-item" onclick="verLiqHist(${i},'${rows===_histRows?'all':'filtered'}',${_histRows.indexOf(h)})">
+    <div class="hist-item" onclick="verLiqHist(${_histRows.indexOf(h)})">
       <div>
-        <div class="history-month">${nomMes(h.periodo)} <span style="font-size:0.75rem;color:var(--muted);font-weight:400">· ${h.nombre}</span></div>
-        <div style="font-size:0.75rem;color:var(--muted)">AFP ${h.afp_nombre} · R.I. ${fmt(h.renta_imponible)} · ${h.dias} días</div>
+        <div class="hist-mes">${nomMes(h.periodo)} <span style="font-size:.74rem;color:var(--muted);font-weight:400">· ${h.nombre}</span></div>
+        <div style="font-size:.74rem;color:var(--muted)">AFP ${h.afp_nombre} · ${h.dias} días · R.I. ${fmt(h.renta_imponible)}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;text-align:right">
-        <div><div class="history-net">${fmt(h.liquido)}</div><div style="font-size:0.7rem;color:var(--muted)">Líquido</div></div>
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="text-align:right"><div class="hist-net">${fmt(h.liquido)}</div><div style="font-size:.69rem;color:var(--muted)">Líquido</div></div>
         ${h.id?`<button class="btn-danger-sm" onclick="event.stopPropagation();eliminarLiq('${h.id}')">✕</button>`:''}
       </div>
     </div>`).join('');
 }
 
-function verLiqHist(i,src,origIdx) {
-  const h=_histRows[origIdx>=0?origIdx:i]; if(!h) return;
+function verLiqHist(i){
+  const h=_histRows[i];if(!h)return;
   const d={nombre:h.nombre,rut:h.rut,periodo:h.periodo,dias:h.dias,
-    afpNombre:h.afp_nombre,afpTasa:h.afp_tasa,sueldoBase:h.sueldo_base,sueldo:h.sueldo_base,
-    movilizacion:h.movilizacion,colacion:h.colacion,horasExtra:h.horas_extra,bono:h.bono,descAdicional:0,
-    totalHaberes:h.total_haberes,rentaImponible:h.renta_imponible,descAfp:h.desc_afp,descSalud:h.desc_salud,
-    totalDescuentos:h.total_descuentos,liquido:h.liquido,costoSIS:h.costo_sis,costoSS:h.costo_seg_social,
-    costoAcc:h.costo_accidente,costoAfpAd:h.costo_afp_adicional,costoCes:h.costo_cesantia,totalEmp:h.total_costo_empleador};
-  // Mostrar en modal solo la liquidación limpia
-  document.getElementById('print-content').innerHTML = htmlLiqLimpia(d);
+    afpNombre:h.afp_nombre,afpTasa:h.afp_tasa,
+    sueldoBase:h.sueldo_base,sueldo:h.sueldo_base,
+    movilizacion:h.movilizacion,colacion:h.colacion,
+    movilBase:h.movilizacion,colacBase:h.colacion,
+    horasExtra:h.horas_extra,bono:h.bono,descAdicional:0,
+    totalHaberes:h.total_haberes,rentaImponible:h.renta_imponible,
+    descAfp:h.desc_afp,descSalud:h.desc_salud,
+    totalDescuentos:h.total_descuentos,liquido:h.liquido,
+    costoSIS:h.costo_sis,costoSS:h.costo_seg_social,
+    costoAcc:h.costo_accidente,costoAfpAd:h.costo_afp_adicional,
+    costoCes:h.costo_cesantia,totalEmp:h.total_costo_empleador,
+    factor:h.dias/30};
+  renderLiq(d);
+  const wrap=document.getElementById('liq-doc');
+  document.getElementById('print-content').innerHTML=wrap.outerHTML;
   document.getElementById('modal-print').style.display='block';
 }
 
 async function eliminarLiq(id){
-  if(!confirm('¿Eliminar esta liquidación?')) return;
+  if(!confirm('¿Eliminar esta liquidación?'))return;
   try{await db.del('liquidaciones',id);}catch(e){}
   _histRows=_histRows.filter(x=>x.id!=id);
   localStorage.setItem('hist_liq',JSON.stringify(_histRows));
-  renderHistorial(_histRows); toast('🗑️ Liquidación eliminada');
+  renderHistorial(_histRows);toast('🗑️ Eliminada');
 }
 
-// ============================================================
-// IMPRIMIR — solo muestra la liquidación limpia
-// ============================================================
-function imprimirLiq() {
-  const d = calcular();
-  document.getElementById('print-content').innerHTML = htmlLiqLimpia(d);
-  document.getElementById('modal-print').style.display='block';
-}
-function cerrarModal(){document.getElementById('modal-print').style.display='none';}
-
-// ============================================================
-// VACACIONES
-// ============================================================
-function calcVac(){
-  const ing=document.getElementById('v-ingreso').value;
-  const ini=document.getElementById('v-inicio').value;
-  const sueldo=+document.getElementById('v-sueldo').value||539000;
-  const anios=+document.getElementById('v-anios').value||0;
-  const el=document.getElementById('v-resultado');
-  if(!ing||!ini){el.style.display='none';return;}
-  el.style.display='block';
-  const dif=(new Date(ini+'T12:00')-new Date(ing+'T12:00'))/(1000*60*60*24*365.25);
-  if(dif<1){
-    el.innerHTML=`<div style="font-size:1.2rem;font-family:'Playfair Display',serif;color:var(--accent);text-align:center">⚠️ Sin derecho aún</div>
-    <div style="font-size:0.81rem;color:var(--muted);text-align:center;margin-top:6px">No completa 1 año. Tiempo actual: <strong>${(dif*12).toFixed(1)} meses</strong></div>`;
-    return;
+// ══════════════════════════════════════
+// VACACIONES — AUTOMÁTICAS DESDE INGRESO
+// ══════════════════════════════════════
+function calcVacaciones(){
+  const el=document.getElementById('vac-contenido');
+  if(!asesoraActiva||!asesoraActiva.fecha_ingreso){
+    el.innerHTML='<div class="empty"><span class="ic">👤</span>Selecciona una asesora para ver sus vacaciones.</div>';return;
   }
-  let dias=15,prog=0;
-  if(anios>=10){prog=Math.floor((anios-10)/3);dias+=prog;}
-  const pago=Math.round(sueldo/30*dias);
-  el.innerHTML=`<div style="font-size:1.4rem;font-family:'Playfair Display',serif;color:var(--accent);text-align:center">${dias} días hábiles · ${fmt(pago)}</div>
-  <div style="font-size:0.81rem;color:var(--muted);text-align:center;margin-top:6px">
-    Años con empleador: <strong>${dif.toFixed(1)}</strong> · Años totales: <strong>${anios}</strong><br>
-    Días base: 15${prog>0?` + ${prog} días progresivos`:''} · Pago diario: ${fmt(sueldo/30)}<br>
-    <strong>Total a pagar: ${fmt(pago)}</strong>
-  </div>`;
+  const a=asesoraActiva;
+  const hoy=new Date();
+  const ingreso=new Date(a.fecha_ingreso+'T12:00');
+  const aniosTot=a.anios_totales||0;
+  const sueldo=a.sueldo_base||539000;
+
+  // Años y meses trabajados con este empleador
+  const totalMs=(hoy-ingreso)/(1000*60*60*24*365.25)*12;
+  const aniosEste=totalMs/12;
+  const aniosCumplidos=Math.floor(aniosEste);
+  const mesesMes=Math.floor(totalMs%12);
+
+  // Días ganados por año
+  let diasLegales=15;
+  let diasProg=0;
+  const aniosTotal=aniosTot+aniosCumplidos;
+  if(aniosTotal>=10)diasProg=Math.floor((aniosTotal-10)/3);
+  const diasPorAnio=diasLegales+diasProg;
+
+  // Vacaciones acumuladas = (días proporcionales al tiempo trabajado)
+  const diasAcumulados=aniosEste>=1?Math.floor(diasPorAnio*(aniosEste-Math.floor(aniosEste/1)*0)):0;
+  // Proporcional: fracción de año actual × días del periodo
+  const fraccionAnioActual=aniosEste-Math.floor(aniosEste);
+  const diasGanados=Math.round(diasPorAnio*fraccionAnioActual);
+  const diasPorMes=diasPorAnio/12;
+
+  // Monto si tomara vacaciones hoy
+  const montoPorDia=sueldo/30;
+  const montoVac=Math.round(montoPorDia*diasPorAnio);
+
+  // Porcentaje del año actual
+  const pctAnio=Math.min(100,Math.round(fraccionAnioActual*100));
+
+  // Próximo aniversario
+  const proxAniv=new Date(ingreso);
+  proxAniv.setFullYear(ingreso.getFullYear()+aniosCumplidos+1);
+  const diasParaAniv=Math.ceil((proxAniv-hoy)/(1000*60*60*24));
+
+  el.innerHTML=`
+    <div class="card">
+      <div class="card-title">🌴 Vacaciones de ${a.nombre}</div>
+      <div class="vac-progress">
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:4px">
+          <span>Avance año laboral actual</span><span style="font-weight:700;color:var(--accent)">${pctAnio}%</span>
+        </div>
+        <div class="vac-bar-wrap"><div class="vac-bar" style="width:${pctAnio}%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.71rem;color:var(--muted)">
+          <span>Ingreso: ${ingreso.toLocaleDateString('es-CL')}</span>
+          <span>${diasParaAniv>0?`Próximo aniversario en ${diasParaAniv} días`:'Aniversario este mes 🎉'}</span>
+        </div>
+      </div>
+      <div class="vac-stats">
+        <div class="vac-stat"><div class="vv">${aniosCumplidos}</div><div class="vl">Años con este empleador</div></div>
+        <div class="vac-stat"><div class="vv">${diasPorAnio}</div><div class="vl">Días hábiles por año${diasProg>0?` (${diasProg} prog.)`:''}}</div></div>
+        <div class="vac-stat"><div class="vv">${fmt(montoVac).replace('$','')}</div><div class="vl">Monto si toma vacaciones</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 Detalle de Acumulación</div>
+      <div class="vac-acum">
+        <h4>📊 Días ganados hasta hoy</h4>
+        <div class="vac-acum-row"><span>Días base por año (ley)</span><span>15 días hábiles</span></div>
+        ${diasProg>0?`<div class="vac-acum-row"><span>Días progresivos (${aniosTotal} años totales)</span><span>+${diasProg} días</span></div>`:''}
+        <div class="vac-acum-row"><span>Total días por año</span><span>${diasPorAnio} días</span></div>
+        <div class="vac-acum-row"><span>Días ganados por mes</span><span>${diasPorMes.toFixed(2)} días/mes</span></div>
+        <div class="vac-acum-row"><span>Meses transcurridos año actual</span><span>${mesesMes} meses</span></div>
+        <div class="vac-acum-row"><span>Días acumulados estimados</span><span style="color:var(--accent)">${Math.round(diasPorMes*mesesMes)} días hábiles</span></div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:#f0fdf4;border-radius:9px;font-size:.8rem;color:var(--muted);line-height:1.6">
+        💡 <strong style="color:var(--dark)">Importante:</strong> El derecho a vacaciones se devenga luego de <strong>1 año</strong> de servicio. 
+        Fecha de derecho: <strong>${new Date(ingreso.getFullYear()+1,ingreso.getMonth(),ingreso.getDate()).toLocaleDateString('es-CL')}</strong>
+        ${aniosCumplidos<1?' (aún no alcanzado)':' ✅'}.
+      </div>
+    </div>`;
 }
 
-// ============================================================
-// TABS
-// ============================================================
-function showTab(tab,btn){
+// ══════════════════════════════════════
+// CALCULADORA DÍAS
+// ══════════════════════════════════════
+function toggleIngrParcial(){document.getElementById('d-fecha-grp').style.display=document.getElementById('d-ingreso-parcial').value==='si'?'block':'none';}
+
+function calcDias(){
+  const periodo=document.getElementById('d-periodo').value;if(!periodo)return;
+  const jornada=document.getElementById('d-jornada').value;
+  const ingP=document.getElementById('d-ingreso-parcial').value;
+  const ingF=document.getElementById('d-ingreso-fecha').value;
+  const[y,m]=periodo.split('-').map(Number);
+  const diasMes=jornada==='30'?30:new Date(y,m,0).getDate();
+  let base=diasMes,detalles=[];
+  if(ingP==='si'&&ingF){const fi=new Date(ingF+'T12:00');if(fi.getFullYear()===y&&fi.getMonth()+1===m){base=diasMes-fi.getDate()+1;detalles.push(`• Ingresó el día ${fi.getDate()}: ${base} días`);}}
+  else{detalles.push(`• Mes ${jornada==='30'?'estándar (30)':'real'}: ${base} días base`);}
+  let aus=0,ext=0;
+  ausencias.forEach(a=>{
+    const ini=new Date(a.desde+'T12:00'),fin=new Date(a.hasta+'T12:00');
+    const d=Math.round((fin-ini)/86400000)+1;
+    if(a.tipo==='feriado'){ext+=d;detalles.push(`• Feriado trabajado "${a.desc}": +${d}d`);}
+    else{aus+=d;detalles.push(`• ${a.desc} (${lTipo(a.tipo)}): −${d}d`);}
+  });
+  const res=Math.max(0,base-aus+ext);
+  document.getElementById('d-resultado').textContent=res;
+  document.getElementById('d-base').textContent=base;
+  document.getElementById('d-ausen').textContent=aus;
+  document.getElementById('d-extra').textContent=ext;
+  document.getElementById('d-detalle').innerHTML=detalles.length?detalles.join('<br>')+'<br><br><strong style="color:var(--dark)">→ Total: '+res+' días</strong>':'—';
+}
+
+function addAus(){
+  const tipo=document.getElementById('d-tipo').value;
+  const desc=document.getElementById('d-desc').value||lTipo(tipo);
+  const desde=document.getElementById('d-desde').value;
+  const hasta=document.getElementById('d-hasta').value||desde;
+  if(!desde){toast('Selecciona fecha de inicio','err');return;}
+  ausencias.push({tipo,desc,desde,hasta,id:Date.now()});
+  renderAus();calcDias();document.getElementById('d-desc').value='';
+}
+function delAus(id){ausencias=ausencias.filter(a=>a.id!==id);renderAus();calcDias();}
+function renderAus(){
+  const el=document.getElementById('lista-aus'),card=document.getElementById('card-aus');
+  if(!ausencias.length){card.style.display='none';return;}
+  card.style.display='block';
+  el.innerHTML=ausencias.map(a=>{
+    const ini=new Date(a.desde+'T12:00'),fin=new Date(a.hasta+'T12:00');
+    const d=Math.round((fin-ini)/86400000)+1;
+    return`<div class="aus-item"><div class="ai"><strong>${a.desc}</strong><span class="tipo-b tb-${a.tipo[0]}">${lTipo(a.tipo)}</span>
+    <span>${ini.toLocaleDateString('es-CL')} → ${fin.toLocaleDateString('es-CL')}</span></div>
+    <div class="ad">${a.tipo==='feriado'?'+':'−'}${d}d</div>
+    <button onclick="delAus(${a.id})" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:1rem;padding:0 4px">✕</button></div>`;
+  }).join('');
+}
+const lTipo=t=>({injustificada:'Injustificada',justificada:'Justificada',licencia:'Licencia',vacaciones:'Vacaciones',feriado:'Feriado (+)',permiso:'Permiso'})[t]||t;
+
+function usarDias(){
+  const d=document.getElementById('d-resultado').textContent;
+  const p=document.getElementById('d-periodo').value;
+  setv('dias',d);if(p)setv('periodo',p);
+  calcular();showTab('liquidacion');toast(`✅ ${d} días aplicados`);
+}
+
+function esc(tipo){
+  const p=document.getElementById('d-periodo').value||new Date().toISOString().slice(0,7);
+  setv('d-periodo',p);ausencias=[];
+  document.getElementById('d-ingreso-parcial').value='no';
+  document.getElementById('d-fecha-grp').style.display='none';
+  const[y,m]=p.split('-');
+  if(tipo==='ing15'){document.getElementById('d-ingreso-parcial').value='si';document.getElementById('d-fecha-grp').style.display='block';setv('d-ingreso-fecha',`${y}-${m}-15`);}
+  else if(tipo==='ing20'){document.getElementById('d-ingreso-parcial').value='si';document.getElementById('d-fecha-grp').style.display='block';setv('d-ingreso-fecha',`${y}-${m}-20`);}
+  else if(tipo==='aus1'){ausencias.push({tipo:'injustificada',desc:'Inasistencia',desde:`${y}-${m}-10`,hasta:`${y}-${m}-10`,id:Date.now()});}
+  else if(tipo==='lic5'){ausencias.push({tipo:'licencia',desc:'Licencia médica',desde:`${y}-${m}-05`,hasta:`${y}-${m}-09`,id:Date.now()});}
+  else if(tipo==='lic7'){ausencias.push({tipo:'licencia',desc:'Licencia médica',desde:`${y}-${m}-05`,hasta:`${y}-${m}-11`,id:Date.now()});}
+  else if(tipo==='vac5'){ausencias.push({tipo:'vacaciones',desc:'Vacaciones',desde:`${y}-${m}-10`,hasta:`${y}-${m}-14`,id:Date.now()});}
+  renderAus();calcDias();
+}
+
+// ══════════════════════════════════════
+// TABS — sincroniza desktop Y móvil
+// ══════════════════════════════════════
+const TABS_ORDER=['asesoras','liquidacion','dias','vacaciones','indicadores','historial'];
+function showTab(tab,btn,tipo){
   document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  if(btn&&btn.classList) btn.classList.add('active');
-  else{
-    const tabs=['asesoras','liquidacion','dias','vacaciones','indicadores','historial'];
-    const idx=tabs.indexOf(tab);
-    const btns=document.querySelectorAll('.tab-btn');
-    if(idx>=0&&btns[idx]) btns[idx].classList.add('active');
-  }
+  document.querySelectorAll('.tab-mob-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+tab)?.classList.add('active');
+  // Activar en ambas barras
+  const idx=TABS_ORDER.indexOf(tab);
+  const dBtns=document.querySelectorAll('.tab-btn');
+  const mBtns=document.querySelectorAll('.tab-mob-btn');
+  if(idx>=0){if(dBtns[idx])dBtns[idx].classList.add('active');if(mBtns[idx])mBtns[idx].classList.add('active');}
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ============================================================
+// ══════════════════════════════════════
 // START
-// ============================================================
+// ══════════════════════════════════════
+setv('periodo',new Date().toISOString().slice(0,7));
+setv('d-periodo',new Date().toISOString().slice(0,7));
+calcular();calcDias();
 init();
 </script>
 </body>
