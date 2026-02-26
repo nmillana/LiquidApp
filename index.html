@@ -1350,7 +1350,7 @@ function autoGuardar(d){
 
 async function _guardarLiq(d){
   const entrada={
-    asesora_id:asesoraActiva.id||null,
+    asesora_id:asesoraActiva?.id||null,
     nombre:d.nombre,rut:d.rut,periodo:d.periodo,dias:d.dias,
     afp_nombre:d.afpNombre,afp_tasa:d.afpTasa,
     sueldo_base:d.sueldoBase,movilizacion:d.movilizacion,colacion:d.colacion,
@@ -1362,15 +1362,39 @@ async function _guardarLiq(d){
     costo_accidente:d.costoAcc,costo_afp_adicional:d.costoAfpAd,
     costo_cesantia:d.costoCes,total_costo_empleador:d.totalEmp
   };
+
+  // Guardar en Supabase — buscar si ya existe para hacer UPDATE o INSERT
   try{
-    await db.upsert('liquidaciones',entrada);
+    // Buscar registro existente por asesora+periodo
+    const q=`asesora_id=eq.${entrada.asesora_id}&periodo=eq.${entrada.periodo}&limit=1`;
+    const existentes=await db.get('liquidaciones',q);
+    if(existentes&&existentes.length>0){
+      // UPDATE
+      const id=existentes[0].id;
+      await fetch(`${SURL}/rest/v1/liquidaciones?id=eq.${id}`,{
+        method:'PATCH',
+        headers:{...H(),Prefer:'return=minimal'},
+        body:JSON.stringify(entrada)
+      });
+    } else {
+      // INSERT
+      await fetch(`${SURL}/rest/v1/liquidaciones`,{
+        method:'POST',
+        headers:{...H(),Prefer:'return=minimal'},
+        body:JSON.stringify(entrada)
+      });
+    }
     await registrarLog('liquidacion',`Liquidación ${d.periodo} · ${d.nombre} · ${fmt(d.liquido)}`);
     await cargarHistorial();
   }catch(e){
+    // Modo local: guardar en localStorage
     const loc=JSON.parse(localStorage.getItem('hist_liq')||'[]');
     const idx=loc.findIndex(x=>x.nombre===d.nombre&&x.periodo===d.periodo);
-    if(idx>=0)loc[idx]={...entrada,id:loc[idx].id,created_at:loc[idx].created_at};
-    else loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});
+    if(idx>=0){
+      loc[idx]={...loc[idx],...entrada};
+    } else {
+      loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});
+    }
     localStorage.setItem('hist_liq',JSON.stringify(loc));
     cargarHistLocal();
   }
@@ -1379,9 +1403,11 @@ async function _guardarLiq(d){
 // ══════════════════════════════════════
 // IMPRIMIR
 // ══════════════════════════════════════
-function imprimirLiq(){
+async function imprimirLiq(){
   if(!window._liqData){toast('Primero genera una liquidación','err');return;}
-  // Clonar sin la sección employer costs
+  // Forzar guardado inmediato antes de imprimir
+  clearTimeout(_autoGuardTimer);
+  await _guardarLiq(window._liqData);
   const wrap=document.getElementById('liq-doc');
   document.getElementById('print-content').innerHTML=wrap.outerHTML;
   document.getElementById('modal-print').style.display='block';
