@@ -622,6 +622,81 @@ const H=()=>({
 // ══════════════════════════════════════
 // AUTH — Supabase Auth REST
 // ══════════════════════════════════════
+
+// Detectar si venimos de un link de email (confirmación o reset de contraseña)
+// Supabase pone los tokens en el hash: #access_token=...&type=signup|recovery
+async function detectarTokenEmail(){
+  const hash=window.location.hash;
+  if(!hash)return false;
+  const params=new URLSearchParams(hash.replace('#',''));
+  const type=params.get('type');
+  const token=params.get('access_token');
+  if(!token)return false;
+
+  if(type==='signup'){
+    // Email confirmado — hacer login automático con el token
+    _authToken=token;
+    try{
+      const r=await fetch(`${SURL}/auth/v1/user`,{headers:{apikey:SKEY,Authorization:`Bearer ${token}`}});
+      if(r.ok){
+        _currentUser=await r.json();
+        localStorage.setItem('sb_token',token);
+        localStorage.setItem('sb_user',JSON.stringify(_currentUser));
+        _isAdmin=_currentUser.email===ADMIN_EMAIL;
+        window.history.replaceState(null,'',window.location.pathname);
+        mostrarApp();
+        toast('✅ Email confirmado. ¡Bienvenido!');
+        return true;
+      }
+    }catch(e){}
+  }
+
+  if(type==='recovery'){
+    // Link de recuperación — mostrar formulario de nueva contraseña
+    _authToken=token; // guardamos temporalmente para poder hacer el update
+    window.history.replaceState(null,'',window.location.pathname);
+    mostrarFormNuevaPass();
+    return true;
+  }
+  return false;
+}
+
+function mostrarFormNuevaPass(){
+  const overlay=document.getElementById('auth-overlay');
+  overlay.style.display='flex';
+  overlay.innerHTML=`
+    <div class="auth-box">
+      <div class="auth-logo"><span class="ic">🔑</span><h2>Nueva Contraseña</h2><p>Ingresa tu nueva contraseña</p></div>
+      <div id="auth-error" class="auth-error"></div>
+      <div class="auth-field"><label>Nueva contraseña (mín. 6 caracteres)</label>
+        <input type="password" id="new-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doNuevaPass()"></div>
+      <div class="auth-field"><label>Confirmar contraseña</label>
+        <input type="password" id="new-pass2" placeholder="••••••••" onkeydown="if(event.key==='Enter')doNuevaPass()"></div>
+      <button class="auth-btn" onclick="doNuevaPass()">Guardar contraseña</button>
+    </div>`;
+}
+
+async function doNuevaPass(){
+  const p1=document.getElementById('new-pass').value;
+  const p2=document.getElementById('new-pass2').value;
+  if(!p1||p1.length<6){showAuthError('Mínimo 6 caracteres');return;}
+  if(p1!==p2){showAuthError('Las contraseñas no coinciden');return;}
+  try{
+    const r=await fetch(`${SURL}/auth/v1/user`,{
+      method:'PUT',
+      headers:{apikey:SKEY,Authorization:`Bearer ${_authToken}`,'Content-Type':'application/json'},
+      body:JSON.stringify({password:p1})
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.msg||'Error al actualizar');}
+    const u=await r.json();
+    localStorage.setItem('sb_token',_authToken);
+    localStorage.setItem('sb_user',JSON.stringify(u));
+    _currentUser=u;_isAdmin=u.email===ADMIN_EMAIL;
+    mostrarApp();
+    toast('✅ Contraseña actualizada');
+  }catch(e){showAuthError(e.message);}
+}
+
 async function doLogin(){
   const email=document.getElementById('auth-email').value.trim();
   const pass=document.getElementById('auth-pass').value;
@@ -634,7 +709,14 @@ async function doLogin(){
       body:JSON.stringify({email,password:pass})
     });
     const d=await r.json();
-    if(!r.ok)throw new Error(d.error_description||d.msg||'Error al ingresar');
+    if(!r.ok){
+      // Si el error es email no confirmado, decirle al usuario qué hacer
+      const msg=d.error_description||d.msg||'';
+      if(msg.toLowerCase().includes('confirm')||msg.toLowerCase().includes('not confirmed')){
+        throw new Error('Debes confirmar tu email primero. Revisa tu bandeja de entrada y haz clic en el enlace de confirmación.');
+      }
+      throw new Error(msg||'Correo o contraseña incorrectos');
+    }
     await onLoginSuccess(d);
   }catch(e){showAuthError(e.message);}
   btn.disabled=false;btn.textContent='Ingresar';
@@ -656,12 +738,11 @@ async function doRegister(){
     const d=await r.json();
     if(!r.ok)throw new Error(d.error_description||d.msg||'Error al registrar');
     if(d.access_token){
+      // Registro sin confirmación de email (cuando está desactivada en Supabase)
       await onLoginSuccess(d);
     } else {
-      showAuthError('✅ Cuenta creada. Revisa tu correo para confirmar.');
-      document.getElementById('auth-error').style.background='#f0fdf4';
-      document.getElementById('auth-error').style.borderColor='#bbf7d0';
-      document.getElementById('auth-error').style.color='#15803d';
+      // Con confirmación de email activada
+      showAuthSuccess('✅ Cuenta creada. Te enviamos un correo de confirmación — haz clic en el enlace para activar tu cuenta e ingresar.');
     }
   }catch(e){showAuthError(e.message);}
   btn.disabled=false;btn.textContent='Crear cuenta';
@@ -671,14 +752,15 @@ async function doForgot(){
   const email=document.getElementById('auth-email').value.trim();
   if(!email){showAuthError('Ingresa tu correo primero');return;}
   try{
-    await fetch(`${SURL}/auth/v1/recover`,{
+    // redirectTo debe ser la URL donde está alojado este archivo
+    const redirectTo=window.location.href.split('#')[0];
+    const r=await fetch(`${SURL}/auth/v1/recover`,{
       method:'POST',headers:{apikey:SKEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email})
+      body:JSON.stringify({email,options:{redirectTo}})
     });
-    showAuthError('✅ Correo de recuperación enviado. Revisa tu bandeja.');
-    document.getElementById('auth-error').style.background='#f0fdf4';
-    document.getElementById('auth-error').style.color='#15803d';
-  }catch(e){showAuthError('No se pudo enviar el correo');}
+    if(!r.ok){const e=await r.json();throw new Error(e.msg||'Error');}
+    showAuthSuccess('✅ Te enviamos un correo. Haz clic en el enlace para crear una nueva contraseña.');
+  }catch(e){showAuthError('No se pudo enviar el correo: '+e.message);}
 }
 
 async function onLoginSuccess(authData){
@@ -756,8 +838,12 @@ function showAuthError(msg){
   const el=document.getElementById('auth-error');
   if(!msg){el.style.display='none';return;}
   el.textContent=msg;el.style.display='block';
-  // reset colors
   el.style.background='#fef2f2';el.style.borderColor='#fecaca';el.style.color='#dc2626';
+}
+function showAuthSuccess(msg){
+  const el=document.getElementById('auth-error');
+  el.textContent=msg;el.style.display='block';
+  el.style.background='#f0fdf4';el.style.borderColor='#bbf7d0';el.style.color='#15803d';
 }
 
 function switchAuthTab(tab){
@@ -868,31 +954,20 @@ let asesoras=[],asesoraActiva=null,ausencias=[],_histRows=[];
 // INIT
 // ══════════════════════════════════════
 async function init(){
-  const st=document.getElementById('db-status');
   setv('periodo',new Date().toISOString().slice(0,7));
   setv('d-periodo',new Date().toISOString().slice(0,7));
   calcular();calcDias();
 
-  // Check existing session
+  // 1. Primero ver si venimos de un link de email (confirmación o reset)
+  const tokenDetectado=await detectarTokenEmail();
+  if(tokenDetectado)return;
+
+  // 2. Verificar sesión guardada
   const sessionValid=await checkSession();
   if(sessionValid){
     mostrarApp();
   } else {
     document.getElementById('auth-overlay').style.display='flex';
-    return; // wait for login
-  }
-
-  try{
-    await db.get('asesoras','limit=1');
-    st.textContent='● Supabase conectado';st.className='db-pill db-ok';
-    await cargarAsesoras();await cargarHistorial();
-  }catch(e){
-    st.textContent='● Modo local';st.className='db-pill db-err';
-    asesoras=JSON.parse(localStorage.getItem('asesoras_cache')||'[]');
-    renderListaAsesoras();actualizarSelector();
-    const lid=localStorage.getItem('asesora_activa_id');
-    if(lid){const a=asesoras.find(x=>x.id==lid);if(a)setAsesoraActiva(a);}
-    cargarHistLocal();
   }
 }
 
@@ -1093,15 +1168,20 @@ function calcular(){
 
   const totalHaberes=sueldo+movilizacion+colacion+horasExtra+bono;
 
-  // Renta imponible = solo conceptos imponibles (sueldo + horas extra + bono)
-  const rentaImponible=Math.max(sueldo+horasExtra+bono,539000);
+  // ── RENTA IMPONIBLE proporcional al período ──
+  // Base imponible = sueldo proporcional + horas extra + bono (no incluye mov ni colación)
+  // El mínimo imponible ($539.000) también se proporciona a los días trabajados
+  const minimoImponibleProporcional=Math.round(539000*factor);
+  const baseImponibleBruta=sueldo+horasExtra+bono;
+  const rentaImponible=Math.max(baseImponibleBruta, minimoImponibleProporcional);
 
+  // Descuentos calculados sobre renta imponible proporcional
   const descAfp=pct(rentaImponible,afpTasa);
   const descSalud=pct(rentaImponible,7);
   const totalDescuentos=descAfp+descSalud+descAdicional;
   const liquido=totalHaberes-totalDescuentos;
 
-  // Costos empleador
+  // Costos empleador (también proporcionales)
   const costoSIS=pct(rentaImponible,1.54);
   const costoSS=pct(rentaImponible,0.9);
   const costoAcc=pct(rentaImponible,0.93);
@@ -1112,7 +1192,8 @@ function calcular(){
   const d={nombre,rut,periodo,dias,afpNombre,afpTasa,
     sueldoBase,sueldo,movilizacion,colacion,movilBase,colacBase,
     horasExtra,bono,descAdicional,
-    totalHaberes,rentaImponible,descAfp,descSalud,totalDescuentos,liquido,
+    totalHaberes,rentaImponible,minimoImponibleProporcional,baseImponibleBruta,
+    descAfp,descSalud,totalDescuentos,liquido,
     costoSIS,costoSS,costoAcc,costoAfpAd,costoCes,totalEmp,factor};
 
   renderLiq(d);
@@ -1198,17 +1279,21 @@ function renderLiq(d){
             <h4>Descuentos legales obligatorios</h4>
             <span class="subtotal neg">−${fmt(d.totalDescuentos)}</span>
           </div>
+          ${d.dias<30&&d.minimoImponibleProporcional>d.baseImponibleBruta?`
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 12px;font-size:.76rem;color:#92400e;margin-bottom:8px">
+            ⚖️ <strong>Mínimo imponible proporcional:</strong> La ley establece que la base imponible mínima es $539.000 × (${d.dias}/30) = ${fmt(d.minimoImponibleProporcional)}. Se aplica este mínimo porque el sueldo proporcional (${fmt(d.baseImponibleBruta)}) es menor.
+          </div>`:''}
           <div class="liq-item">
             <div class="liq-item-info">
               <div class="liq-item-name">AFP ${d.afpNombre} (${d.afpTasa}%)</div>
-              <div class="liq-item-note">Ahorro previsional para tu jubilación · Base imponible: ${fmt(d.rentaImponible)}</div>
+              <div class="liq-item-note">Previsión jubilación · Base imponible: ${fmt(d.rentaImponible)}${d.dias<30?` (proporcional ${d.dias}/30 días)`:''}</div>
             </div>
             <span class="liq-item-amt neg">−${fmt(d.descAfp)}</span>
           </div>
           <div class="liq-item">
             <div class="liq-item-info">
               <div class="liq-item-name">FONASA Salud (7%)</div>
-              <div class="liq-item-note">Cotización para salud pública · Base imponible: ${fmt(d.rentaImponible)}</div>
+              <div class="liq-item-note">Cotización salud pública · Base imponible: ${fmt(d.rentaImponible)}${d.dias<30?` (proporcional ${d.dias}/30 días)`:''}</div>
             </div>
             <span class="liq-item-amt neg">−${fmt(d.descSalud)}</span>
           </div>
