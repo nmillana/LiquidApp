@@ -16,7 +16,41 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
 
-/* ─── HEADER ─── */
+/* ─── AUTH OVERLAY ─── */
+#auth-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#064e3b,#065f46 50%,#047857);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-box{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.auth-logo{text-align:center;margin-bottom:24px}
+.auth-logo .ic{font-size:2.5rem;display:block;margin-bottom:8px}
+.auth-logo h2{font-size:1.25rem;font-weight:800;color:var(--dark)}
+.auth-logo p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.auth-tabs{display:flex;background:var(--warm);border-radius:10px;padding:3px;margin-bottom:20px;gap:3px}
+.auth-tab{flex:1;padding:8px;border:none;background:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+.auth-tab.active{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.auth-field{margin-bottom:14px}
+.auth-field label{font-size:.71rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
+.auth-field input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-family:'Inter',sans-serif;font-size:.9rem;transition:all .2s}
+.auth-field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(5,150,105,.12)}
+.auth-btn{width:100%;padding:12px;border:none;border-radius:9px;background:var(--accent);color:#fff;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px}
+.auth-btn:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.auth-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.auth-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:8px;padding:9px 12px;font-size:.8rem;margin-bottom:12px;display:none}
+.auth-msg{font-size:.77rem;color:var(--muted);text-align:center;margin-top:12px}
+
+/* ─── USER BAR ─── */
+.user-bar{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:600;color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-role-admin{background:rgba(245,158,11,.25);border-color:rgba(245,158,11,.4);color:#fde68a}
+
+/* ─── ADMIN PANEL ─── */
+#tab-admin .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.admin-stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.admin-stat .asn{font-size:2rem;font-weight:800;color:var(--accent)}
+.admin-stat .asl{font-size:.75rem;color:var(--muted);margin-top:3px}
+.log-item{padding:10px 12px;border-bottom:1px solid var(--warm);font-size:.79rem;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.log-item:last-child{border-bottom:none}
+.log-item .lt{color:var(--muted);font-size:.69rem;white-space:nowrap}
+.log-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.lb-login{background:#dcfce7;color:#15803d} .lb-liq{background:#dbeafe;color:#1d4ed8} .lb-err{background:#fef2f2;color:#dc2626}
 .app-header{background:linear-gradient(135deg,#064e3b,#065f46 60%,#047857);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(5,150,105,.25);position:sticky;top:0;z-index:100}
 .app-header h1{font-size:1.1rem;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
 .logo-pill{background:rgba(255,255,255,.18);border-radius:8px;padding:3px 9px;font-size:.95rem}
@@ -251,12 +285,44 @@ textarea{resize:vertical;min-height:64px}
 </head>
 <body>
 
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <span class="ic">🏠</span>
+      <h2>Remuneraciones</h2>
+      <p>Casa Particular · Chile 2026</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Ingresar</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Registrarse</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-form-login">
+      <div class="auth-field"><label>Correo electrónico</label><input type="email" id="auth-email" placeholder="correo@ejemplo.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="auth-field"><label>Contraseña</label><input type="password" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="auth-btn" id="btn-login" onclick="doLogin()">Ingresar</button>
+      <div class="auth-msg" id="forgot-link"><a href="#" onclick="doForgot()" style="color:var(--accent)">¿Olvidaste tu contraseña?</a></div>
+    </div>
+    <div id="auth-form-register" style="display:none">
+      <div class="auth-field"><label>Nombre completo</label><input type="text" id="reg-nombre" placeholder="Tu nombre"></div>
+      <div class="auth-field"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com"></div>
+      <div class="auth-field"><label>Contraseña (mín. 6 caracteres)</label><input type="password" id="reg-pass" placeholder="••••••••"></div>
+      <button class="auth-btn" id="btn-register" onclick="doRegister()">Crear cuenta</button>
+    </div>
+  </div>
+</div>
+
 <div class="app-header">
   <div>
     <h1><span class="logo-pill">🏠</span> Remuneraciones Casa Particular</h1>
     <small>Sistema de liquidaciones · Chile 2026</small>
   </div>
   <span class="db-pill db-loading" id="db-status">● Conectando…</span>
+  <div class="user-bar">
+    <span class="user-pill" id="user-pill">—</span>
+    <button class="btn btn-ghost btn-sm" onclick="doLogout()" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);font-size:.71rem">Salir</button>
+  </div>
 </div>
 
 <!-- SELECTOR ASESORA -->
@@ -277,6 +343,7 @@ textarea{resize:vertical;min-height:64px}
   <button class="tab-btn" onclick="showTab('vacaciones',this)">🌴 Vacaciones</button>
   <button class="tab-btn" onclick="showTab('indicadores',this)">📊 Indicadores</button>
   <button class="tab-btn" onclick="showTab('historial',this)">📁 Historial</button>
+  <button class="tab-btn tab-admin-btn" id="tab-admin-btn-d" onclick="showTab('admin',this)" style="display:none">⚙️ Admin</button>
 </div>
 
 <!-- TABS MÓVIL (barra inferior) -->
@@ -288,6 +355,7 @@ textarea{resize:vertical;min-height:64px}
     <button class="tab-mob-btn" onclick="showTab('vacaciones',this,'mob')"><span class="icon">🌴</span><span class="label">Vacaciones</span></button>
     <button class="tab-mob-btn" onclick="showTab('indicadores',this,'mob')"><span class="icon">📊</span><span class="label">Indicadores</span></button>
     <button class="tab-mob-btn" onclick="showTab('historial',this,'mob')"><span class="icon">📁</span><span class="label">Historial</span></button>
+    <button class="tab-mob-btn tab-admin-btn" id="tab-admin-btn-m" onclick="showTab('admin',this,'mob')" style="display:none"><span class="icon">⚙️</span><span class="label">Admin</span></button>
   </div>
 </div>
 
@@ -495,6 +563,27 @@ textarea{resize:vertical;min-height:64px}
   </div>
 </div>
 
+<!-- ══ TAB: ADMIN ══ -->
+<div id="tab-admin" class="tab-content">
+  <div class="callout warn">⚙️ <strong>Panel de Administrador</strong> — Solo visible para cuentas con rol admin.</div>
+  <div class="admin-grid">
+    <div class="admin-stat"><div class="asn" id="adm-total-users">—</div><div class="asl">Usuarios registrados</div></div>
+    <div class="admin-stat"><div class="asn" id="adm-total-liq">—</div><div class="asl">Liquidaciones generadas</div></div>
+    <div class="admin-stat"><div class="asn" id="adm-total-ases">—</div><div class="asl">Asesoras registradas</div></div>
+    <div class="admin-stat"><div class="asn" id="adm-hoy">—</div><div class="asl">Acciones hoy</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">👥 Usuarios del Sistema
+      <button class="btn btn-ghost btn-sm" onclick="cargarAdmin()">🔄 Actualizar</button>
+    </div>
+    <div id="adm-usuarios"><div class="empty"><span class="ic">⏳</span>Cargando…</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Log de Actividad Reciente</div>
+    <div id="adm-logs" style="max-height:400px;overflow-y:auto"><div class="empty"><span class="ic">📋</span>Cargando…</div></div>
+  </div>
+</div>
+
 <!-- MODAL IMPRESIÓN -->
 <div id="modal-print" class="modal-overlay">
   <div class="modal-box">
@@ -514,11 +603,244 @@ textarea{resize:vertical;min-height:64px}
 
 <script>
 // ══════════════════════════════════════
-// SUPABASE
+// SUPABASE CONFIG
 // ══════════════════════════════════════
 const SURL='https://sertvddcfboldonhcrqk.supabase.co';
 const SKEY='sb_publishable_EdFcEFH73CRMnPutElWfgg_SPRC1K1b';
-const H=()=>({apikey:SKEY,Authorization:`Bearer ${SKEY}`,'Content-Type':'application/json'});
+const ADMIN_EMAIL='admin@casaparticular.cl'; // cambia esto a tu correo admin
+
+let _authToken=null;
+let _currentUser=null;
+let _isAdmin=false;
+
+const H=()=>({
+  apikey:SKEY,
+  Authorization:`Bearer ${_authToken||SKEY}`,
+  'Content-Type':'application/json'
+});
+
+// ══════════════════════════════════════
+// AUTH — Supabase Auth REST
+// ══════════════════════════════════════
+async function doLogin(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  if(!email||!pass){showAuthError('Completa todos los campos');return;}
+  const btn=document.getElementById('btn-login');
+  btn.disabled=true;btn.textContent='Ingresando…';
+  try{
+    const r=await fetch(`${SURL}/auth/v1/token?grant_type=password`,{
+      method:'POST',headers:{apikey:SKEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass})
+    });
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error_description||d.msg||'Error al ingresar');
+    await onLoginSuccess(d);
+  }catch(e){showAuthError(e.message);}
+  btn.disabled=false;btn.textContent='Ingresar';
+}
+
+async function doRegister(){
+  const nombre=document.getElementById('reg-nombre').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  if(!nombre||!email||!pass){showAuthError('Completa todos los campos');return;}
+  if(pass.length<6){showAuthError('La contraseña debe tener al menos 6 caracteres');return;}
+  const btn=document.getElementById('btn-register');
+  btn.disabled=true;btn.textContent='Creando cuenta…';
+  try{
+    const r=await fetch(`${SURL}/auth/v1/signup`,{
+      method:'POST',headers:{apikey:SKEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass,data:{nombre}})
+    });
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error_description||d.msg||'Error al registrar');
+    if(d.access_token){
+      await onLoginSuccess(d);
+    } else {
+      showAuthError('✅ Cuenta creada. Revisa tu correo para confirmar.');
+      document.getElementById('auth-error').style.background='#f0fdf4';
+      document.getElementById('auth-error').style.borderColor='#bbf7d0';
+      document.getElementById('auth-error').style.color='#15803d';
+    }
+  }catch(e){showAuthError(e.message);}
+  btn.disabled=false;btn.textContent='Crear cuenta';
+}
+
+async function doForgot(){
+  const email=document.getElementById('auth-email').value.trim();
+  if(!email){showAuthError('Ingresa tu correo primero');return;}
+  try{
+    await fetch(`${SURL}/auth/v1/recover`,{
+      method:'POST',headers:{apikey:SKEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    showAuthError('✅ Correo de recuperación enviado. Revisa tu bandeja.');
+    document.getElementById('auth-error').style.background='#f0fdf4';
+    document.getElementById('auth-error').style.color='#15803d';
+  }catch(e){showAuthError('No se pudo enviar el correo');}
+}
+
+async function onLoginSuccess(authData){
+  _authToken=authData.access_token;
+  _currentUser=authData.user||authData;
+  const email=_currentUser.email;
+  // Guardar sesión
+  localStorage.setItem('sb_token',_authToken);
+  localStorage.setItem('sb_user',JSON.stringify(_currentUser));
+  // Verificar si es admin (por email o por metadata)
+  _isAdmin=email===ADMIN_EMAIL||_currentUser.user_metadata?.role==='admin';
+  // Registrar log
+  await registrarLog('login',`Ingreso: ${email}`);
+  mostrarApp();
+}
+
+function doLogout(){
+  _authToken=null;_currentUser=null;_isAdmin=false;
+  localStorage.removeItem('sb_token');localStorage.removeItem('sb_user');
+  localStorage.removeItem('asesora_activa_id');
+  document.getElementById('auth-overlay').style.display='flex';
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-pass').value='';
+  showAuthError('');
+}
+
+async function checkSession(){
+  const token=localStorage.getItem('sb_token');
+  const user=localStorage.getItem('sb_user');
+  if(!token||!user)return false;
+  try{
+    // Verificar token vigente
+    const r=await fetch(`${SURL}/auth/v1/user`,{headers:{apikey:SKEY,Authorization:`Bearer ${token}`}});
+    if(!r.ok)return false;
+    _authToken=token;
+    _currentUser=JSON.parse(user);
+    _isAdmin=_currentUser.email===ADMIN_EMAIL||_currentUser.user_metadata?.role==='admin';
+    return true;
+  }catch(e){return false;}
+}
+
+function mostrarApp(){
+  document.getElementById('auth-overlay').style.display='none';
+  const email=_currentUser?.email||'usuario';
+  const pill=document.getElementById('user-pill');
+  pill.textContent=email;
+  if(_isAdmin){pill.classList.add('user-role-admin');pill.textContent='⚙️ '+email;}
+  // Mostrar tab admin si corresponde
+  document.getElementById('tab-admin-btn-d').style.display=_isAdmin?'block':'none';
+  document.getElementById('tab-admin-btn-m').style.display=_isAdmin?'flex':'none';
+  TABS_ORDER.splice(TABS_ORDER.indexOf('admin')<0?99:TABS_ORDER.indexOf('admin'),1);
+  if(_isAdmin&&!TABS_ORDER.includes('admin'))TABS_ORDER.push('admin');
+  if(_isAdmin)cargarAdmin();
+  // Connect to Supabase and load data
+  cargarDatosPostLogin();
+}
+
+async function cargarDatosPostLogin(){
+  const st=document.getElementById('db-status');
+  try{
+    await db.get('asesoras','limit=1');
+    st.textContent='● Supabase conectado';st.className='db-pill db-ok';
+    await cargarAsesoras();await cargarHistorial();
+  }catch(e){
+    st.textContent='● Modo local';st.className='db-pill db-err';
+    asesoras=JSON.parse(localStorage.getItem('asesoras_cache')||'[]');
+    renderListaAsesoras();actualizarSelector();
+    const lid=localStorage.getItem('asesora_activa_id');
+    if(lid){const a=asesoras.find(x=>x.id==lid);if(a)setAsesoraActiva(a);}
+    cargarHistLocal();
+  }
+}
+
+function showAuthError(msg){
+  const el=document.getElementById('auth-error');
+  if(!msg){el.style.display='none';return;}
+  el.textContent=msg;el.style.display='block';
+  // reset colors
+  el.style.background='#fef2f2';el.style.borderColor='#fecaca';el.style.color='#dc2626';
+}
+
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',(tab==='login'&&i===0)||(tab==='register'&&i===1)));
+  document.getElementById('auth-form-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-form-register').style.display=tab==='register'?'block':'none';
+  showAuthError('');
+}
+
+// ══════════════════════════════════════
+// LOG DE ACTIVIDAD
+// ══════════════════════════════════════
+async function registrarLog(tipo,detalle){
+  if(!_authToken)return;
+  try{
+    await fetch(`${SURL}/rest/v1/activity_logs`,{
+      method:'POST',
+      headers:{...H(),Prefer:'return=minimal'},
+      body:JSON.stringify({
+        user_email:_currentUser?.email,
+        tipo,detalle,
+        created_at:new Date().toISOString()
+      })
+    });
+  }catch(e){}// silencioso
+}
+
+// ══════════════════════════════════════
+// PANEL ADMIN
+// ══════════════════════════════════════
+async function cargarAdmin(){
+  if(!_isAdmin)return;
+  try{
+    // Usuarios via admin API (requiere service role, usamos conteo de liquidaciones por usuario)
+    const liq=await db.get('liquidaciones','select=nombre,rut,periodo,created_at&limit=200');
+    const ases=await db.get('asesoras','select=id,nombre,created_at&limit=200');
+    const logs=await db.get('activity_logs','select=*&limit=50');
+
+    // Stats
+    const usuariosUnicos=[...new Set(liq.map(l=>l.nombre))].length;
+    document.getElementById('adm-total-users').textContent=usuariosUnicos;
+    document.getElementById('adm-total-liq').textContent=liq.length;
+    document.getElementById('adm-total-ases').textContent=ases.length;
+    const hoy=new Date().toISOString().slice(0,10);
+    document.getElementById('adm-hoy').textContent=logs.filter(l=>l.created_at?.startsWith(hoy)).length;
+
+    // Tabla asesoras por usuario
+    const agrupadoPorNombreUsr={};
+    liq.forEach(l=>{if(!agrupadoPorNombreUsr[l.nombre])agrupadoPorNombreUsr[l.nombre]=0;agrupadoPorNombreUsr[l.nombre]++;});
+    document.getElementById('adm-usuarios').innerHTML=`
+      <table style="width:100%;font-size:.8rem;border-collapse:collapse">
+        <tr style="background:var(--warm)"><th style="padding:8px;text-align:left">Trabajadora</th><th style="padding:8px">Liquidaciones</th><th style="padding:8px">Última actividad</th></tr>
+        ${Object.entries(agrupadoPorNombreUsr).map(([n,c])=>{
+          const last=liq.find(l=>l.nombre===n);
+          return`<tr style="border-bottom:1px solid var(--warm)">
+            <td style="padding:8px;font-weight:600">${n}</td>
+            <td style="padding:8px;text-align:center"><span class="badge">${c}</span></td>
+            <td style="padding:8px;color:var(--muted);font-size:.73rem">${last?.created_at?new Date(last.created_at).toLocaleDateString('es-CL'):'-'}</td>
+          </tr>`;}).join('')}
+      </table>`;
+
+    // Logs
+    if(logs.length){
+      document.getElementById('adm-logs').innerHTML=logs.map(l=>`
+        <div class="log-item">
+          <div>
+            <span class="log-badge ${l.tipo==='login'?'lb-login':l.tipo==='liquidacion'?'lb-liq':'lb-err'}">${l.tipo}</span>
+            <span style="margin-left:6px">${l.detalle||''}</span>
+            <div style="font-size:.69rem;color:var(--muted);margin-top:2px">${l.user_email||'—'}</div>
+          </div>
+          <div class="lt">${l.created_at?new Date(l.created_at).toLocaleString('es-CL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'-'}</div>
+        </div>`).join('');
+    } else {
+      document.getElementById('adm-logs').innerHTML='<div class="empty"><span class="ic">📋</span>Sin actividad registrada.</div>';
+    }
+  }catch(e){
+    document.getElementById('adm-usuarios').innerHTML=`<div class="empty"><span class="ic">⚠️</span>Error: ${e.message}<br><small>Ejecuta el SQL del schema en Supabase primero.</small></div>`;
+  }
+}
+
+// ══════════════════════════════════════
+// DB HELPERS (uses auth token)
+// ══════════════════════════════════════
 const db={
   async get(t,q=''){const r=await fetch(`${SURL}/rest/v1/${t}?${q}&order=created_at.desc`,{headers:H()});if(!r.ok)throw new Error(await r.text());return r.json()},
   async upsert(t,data){const r=await fetch(`${SURL}/rest/v1/${t}`,{method:'POST',headers:{...H(),Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(data)});if(!r.ok)throw new Error(await r.text());return r.json()},
@@ -550,6 +872,16 @@ async function init(){
   setv('periodo',new Date().toISOString().slice(0,7));
   setv('d-periodo',new Date().toISOString().slice(0,7));
   calcular();calcDias();
+
+  // Check existing session
+  const sessionValid=await checkSession();
+  if(sessionValid){
+    mostrarApp();
+  } else {
+    document.getElementById('auth-overlay').style.display='flex';
+    return; // wait for login
+  }
+
   try{
     await db.get('asesoras','limit=1');
     st.textContent='● Supabase conectado';st.className='db-pill db-ok';
@@ -944,6 +1276,7 @@ async function _guardarLiq(d){
   };
   try{
     await db.upsert('liquidaciones',entrada);
+    await registrarLog('liquidacion',`Liquidación ${d.periodo} · ${d.nombre} · ${fmt(d.liquido)}`);
     await cargarHistorial();
   }catch(e){
     const loc=JSON.parse(localStorage.getItem('hist_liq')||'[]');
@@ -1060,78 +1393,114 @@ function calcVacaciones(){
     el.innerHTML='<div class="empty"><span class="ic">👤</span>Selecciona una asesora para ver sus vacaciones.</div>';return;
   }
   const a=asesoraActiva;
-  const hoy=new Date();
+  const hoy=new Date(); hoy.setHours(12,0,0,0);
   const ingreso=new Date(a.fecha_ingreso+'T12:00');
   const aniosTot=a.anios_totales||0;
   const sueldo=a.sueldo_base||539000;
 
-  // Años y meses trabajados con este empleador
-  const totalMs=(hoy-ingreso)/(1000*60*60*24*365.25)*12;
-  const aniosEste=totalMs/12;
-  const aniosCumplidos=Math.floor(aniosEste);
-  const mesesMes=Math.floor(totalMs%12);
+  // ── Tiempo exacto trabajado ──
+  const msTotal=hoy-ingreso;
+  const diasTrabajados=Math.floor(msTotal/(1000*60*60*24));
 
-  // Días ganados por año
-  let diasLegales=15;
-  let diasProg=0;
-  const aniosTotal=aniosTot+aniosCumplidos;
-  if(aniosTotal>=10)diasProg=Math.floor((aniosTotal-10)/3);
-  const diasPorAnio=diasLegales+diasProg;
+  // Años y meses completos
+  let aniosCompletos=0,mesesCompletos=0;
+  {
+    let d=new Date(ingreso);
+    while(true){const n=new Date(d);n.setFullYear(n.getFullYear()+1);if(n>hoy)break;d=n;aniosCompletos++;}
+    while(true){const n=new Date(d);n.setMonth(n.getMonth()+1);if(n>hoy)break;d=n;mesesCompletos++;}
+  }
+  const diasRestantes=Math.floor((hoy-new Date(new Date(ingreso).setMonth(ingreso.getMonth()+(aniosCompletos*12+mesesCompletos))))/(1000*60*60*24));
 
-  // Vacaciones acumuladas = (días proporcionales al tiempo trabajado)
-  const diasAcumulados=aniosEste>=1?Math.floor(diasPorAnio*(aniosEste-Math.floor(aniosEste/1)*0)):0;
-  // Proporcional: fracción de año actual × días del periodo
-  const fraccionAnioActual=aniosEste-Math.floor(aniosEste);
-  const diasGanados=Math.round(diasPorAnio*fraccionAnioActual);
+  // ── Días por año según antigüedad total ──
+  const aniosTotal=aniosTot+aniosCompletos;
+  const diasProg=aniosTotal>=10?Math.floor((aniosTotal-10)/3):0;
+  const diasPorAnio=15+diasProg;
   const diasPorMes=diasPorAnio/12;
+  const diasPorDia=diasPorAnio/365;
 
-  // Monto si tomara vacaciones hoy
+  // ── Días acumulados TOTALES desde ingreso ──
+  // Por cada año completo se ganan diasPorAnio días; más proporcional del año en curso
+  // Ley chilena: derecho nace al completar 1 año
+  const tieneDerechoPrincipal=aniosCompletos>=1;
+  // Días ganados por años completos (al menos 1 año)
+  const diasAniosCompletos=tieneDerechoPrincipal?aniosCompletos*diasPorAnio:0;
+  // Días proporcionales del año en curso (se acumulan siempre, pagables en finiquito)
+  const fraccionAnioActual=(mesesCompletos+(diasRestantes/30))/12;
+  const diasAnioEnCurso=Math.floor(diasPorAnio*fraccionAnioActual);
+  const diasTotalesAcumulados=diasAniosCompletos+diasAnioEnCurso;
+
+  // ── Monto vacaciones completas (si tomara el periodo entero) ──
   const montoPorDia=sueldo/30;
-  const montoVac=Math.round(montoPorDia*diasPorAnio);
+  const montoAnual=Math.round(montoPorDia*diasPorAnio);
+  const montoAcumulado=Math.round(montoPorDia*diasTotalesAcumulados);
 
-  // Porcentaje del año actual
+  // ── Porcentaje avance año actual ──
   const pctAnio=Math.min(100,Math.round(fraccionAnioActual*100));
 
-  // Próximo aniversario
+  // ── Próximo aniversario ──
   const proxAniv=new Date(ingreso);
-  proxAniv.setFullYear(ingreso.getFullYear()+aniosCumplidos+1);
+  proxAniv.setFullYear(ingreso.getFullYear()+aniosCompletos+1);
   const diasParaAniv=Math.ceil((proxAniv-hoy)/(1000*60*60*24));
+
+  // ── Fecha en que nació el derecho ──
+  const fechaDerecho=new Date(ingreso);fechaDerecho.setFullYear(ingreso.getFullYear()+1);
 
   el.innerHTML=`
     <div class="card">
       <div class="card-title">🌴 Vacaciones de ${a.nombre}</div>
-      <div class="vac-progress">
-        <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:4px">
-          <span>Avance año laboral actual</span><span style="font-weight:700;color:var(--accent)">${pctAnio}%</span>
+
+      <!-- Hero: días acumulados -->
+      <div style="background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;border-radius:12px;padding:18px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:.68rem;font-weight:600;opacity:.65;text-transform:uppercase;letter-spacing:.8px">Días hábiles acumulados a la fecha</div>
+          <div style="font-size:2.8rem;font-weight:800;color:#a7f3d0;line-height:1.1;letter-spacing:-1px">${diasTotalesAcumulados}</div>
+          <div style="font-size:.76rem;opacity:.7;margin-top:3px">días hábiles · valorados en ${fmt(montoAcumulado)}</div>
         </div>
-        <div class="vac-bar-wrap"><div class="vac-bar" style="width:${pctAnio}%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:.71rem;color:var(--muted)">
-          <span>Ingreso: ${ingreso.toLocaleDateString('es-CL')}</span>
-          <span>${diasParaAniv>0?`Próximo aniversario en ${diasParaAniv} días`:'Aniversario este mes 🎉'}</span>
+        <div style="text-align:right">
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;font-size:.78rem">
+            <div style="opacity:.65;font-size:.67rem;text-transform:uppercase;letter-spacing:.5px">Período completo</div>
+            <div style="font-weight:700;font-size:1rem;margin-top:2px">${diasPorAnio} días/año</div>
+            <div style="opacity:.65;font-size:.71rem;margin-top:1px">${fmt(montoAnual)}</div>
+          </div>
         </div>
       </div>
-      <div class="vac-stats">
-        <div class="vac-stat"><div class="vv">${aniosCumplidos}</div><div class="vl">Años con este empleador</div></div>
-        <div class="vac-stat"><div class="vv">${diasPorAnio}</div><div class="vl">Días hábiles por año${diasProg>0?` (${diasProg} prog.)`:''}}</div></div>
-        <div class="vac-stat"><div class="vv">${fmt(montoVac).replace('$','')}</div><div class="vl">Monto si toma vacaciones</div></div>
+
+      <!-- Barra progreso año actual -->
+      <div class="vac-progress">
+        <div style="display:flex;justify-content:space-between;font-size:.77rem;color:var(--muted);margin-bottom:5px">
+          <span>Avance año laboral actual (año ${aniosCompletos+1})</span>
+          <span style="font-weight:700;color:var(--accent)">${pctAnio}%</span>
+        </div>
+        <div class="vac-bar-wrap"><div class="vac-bar" style="width:${pctAnio}%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:4px">
+          <span>Ingreso: ${ingreso.toLocaleDateString('es-CL')}</span>
+          <span>${diasParaAniv>0?`Próximo aniversario en ${diasParaAniv} días`:'🎉 Aniversario este mes'}</span>
+        </div>
+      </div>
+
+      <div class="vac-stats" style="margin-top:12px">
+        <div class="vac-stat"><div class="vv">${aniosCompletos}</div><div class="vl">Años completos con este empleador</div></div>
+        <div class="vac-stat"><div class="vv">${mesesCompletos}</div><div class="vl">Meses en año actual</div></div>
+        <div class="vac-stat"><div class="vv">${diasPorMes.toFixed(1)}</div><div class="vl">Días ganados por mes</div></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">📅 Detalle de Acumulación</div>
+      <div class="card-title">📊 Desglose del Cálculo</div>
       <div class="vac-acum">
-        <h4>📊 Días ganados hasta hoy</h4>
+        <h4>Composición de los ${diasTotalesAcumulados} días acumulados</h4>
         <div class="vac-acum-row"><span>Días base por año (ley)</span><span>15 días hábiles</span></div>
         ${diasProg>0?`<div class="vac-acum-row"><span>Días progresivos (${aniosTotal} años totales)</span><span>+${diasProg} días</span></div>`:''}
-        <div class="vac-acum-row"><span>Total días por año</span><span>${diasPorAnio} días</span></div>
-        <div class="vac-acum-row"><span>Días ganados por mes</span><span>${diasPorMes.toFixed(2)} días/mes</span></div>
-        <div class="vac-acum-row"><span>Meses transcurridos año actual</span><span>${mesesMes} meses</span></div>
-        <div class="vac-acum-row"><span>Días acumulados estimados</span><span style="color:var(--accent)">${Math.round(diasPorMes*mesesMes)} días hábiles</span></div>
+        <div class="vac-acum-row"><span>Total días por año completo</span><span>${diasPorAnio} días</span></div>
+        <div class="vac-acum-row"><span>× Años completos trabajados</span><span>× ${aniosCompletos} = ${diasAniosCompletos} días</span></div>
+        <div class="vac-acum-row"><span>+ Fracción año en curso (${mesesCompletos} meses ${diasRestantes} días)</span><span>+ ${diasAnioEnCurso} días</span></div>
+        <div class="vac-acum-row" style="font-weight:700;color:var(--accent)"><span>= Total acumulado</span><span>= ${diasTotalesAcumulados} días hábiles</span></div>
       </div>
-      <div style="margin-top:12px;padding:12px;background:#f0fdf4;border-radius:9px;font-size:.8rem;color:var(--muted);line-height:1.6">
-        💡 <strong style="color:var(--dark)">Importante:</strong> El derecho a vacaciones se devenga luego de <strong>1 año</strong> de servicio. 
-        Fecha de derecho: <strong>${new Date(ingreso.getFullYear()+1,ingreso.getMonth(),ingreso.getDate()).toLocaleDateString('es-CL')}</strong>
-        ${aniosCumplidos<1?' (aún no alcanzado)':' ✅'}.
+      <div style="margin-top:12px;padding:12px;background:${tieneDerechoPrincipal?'#f0fdf4':'#fffbeb'};border-radius:9px;font-size:.79rem;color:var(--muted);line-height:1.65;border:1px solid ${tieneDerechoPrincipal?'#bbf7d0':'#fde68a'}">
+        ${tieneDerechoPrincipal
+          ?`✅ <strong style="color:var(--dark)">Tiene derecho a vacaciones</strong> desde ${fechaDerecho.toLocaleDateString('es-CL')}. Puede tomar ${diasPorAnio} días hábiles de vacaciones anuales, con goce de sueldo.`
+          :`⏳ <strong style="color:#92400e">Aún no completa 1 año.</strong> El derecho a vacaciones nace el ${fechaDerecho.toLocaleDateString('es-CL')}. Los ${diasAnioEnCurso} días acumulados son pagables solo al término del contrato (finiquito).`
+        }
       </div>
     </div>`;
 }
