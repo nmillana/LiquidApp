@@ -141,9 +141,13 @@ textarea{resize:vertical;min-height:64px}
 .liq-sum-row.final span:last-child{font-size:1.25rem}
 
 /* Firmas */
-.liq-firmas{padding:18px 24px;border-top:1px solid var(--warm);display:grid;grid-template-columns:1fr 1fr;gap:24px;text-align:center}
-.firma-blk .line{border-top:1.5px solid #334155;margin-top:40px;padding-top:7px;font-size:.71rem;color:var(--muted)}
-.firma-blk .sublabel{font-size:.65rem;color:var(--muted);margin-top:3px}
+.liq-firmas{padding:20px 24px;border-top:2px solid var(--warm)}
+.firma-declaracion{font-size:.81rem;color:var(--muted);line-height:1.65;margin-bottom:24px;text-align:justify}
+.firma-declaracion strong{color:var(--dark)}
+.firma-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.firma-blk{text-align:center}
+.firma-blk .line{border-top:1.5px solid #334155;margin-top:44px;padding-top:7px;font-size:.71rem;color:var(--muted);font-weight:600}
+.firma-blk .sublabel{font-size:.64rem;color:var(--muted);margin-top:3px}
 
 /* Costo empleador (pantalla, no print) */
 .emp-costs{background:var(--wood-light);border:1.5px solid var(--wood-mid);border-radius:12px;padding:14px;margin-top:0}
@@ -229,7 +233,8 @@ textarea{resize:vertical;min-height:64px}
   .tabs-mobile{display:block}
   .tab-content{padding:14px;padding-bottom:90px}
   .form-row,.form-row.three,.form-row.four,.dias-grid,.resumen-dias,.vac-stats{grid-template-columns:1fr}
-  .liq-firmas{grid-template-columns:1fr}
+  .liq-firmas{padding:16px}
+  .firma-grid{grid-template-columns:1fr}
   .liq-top-grid{grid-template-columns:1fr 1fr}
   .liq-hero{flex-direction:column;text-align:center}
   .liq-hero-right{text-align:center;flex-direction:row;flex-wrap:wrap;justify-content:center}
@@ -886,8 +891,11 @@ function renderLiq(d){
 
       <!-- Firmas -->
       <div class="liq-firmas">
-        <div class="firma-blk"><div class="line">${d.nombre}</div><div class="sublabel">TRABAJADORA · RUT ${d.rut}</div></div>
-        <div class="firma-blk"><div class="line">Empleador(a)</div><div class="sublabel">&nbsp;</div></div>
+        <div class="firma-declaracion">
+          Yo, ${d.nombre}, RUT ${d.rut}, declaro haber recibido conforme
+          el saldo indicado en la presente Liquidación de Sueldo correspondiente al período
+          ${nomMes(d.periodo)}, y no tengo cargo ni cobro posterior que hacer.
+        </div>
       </div>
     </div>
 
