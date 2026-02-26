@@ -887,9 +887,11 @@ async function onLoginSuccess(authData){
 }
 
 function doLogout(){
+  const uid=_currentUser?.id||'local';
+  localStorage.removeItem('asesora_activa_id_'+uid);
   _authToken=null;_currentUser=null;_isAdmin=false;
+  asesoras=[];asesoraActiva=null;_histRows=[];
   localStorage.removeItem('sb_token');localStorage.removeItem('sb_user');
-  localStorage.removeItem('asesora_activa_id');
   document.getElementById('auth-overlay').style.display='flex';
   document.getElementById('auth-email').value='';
   document.getElementById('auth-pass').value='';
@@ -929,15 +931,16 @@ function mostrarApp(){
 
 async function cargarDatosPostLogin(){
   const st=document.getElementById('db-status');
+  const uid=_currentUser?.id||'local';
   try{
     await db.get('asesoras','limit=1');
     st.textContent='● Supabase conectado';st.className='db-pill db-ok';
     await cargarAsesoras();await cargarHistorial();
   }catch(e){
     st.textContent='● Modo local';st.className='db-pill db-err';
-    asesoras=JSON.parse(localStorage.getItem('asesoras_cache')||'[]');
+    asesoras=JSON.parse(localStorage.getItem('asesoras_cache_'+uid)||'[]');
     renderListaAsesoras();actualizarSelector();
-    const lid=localStorage.getItem('asesora_activa_id');
+    const lid=localStorage.getItem('asesora_activa_id_'+uid);
     if(lid){const a=asesoras.find(x=>x.id==lid);if(a)setAsesoraActiva(a);}
     cargarHistLocal();
   }
@@ -1129,7 +1132,7 @@ function cambiarAsesora(id){
 
 function setAsesoraActiva(a){
   asesoraActiva=a;
-  localStorage.setItem('asesora_activa_id',a.id);
+  localStorage.setItem('asesora_activa_id_'+(_currentUser?.id||'local'),a.id);
   document.getElementById('selector-asesora').value=a.id;
   actualizarUIAsesora();
   renderListaAsesoras();
@@ -1211,7 +1214,8 @@ async function guardarAsesora(){
     afp_nombre:afpSel.options[afpSel.selectedIndex].dataset.nombre,
     afp_tasa:+afpSel.value,
     anios_totales:+document.getElementById('a-anios-totales').value||0,
-    notas:document.getElementById('a-notas').value
+    notas:document.getElementById('a-notas').value,
+    user_id:_currentUser?.id||null  // ← vincula al usuario autenticado
   };
   const editId=document.getElementById('a-id').value;if(editId)data.id=editId;
   try{
@@ -1220,13 +1224,13 @@ async function guardarAsesora(){
     const idx=asesoras.findIndex(x=>x.id==saved.id);
     if(idx>=0)asesoras[idx]=saved;else asesoras.unshift(saved);
     if(asesoraActiva?.id==saved.id)asesoraActiva=saved;
-    localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
+    localStorage.setItem('asesoras_cache_'+(_currentUser?.id||'local'),JSON.stringify(asesoras));
     toast('✅ Asesora guardada en Supabase');
   }catch(e){
     if(!editId)data.id='local_'+Date.now();
     const idx=asesoras.findIndex(x=>x.id==data.id);
     if(idx>=0)asesoras[idx]=data;else asesoras.unshift(data);
-    localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
+    localStorage.setItem('asesoras_cache_'+(_currentUser?.id||'local'),JSON.stringify(asesoras));
     toast('💾 Guardado localmente');
   }
   renderListaAsesoras();actualizarSelector();cancelarForm();
@@ -1455,7 +1459,9 @@ function autoGuardar(d){
 }
 
 async function _guardarLiq(d){
+  const uid=_currentUser?.id||null;
   const entrada={
+    user_id:uid,  // ← vincula al usuario autenticado
     asesora_id:asesoraActiva?.id||null,
     nombre:d.nombre,rut:d.rut,periodo:d.periodo,dias:d.dias,
     afp_nombre:d.afpNombre,afp_tasa:d.afpTasa,
@@ -1469,39 +1475,30 @@ async function _guardarLiq(d){
     costo_cesantia:d.costoCes,total_costo_empleador:d.totalEmp
   };
 
-  // Guardar en Supabase — buscar si ya existe para hacer UPDATE o INSERT
   try{
-    // Buscar registro existente por asesora+periodo
     const q=`asesora_id=eq.${entrada.asesora_id}&periodo=eq.${entrada.periodo}&limit=1`;
     const existentes=await db.get('liquidaciones',q);
     if(existentes&&existentes.length>0){
-      // UPDATE
       const id=existentes[0].id;
       await fetch(`${SURL}/rest/v1/liquidaciones?id=eq.${id}`,{
-        method:'PATCH',
-        headers:{...H(),Prefer:'return=minimal'},
+        method:'PATCH',headers:{...H(),Prefer:'return=minimal'},
         body:JSON.stringify(entrada)
       });
     } else {
-      // INSERT
       await fetch(`${SURL}/rest/v1/liquidaciones`,{
-        method:'POST',
-        headers:{...H(),Prefer:'return=minimal'},
+        method:'POST',headers:{...H(),Prefer:'return=minimal'},
         body:JSON.stringify(entrada)
       });
     }
     await registrarLog('liquidacion',`Liquidación ${d.periodo} · ${d.nombre} · ${fmt(d.liquido)}`);
     await cargarHistorial();
   }catch(e){
-    // Modo local: guardar en localStorage
-    const loc=JSON.parse(localStorage.getItem('hist_liq')||'[]');
+    const cacheKey='hist_liq_'+(uid||'local');
+    const loc=JSON.parse(localStorage.getItem(cacheKey)||'[]');
     const idx=loc.findIndex(x=>x.nombre===d.nombre&&x.periodo===d.periodo);
-    if(idx>=0){
-      loc[idx]={...loc[idx],...entrada};
-    } else {
-      loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});
-    }
-    localStorage.setItem('hist_liq',JSON.stringify(loc));
+    if(idx>=0){loc[idx]={...loc[idx],...entrada};}
+    else{loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});}
+    localStorage.setItem(cacheKey,JSON.stringify(loc));
     cargarHistLocal();
   }
 }
@@ -1622,7 +1619,11 @@ async function cargarHistorial(){
   catch(e){cargarHistLocal();return;}
   renderHistorial(_histRows);
 }
-function cargarHistLocal(){_histRows=JSON.parse(localStorage.getItem('hist_liq')||'[]');renderHistorial(_histRows);}
+function cargarHistLocal(){
+  const cacheKey='hist_liq_'+(_currentUser?.id||'local');
+  _histRows=JSON.parse(localStorage.getItem(cacheKey)||'[]');
+  renderHistorial(_histRows);
+}
 
 function filtrarHist(){
   const fn=document.getElementById('f-asesora').value.toLowerCase();
