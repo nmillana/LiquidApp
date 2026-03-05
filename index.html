@@ -1787,9 +1787,11 @@ async function _guardarLiq(d){
 // ══════════════════════════════════════
 async function imprimirLiq(){
   if(!window._liqData){toast('Primero genera una liquidación','err');return;}
-  // Forzar guardado inmediato antes de imprimir
+  if(!window._liqData.periodo){toast('Selecciona el período del mes','err');return;}
+  // Guardar inmediatamente (sin esperar debounce)
   clearTimeout(_autoGuardTimer);
   await _guardarLiq(window._liqData);
+  toast('💾 Liquidación guardada en historial');
   const wrap=document.getElementById('liq-doc');
   document.getElementById('print-content').innerHTML=wrap.outerHTML;
   document.getElementById('modal-print').style.display='block';
@@ -1894,10 +1896,17 @@ async function descargarPDF(){
 // ══════════════════════════════════════
 // ══════════════════════════════════════
 async function cargarHistorial(){
-  try{const rows=await db.get('liquidaciones','limit=100');_histRows=rows||[];localStorage.setItem('hist_liq',JSON.stringify(_histRows));}
-  catch(e){cargarHistLocal();return;}
+  const cacheKey='hist_liq_'+(_currentUser?.id||'local');
+  try{
+    const rows=await db.get('liquidaciones','limit=200&order=created_at.desc');
+    _histRows=rows||[];
+    localStorage.setItem(cacheKey,JSON.stringify(_histRows));
+  }catch(e){
+    _histRows=JSON.parse(localStorage.getItem(cacheKey)||'[]');
+  }
   renderHistorial(_histRows);
 }
+
 function cargarHistLocal(){
   const cacheKey='hist_liq_'+(_currentUser?.id||'local');
   _histRows=JSON.parse(localStorage.getItem(cacheKey)||'[]');
@@ -1934,7 +1943,7 @@ function verLiqHist(i){
     sueldoBase:h.sueldo_base,sueldo:h.sueldo_base,
     movilizacion:h.movilizacion,colacion:h.colacion,
     movilBase:h.movilizacion,colacBase:h.colacion,
-    horasExtra:h.horas_extra,bono:h.bono,descAdicional:0,
+    horasExtra:h.horas_extra||0,bono:h.bono||0,descAdicional:0,
     totalHaberes:h.total_haberes,rentaImponible:h.renta_imponible,
     descAfp:h.desc_afp,descSalud:h.desc_salud,
     totalDescuentos:h.total_descuentos,liquido:h.liquido,
@@ -1950,9 +1959,10 @@ function verLiqHist(i){
 
 async function eliminarLiq(id){
   if(!confirm('¿Eliminar esta liquidación?'))return;
+  const cacheKey='hist_liq_'+(_currentUser?.id||'local');
   try{await db.del('liquidaciones',id);}catch(e){}
   _histRows=_histRows.filter(x=>x.id!=id);
-  localStorage.setItem('hist_liq',JSON.stringify(_histRows));
+  localStorage.setItem(cacheKey,JSON.stringify(_histRows));
   renderHistorial(_histRows);toast('🗑️ Eliminada');
 }
 
