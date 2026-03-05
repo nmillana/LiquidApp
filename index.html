@@ -1291,11 +1291,12 @@ async function init(){
 // ASESORAS
 // ══════════════════════════════════════
 async function cargarAsesoras(){
+  const uid=_currentUser?.id||'local';
   const rows=await db.get('asesoras','limit=100');
   asesoras=rows||[];
-  localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
+  localStorage.setItem('asesoras_cache_'+uid,JSON.stringify(asesoras));
   renderListaAsesoras();actualizarSelector();
-  const lid=localStorage.getItem('asesora_activa_id');
+  const lid=localStorage.getItem('asesora_activa_id_'+uid);
   const a=lid?asesoras.find(x=>x.id==lid):asesoras.length===1?asesoras[0]:null;
   if(a)setAsesoraActiva(a);
 }
@@ -1355,6 +1356,7 @@ function actualizarUIAsesora(){
   </div>`;
   sincLiq();
   calcVacaciones();
+  actualizarDocsTab();
 }
 
 function sincLiq(){
@@ -1417,10 +1419,15 @@ async function guardarAsesora(){
   const nombre=document.getElementById('a-nombre').value.trim();
   if(!nombre){toast('⚠️ Ingresa el nombre','err');return;}
   const afpSel=document.getElementById('a-afp');
-  const data={
-    nombre,rut:document.getElementById('a-rut').value,
+  const uid=_currentUser?.id||'local';
+  const notasVal=document.getElementById('a-notas').value;
+
+  const dbData={
+    nombre,
+    rut:document.getElementById('a-rut').value,
     nacimiento:document.getElementById('a-nacimiento').value||null,
-    telefono:document.getElementById('a-telefono').value,email:document.getElementById('a-email').value,
+    telefono:document.getElementById('a-telefono').value,
+    email:document.getElementById('a-email').value,
     fecha_ingreso:document.getElementById('a-ingreso').value||null,
     tipo_contrato:document.getElementById('a-contrato').value,
     modalidad:document.getElementById('a-modalidad').value,
@@ -1430,46 +1437,79 @@ async function guardarAsesora(){
     afp_nombre:afpSel.options[afpSel.selectedIndex].dataset.nombre,
     afp_tasa:+afpSel.value,
     anios_totales:+document.getElementById('a-anios-totales').value||0,
-    notas:document.getElementById('a-notas').value,
-    emp_nombre:e('a-emp-nombre'),emp_rut:e('a-emp-rut'),emp_telefono:e('a-emp-telefono'),
-    emp_direccion:e('a-emp-direccion'),emp_comuna:e('a-emp-comuna'),emp_region:e('a-emp-region'),
-    serv_direccion:e('a-serv-direccion'),horas_sem:+e('a-horas-sem')||45,
-    forma_pago:e('a-forma-pago'),
-    horario:{
-      lun:{e:e('h-lun-e'),s:e('h-lun-s')},mar:{e:e('h-mar-e'),s:e('h-mar-s')},
-      mie:{e:e('h-mie-e'),s:e('h-mie-s')},jue:{e:e('h-jue-e'),s:e('h-jue-s')},
-      vie:{e:e('h-vie-e'),s:e('h-vie-s')},sab:{e:e('h-sab-e'),s:e('h-sab-s')}
-    },
-    tareas:{aseo:document.getElementById('t-aseo').checked,cocina:document.getElementById('t-cocina').checked,
-      lavado:document.getElementById('t-lavado').checked,jardin:document.getElementById('t-jardin').checked,
-      ninos:document.getElementById('t-ninos').checked,chofer:document.getElementById('t-chofer').checked},
-    user_id:_currentUser?.id||null
+    notas:notasVal,
+    user_id:uid==='local'?null:uid
   };
-  const editId=document.getElementById('a-id').value;if(editId)data.id=editId;
+
+  const extra={
+    emp_nombre:document.getElementById('a-emp-nombre')?.value||'',
+    emp_rut:document.getElementById('a-emp-rut')?.value||'',
+    emp_telefono:document.getElementById('a-emp-telefono')?.value||'',
+    emp_direccion:document.getElementById('a-emp-direccion')?.value||'',
+    emp_comuna:document.getElementById('a-emp-comuna')?.value||'',
+    emp_region:document.getElementById('a-emp-region')?.value||'',
+    serv_direccion:document.getElementById('a-serv-direccion')?.value||'',
+    horas_sem:+document.getElementById('a-horas-sem')?.value||45,
+    forma_pago:document.getElementById('a-forma-pago')?.value||'efectivo',
+    horario:{
+      lun:{e:document.getElementById('h-lun-e')?.value||'',s:document.getElementById('h-lun-s')?.value||''},
+      mar:{e:document.getElementById('h-mar-e')?.value||'',s:document.getElementById('h-mar-s')?.value||''},
+      mie:{e:document.getElementById('h-mie-e')?.value||'',s:document.getElementById('h-mie-s')?.value||''},
+      jue:{e:document.getElementById('h-jue-e')?.value||'',s:document.getElementById('h-jue-s')?.value||''},
+      vie:{e:document.getElementById('h-vie-e')?.value||'',s:document.getElementById('h-vie-s')?.value||''},
+      sab:{e:document.getElementById('h-sab-e')?.value||'',s:document.getElementById('h-sab-s')?.value||''}
+    },
+    tareas:{
+      aseo:!!document.getElementById('t-aseo')?.checked,
+      cocina:!!document.getElementById('t-cocina')?.checked,
+      lavado:!!document.getElementById('t-lavado')?.checked,
+      jardin:!!document.getElementById('t-jardin')?.checked,
+      ninos:!!document.getElementById('t-ninos')?.checked,
+      chofer:!!document.getElementById('t-chofer')?.checked
+    }
+  };
+
+  const editId=document.getElementById('a-id').value;
+  if(editId)dbData.id=editId;
+
+  let savedId=editId||null;
+
   try{
-    const res=await db.upsert('asesoras',data);
+    const res=await db.upsert('asesoras',dbData);
     const saved=Array.isArray(res)?res[0]:res;
-    const idx=asesoras.findIndex(x=>x.id==saved.id);
-    if(idx>=0)asesoras[idx]=saved;else asesoras.unshift(saved);
-    if(asesoraActiva?.id==saved.id)asesoraActiva=saved;
-    localStorage.setItem('asesoras_cache_'+(_currentUser?.id||'local'),JSON.stringify(asesoras));
-    toast('✅ Asesora guardada en Supabase');
-  }catch(e){
-    if(!editId)data.id='local_'+Date.now();
-    const idx=asesoras.findIndex(x=>x.id==data.id);
-    if(idx>=0)asesoras[idx]=data;else asesoras.unshift(data);
-    localStorage.setItem('asesoras_cache_'+(_currentUser?.id||'local'),JSON.stringify(asesoras));
+    savedId=saved.id;
+    const full={...saved,...extra,notas:notasVal};
+    const idx=asesoras.findIndex(x=>x.id==savedId);
+    if(idx>=0)asesoras[idx]=full;else asesoras.unshift(full);
+    if(asesoraActiva?.id==savedId){asesoraActiva=full;}
+    toast('✅ Asesora guardada');
+  }catch(err){
+    console.warn('Guardando asesora local:',err.message||err);
+    if(!savedId)savedId='local_'+Date.now();
+    dbData.id=savedId;
+    const full={...dbData,...extra};
+    const idx=asesoras.findIndex(x=>x.id==savedId);
+    if(idx>=0)asesoras[idx]=full;else asesoras.unshift(full);
     toast('💾 Guardado localmente');
   }
-  renderListaAsesoras();actualizarSelector();cancelarForm();
+
+  localStorage.setItem('asesoras_cache_'+uid,JSON.stringify(asesoras));
+  renderListaAsesoras();
+  actualizarSelector();
+  cancelarForm();
+
+  // Activar asesora recién guardada
+  const aGuardada=asesoras.find(x=>x.id==savedId);
+  if(aGuardada)setAsesoraActiva(aGuardada);
 }
 
 async function eliminarAsesora(id){
   const a=asesoras.find(x=>x.id==id);
   if(!confirm(`¿Eliminar a ${a?.nombre}?`))return;
-  try{await db.del('asesoras',id);}catch(e){}
+  try{await db.del('asesoras',id);}catch(err){}
   asesoras=asesoras.filter(x=>x.id!=id);
-  localStorage.setItem('asesoras_cache',JSON.stringify(asesoras));
+  const uid=_currentUser?.id||'local';
+  localStorage.setItem('asesoras_cache_'+uid,JSON.stringify(asesoras));
   if(asesoraActiva?.id==id){asesoraActiva=null;actualizarUIAsesora();}
   renderListaAsesoras();actualizarSelector();toast('🗑️ Asesora eliminada');
 }
@@ -1537,6 +1577,7 @@ function calcular(){
     descAfp,descSalud,totalDescuentos,liquido,
     costoSIS,costoSS,costoAcc,costoAfpAd,costoCes,totalEmp,factor};
 
+  window._liqData=d; // siempre guardar en memoria
   renderLiq(d);
   autoGuardar(d);
   return d;
@@ -1683,18 +1724,21 @@ let _autoGuardTimer=null;
 function autoGuardar(d){
   if(!asesoraActiva||!d.periodo)return;
   clearTimeout(_autoGuardTimer);
-  _autoGuardTimer=setTimeout(()=>_guardarLiq(d),1500); // 1.5s de debounce
+  _autoGuardTimer=setTimeout(()=>_guardarLiq(d),1200);
 }
 
 async function _guardarLiq(d){
   const uid=_currentUser?.id||null;
+  const cacheKey='hist_liq_'+(uid||'local');
+  const asesoraId=asesoraActiva?.id||null;
+
   const entrada={
-    user_id:uid,  // ← vincula al usuario autenticado
-    asesora_id:asesoraActiva?.id||null,
+    user_id:uid,
+    asesora_id:asesoraId,
     nombre:d.nombre,rut:d.rut,periodo:d.periodo,dias:d.dias,
     afp_nombre:d.afpNombre,afp_tasa:d.afpTasa,
-    sueldo_base:d.sueldoBase,movilizacion:d.movilizacion,colacion:d.colacion,
-    horas_extra:d.horasExtra,bono:d.bono,
+    sueldo_base:d.sueldoBase,movilizacion:d.movilizacion||0,colacion:d.colacion||0,
+    horas_extra:d.horasExtra||0,bono:d.bono||0,
     total_haberes:d.totalHaberes,renta_imponible:d.rentaImponible,
     desc_afp:d.descAfp,desc_salud:d.descSalud,
     total_descuentos:d.totalDescuentos,liquido:d.liquido,
@@ -1703,8 +1747,20 @@ async function _guardarLiq(d){
     costo_cesantia:d.costoCes,total_costo_empleador:d.totalEmp
   };
 
+  // Siempre guardar en localStorage primero (instantáneo, sin fallo)
+  const loc=JSON.parse(localStorage.getItem(cacheKey)||'[]');
+  const idxLoc=loc.findIndex(x=>(x.asesora_id&&x.asesora_id===asesoraId&&x.periodo===d.periodo)||(x.nombre===d.nombre&&x.periodo===d.periodo));
+  const registroLocal={...entrada,id:idxLoc>=0?loc[idxLoc].id:'loc_'+Date.now(),created_at:idxLoc>=0?loc[idxLoc].created_at:new Date().toISOString()};
+  if(idxLoc>=0)loc[idxLoc]=registroLocal;else loc.unshift(registroLocal);
+  localStorage.setItem(cacheKey,JSON.stringify(loc));
+  _histRows=loc;
+  renderHistorial(_histRows);
+
+  // Intentar Supabase solo si tenemos token Y asesora_id válido (no local_...)
+  if(!_authToken||!asesoraId||String(asesoraId).startsWith('local_'))return;
+
   try{
-    const q=`asesora_id=eq.${entrada.asesora_id}&periodo=eq.${entrada.periodo}&limit=1`;
+    const q=`asesora_id=eq.${asesoraId}&periodo=eq.${encodeURIComponent(d.periodo)}&limit=1`;
     const existentes=await db.get('liquidaciones',q);
     if(existentes&&existentes.length>0){
       const id=existentes[0].id;
@@ -1712,22 +1768,17 @@ async function _guardarLiq(d){
         method:'PATCH',headers:{...H(),Prefer:'return=minimal'},
         body:JSON.stringify(entrada)
       });
-    } else {
+    }else{
       await fetch(`${SURL}/rest/v1/liquidaciones`,{
         method:'POST',headers:{...H(),Prefer:'return=minimal'},
         body:JSON.stringify(entrada)
       });
     }
-    await registrarLog('liquidacion',`Liquidación ${d.periodo} · ${d.nombre} · ${fmt(d.liquido)}`);
+    // Refrescar historial desde Supabase
     await cargarHistorial();
-  }catch(e){
-    const cacheKey='hist_liq_'+(uid||'local');
-    const loc=JSON.parse(localStorage.getItem(cacheKey)||'[]');
-    const idx=loc.findIndex(x=>x.nombre===d.nombre&&x.periodo===d.periodo);
-    if(idx>=0){loc[idx]={...loc[idx],...entrada};}
-    else{loc.unshift({...entrada,id:'loc_'+Date.now(),created_at:new Date().toISOString()});}
-    localStorage.setItem(cacheKey,JSON.stringify(loc));
-    cargarHistLocal();
+  }catch(err){
+    console.warn('Supabase guardarLiq error:',err.message);
+    // ya está guardado en localStorage, no hacer nada más
   }
 }
 
@@ -2563,10 +2614,8 @@ async function compartirDocWA(previewId,titulo){
 }
 
 // Actualizar tab documentos cuando cambia asesora
-const _origActualizarUIAsesora=actualizarUIAsesora;
-function actualizarUIAsesora(){
-  _origActualizarUIAsesora();
-  _finConceptos=[];// reset al cambiar asesora
+function actualizarDocsTab(){
+  _finConceptos=[];
   const docVisible=document.getElementById('tab-documentos')?.classList.contains('active');
   if(docVisible&&asesoraActiva){
     const vis=['contrato','aviso','finiquito'].find(t=>document.getElementById('doc-'+t)?.style.display!=='none');
