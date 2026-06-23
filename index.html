@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Remuneraciones · Casa Particular</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --cream:#F0F4F0; --warm:#E8F0E8; --dark:#0f172a; --muted:#64748b;
@@ -922,6 +922,36 @@ const SURL='https://sertvddcfboldonhcrqk.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlcnR2ZGRjZmJvbGRvbmhjcnFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMzcwNzQsImV4cCI6MjA4NzYxMzA3NH0.gJ1U3vQjKPHWAKs9Rj4-IPIoaKnINeDwszCPF-RAlf8';
 const ADMIN_EMAIL='admin@casaparticular.cl'; // cambia esto a tu correo admin
 
+// Las librerias de exportacion son pesadas; se cargan solo al pedir un PDF.
+const PDF_LIBRARY_URLS=[
+  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+];
+let _pdfLibrariesPromise=null;
+
+function cargarScript(url){
+  return new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src=url;
+    script.async=true;
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error('No se pudo cargar una dependencia para exportar PDF'));
+    document.head.appendChild(script);
+  });
+}
+
+function cargarLibreriasPdf(){
+  if(window.html2canvas&&window.jspdf?.jsPDF)return Promise.resolve();
+  if(!_pdfLibrariesPromise){
+    _pdfLibrariesPromise=Promise.all(PDF_LIBRARY_URLS.map(cargarScript))
+      .then(()=>{
+        if(!window.html2canvas||!window.jspdf?.jsPDF)throw new Error('No se pudieron inicializar las librerias de PDF');
+      })
+      .catch(error=>{_pdfLibrariesPromise=null;throw error;});
+  }
+  return _pdfLibrariesPromise;
+}
+
 let _authToken=null;
 let _currentUser=null;
 let _isAdmin=false;
@@ -1137,9 +1167,8 @@ async function cargarDatosPostLogin(){
   const st=document.getElementById('db-status');
   const uid=_currentUser?.id||'local';
   try{
-    await db.get('asesoras','limit=1');
+    await Promise.all([cargarAsesoras(),cargarHistorial()]);
     st.textContent='● Supabase conectado';st.className='db-pill db-ok';
-    await cargarAsesoras();await cargarHistorial();
   }catch(e){
     st.textContent='● Modo local';st.className='db-pill db-err';
     asesoras=JSON.parse(localStorage.getItem('asesoras_cache_'+uid)||'[]');
@@ -1244,7 +1273,13 @@ async function cargarAdmin(){
 // DB HELPERS (uses auth token)
 // ══════════════════════════════════════
 const db={
-  async get(t,q=''){const r=await fetch(`${SURL}/rest/v1/${t}?${q}&order=created_at.desc`,{headers:H()});if(!r.ok)throw new Error(await r.text());return r.json()},
+  async get(t,q=''){
+    const params=new URLSearchParams(q);
+    if(!params.has('order'))params.set('order','created_at.desc');
+    const r=await fetch(`${SURL}/rest/v1/${t}?${params.toString()}`,{headers:H()});
+    if(!r.ok)throw new Error(await r.text());
+    return r.json();
+  },
   async upsert(t,data){const r=await fetch(`${SURL}/rest/v1/${t}`,{method:'POST',headers:{...H(),Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(data)});if(!r.ok)throw new Error(await r.text());return r.json()},
   async del(t,id){const r=await fetch(`${SURL}/rest/v1/${t}?id=eq.${id}`,{method:'DELETE',headers:H()});if(!r.ok)throw new Error(await r.text())}
 };
@@ -1292,7 +1327,7 @@ async function init(){
 // ══════════════════════════════════════
 async function cargarAsesoras(){
   const uid=_currentUser?.id||'local';
-  const rows=await db.get('asesoras','limit=100');
+  const rows=await db.get('asesoras',`user_id=eq.${encodeURIComponent(uid)}&limit=100`);
   asesoras=rows||[];
   localStorage.setItem('asesoras_cache_'+uid,JSON.stringify(asesoras));
   renderListaAsesoras();actualizarSelector();
@@ -1721,6 +1756,10 @@ function renderLiq(d){
 // AUTO-GUARDAR AL CALCULAR
 // ══════════════════════════════════════
 let _autoGuardTimer=null;
+let _savingLiq=false;
+let _pendingLiqSave=null;
+let _lastLiqKey='';
+let _lastLiqSignature='';
 function autoGuardar(d){
   if(!asesoraActiva||!d.periodo)return;
   clearTimeout(_autoGuardTimer);
@@ -1747,44 +1786,60 @@ async function _guardarLiq(d){
     costo_cesantia:d.costoCes,total_costo_empleador:d.totalEmp
   };
 
-  // Siempre guardar en localStorage primero (instantáneo, sin fallo)
-  const loc=JSON.parse(localStorage.getItem(cacheKey)||'[]');
-  const idxLoc=loc.findIndex(x=>(x.asesora_id&&x.asesora_id===asesoraId&&x.periodo===d.periodo)||(x.nombre===d.nombre&&x.periodo===d.periodo));
-  const registroLocal={...entrada,id:idxLoc>=0?loc[idxLoc].id:'loc_'+Date.now(),created_at:idxLoc>=0?loc[idxLoc].created_at:new Date().toISOString()};
-  if(idxLoc>=0)loc[idxLoc]=registroLocal;else loc.unshift(registroLocal);
-  localStorage.setItem(cacheKey,JSON.stringify(loc));
-  _histRows=loc;
+  const saveKey=[uid||'local',asesoraId||'sin_asesora',d.periodo].join(':');
+  const signature=JSON.stringify(entrada);
+  if(saveKey===_lastLiqKey&&signature===_lastLiqSignature)return;
+  _lastLiqKey=saveKey;
+  _lastLiqSignature=signature;
+
+  // El historial local se actualiza al instante; no se vuelve a descargar completo por cada tecla.
+  const localRows=JSON.parse(localStorage.getItem(cacheKey)||'[]');
+  const localIndex=localRows.findIndex(x=>(x.asesora_id&&x.asesora_id===asesoraId&&x.periodo===d.periodo)||(x.nombre===d.nombre&&x.periodo===d.periodo));
+  const localRecord={...entrada,id:localIndex>=0?localRows[localIndex].id:'loc_'+Date.now(),created_at:localIndex>=0?localRows[localIndex].created_at:new Date().toISOString()};
+  if(localIndex>=0)localRows[localIndex]=localRecord;else localRows.unshift(localRecord);
+  localStorage.setItem(cacheKey,JSON.stringify(localRows));
+  _histRows=localRows;
   renderHistorial(_histRows);
 
-  // Intentar Supabase solo si tenemos token Y asesora_id válido (no local_...)
   if(!_authToken||!asesoraId||String(asesoraId).startsWith('local_'))return;
 
+  // Si el usuario sigue editando durante una peticion, solo se conserva la ultima version.
+  _pendingLiqSave={entrada,asesoraId,periodo:d.periodo,cacheKey};
+  if(_savingLiq)return;
+  _savingLiq=true;
+
   try{
-    const q=`asesora_id=eq.${asesoraId}&periodo=eq.${encodeURIComponent(d.periodo)}&limit=1`;
-    const existentes=await db.get('liquidaciones',q);
-    if(existentes&&existentes.length>0){
-      const id=existentes[0].id;
-      await fetch(`${SURL}/rest/v1/liquidaciones?id=eq.${id}`,{
-        method:'PATCH',headers:{...H(),Prefer:'return=minimal'},
-        body:JSON.stringify(entrada)
-      });
-    }else{
-      await fetch(`${SURL}/rest/v1/liquidaciones`,{
-        method:'POST',headers:{...H(),Prefer:'return=minimal'},
-        body:JSON.stringify(entrada)
-      });
+    while(_pendingLiqSave){
+      const next=_pendingLiqSave;
+      _pendingLiqSave=null;
+      try{
+        const query=`asesora_id=eq.${next.asesoraId}&periodo=eq.${encodeURIComponent(next.periodo)}&limit=1`;
+        const existentes=await db.get('liquidaciones',query);
+        const response=existentes?.length
+          ?await fetch(`${SURL}/rest/v1/liquidaciones?id=eq.${existentes[0].id}`,{method:'PATCH',headers:{...H(),Prefer:'return=representation'},body:JSON.stringify(next.entrada)})
+          :await fetch(`${SURL}/rest/v1/liquidaciones`,{method:'POST',headers:{...H(),Prefer:'return=representation'},body:JSON.stringify(next.entrada)});
+        if(!response.ok)throw new Error(await response.text());
+
+        const savedRows=await response.json();
+        const saved=Array.isArray(savedRows)?savedRows[0]:savedRows;
+        if(saved?.id){
+          const currentRows=JSON.parse(localStorage.getItem(next.cacheKey)||'[]');
+          const currentIndex=currentRows.findIndex(x=>(x.asesora_id&&x.asesora_id===next.asesoraId&&x.periodo===next.periodo)||(x.nombre===next.entrada.nombre&&x.periodo===next.periodo));
+          if(currentIndex>=0){
+            currentRows[currentIndex]={...currentRows[currentIndex],id:saved.id,created_at:saved.created_at||currentRows[currentIndex].created_at};
+            localStorage.setItem(next.cacheKey,JSON.stringify(currentRows));
+            _histRows=currentRows;
+            renderHistorial(_histRows);
+          }
+        }
+      }catch(error){
+        console.warn('Supabase guardarLiq error:',error.message);
+      }
     }
-    // Refrescar historial desde Supabase
-    await cargarHistorial();
-  }catch(err){
-    console.warn('Supabase guardarLiq error:',err.message);
-    // ya está guardado en localStorage, no hacer nada más
+  }finally{
+    _savingLiq=false;
   }
 }
-
-// ══════════════════════════════════════
-// IMPRIMIR
-// ══════════════════════════════════════
 async function imprimirLiq(){
   if(!window._liqData){toast('Primero genera una liquidación','err');return;}
   if(!window._liqData.periodo){toast('Selecciona el período del mes','err');return;}
@@ -1809,6 +1864,7 @@ async function compartirWhatsApp(){
   btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Generando PDF…`;
 
   try{
+    await cargarLibreriasPdf();
     // Capturar solo el documento de liquidación (sin botones ni costos empleador)
     const nodo=document.getElementById('liq-doc');
     if(!nodo)throw new Error('No se encontró el documento');
@@ -1877,6 +1933,7 @@ async function compartirWhatsApp(){
 async function descargarPDF(){
   const d=window._liqData;
   if(!d){toast('Genera la liquidación primero','err');return;}
+  try{await cargarLibreriasPdf();}catch(error){toast('No se pudieron cargar las librerias de PDF','err');return;}
   const nodo=document.getElementById('liq-doc');
   if(!nodo){toast('No se encontró el documento','err');return;}
   const empCosts=nodo.querySelector('.emp-costs');
@@ -1898,7 +1955,8 @@ async function descargarPDF(){
 async function cargarHistorial(){
   const cacheKey='hist_liq_'+(_currentUser?.id||'local');
   try{
-    const rows=await db.get('liquidaciones','limit=200&order=created_at.desc');
+    const uid=_currentUser?.id||'local';
+    const rows=await db.get('liquidaciones',`user_id=eq.${encodeURIComponent(uid)}&limit=200&order=created_at.desc`);
     _histRows=rows||[];
     localStorage.setItem(cacheKey,JSON.stringify(_histRows));
   }catch(e){
@@ -2600,6 +2658,7 @@ async function compartirDocWA(previewId,titulo){
   const orig=btn.innerHTML;
   btn.disabled=true;btn.innerHTML='⏳ Generando…';
   try{
+    await cargarLibreriasPdf();
     const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#fff',logging:false});
     const{jsPDF}=window.jspdf;
     const imgData=canvas.toDataURL('image/jpeg',.92);
